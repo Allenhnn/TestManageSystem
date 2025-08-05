@@ -39,10 +39,11 @@ type InputProps = {
     setViewFrameState: React.Dispatch<React.SetStateAction<number>>,
     setEditFrameState: React.Dispatch<React.SetStateAction<number>>,
     setDoubleCheck: React.Dispatch<React.SetStateAction<number>>;
+    setCurrentFolderName : any;
 }
 
 
-const DataTableContainer = ({ deleteEditData, setEditViewData, setDoubleCheck, setEditFrameState, setViewFrameState, setLoadingState, modalShow, setModalShow, setFillInFrame }: InputProps) => {
+const DataTableContainer = ({ setCurrentFolderName,deleteEditData, setEditViewData, setDoubleCheck, setEditFrameState, setViewFrameState, setLoadingState, modalShow, setModalShow, setFillInFrame }: InputProps) => {
 
     const [data, setData] = useState<_ReloadStudentType[]>([]);
     const [userInfo, setUserInfo] = useState<userInfoType>({ "userName": "dexter", "fileName": "test-1" })
@@ -77,6 +78,8 @@ const DataTableContainer = ({ deleteEditData, setEditViewData, setDoubleCheck, s
     //     }
     // }
     const enterDetailData = async (arg: string) => {
+        // alert(arg)
+        setCurrentFolderName(arg)
         setCurrentTable(prev => ({
             ...prev,
             status: false,
@@ -95,7 +98,7 @@ const DataTableContainer = ({ deleteEditData, setEditViewData, setDoubleCheck, s
                 "Content-Type": "application/json",
             })
 
-            const fetchData = await fetch(URL, { headers: headers, method: "POST", body: JSON.stringify(userInfo) , credentials:'include' });
+            const fetchData = await fetch(URL, { headers: headers, credentials:"include",method: "POST", body: JSON.stringify(userInfo) });
             const getData = await fetchData.json();
             setData(getData);
             setLoadingState(true);
@@ -139,15 +142,22 @@ const DataTableContainer = ({ deleteEditData, setEditViewData, setDoubleCheck, s
         
         setViewFrameState(1);
     }
-    // 編輯
-    const EditViewData = (arg: any) => {
-        // console.log(data[arg][0]);
-       
+    // 編輯***********
+    const EditViewData = (arg:any , pigID:string ) => {
+        // alert(pigID)
+     // setEditViewData(prev => ({
+        //     ...prev,
+        //     insertFile: [{ ...arg }, { confirmStatus: "false", pigID: pigid }]
+        // }));
+        console.log("-------editview=-------");
+        console.log(arg);
+        let tempVal 
         
         setEditViewData(prev => ({
             ...prev,
-            "insertFile": [arg, prev.insertFile[1]]
+            "insertFile": [arg, {...prev.insertFile[1] ,pigID:pigID}]
         }));
+        
         setEditFrameState(1);
 
     }

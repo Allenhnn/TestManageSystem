@@ -124,6 +124,8 @@ const ViewComponent = ({ setEditViewData, setEditFrameState, setViewFrameState, 
     // 編輯
     const EditViewData = (arg: number) => {
         // console.log(data[arg][0]);
+        
+        
         const sendData = data[arg][0];
         setEditViewData(prev => ({
             ...prev,

@@ -1,7 +1,7 @@
 import type { _CommonType } from "./_CommonType";
 type _NestedType ={
     "pigID":string,
-    "confirmStatus":string
+    "confirmStatus":boolean
 }
 export type _EditType = {
     "status": string,

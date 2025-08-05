@@ -161,13 +161,15 @@ const StudentTable = forwardRef<ExportDataType, allProps>(({ EditViewData, handl
             size: 1,
             // maxSize: 100,
             cell: (props: any) => {
+                const { pigID, confirmStatus , ...filterData} = props.row.original;
                 const rowData = props.row.original;
                 const index = props.row.index;
+                // alert(rowData["pigID"])
                 // alert("rowindex" + props.row.index);
                 return (
                     <div className="functionBtn">
                         <div className="editButton" onClick={() => handleViewData(rowData)}>查看</div>
-                        <div className="editButton" onClick={() => EditViewData(rowData)}>編輯</div>
+                        <div className="editButton" onClick={() => EditViewData(filterData,rowData["pigID"])}>編輯</div>
                         <div className="editButton" onClick={() => handleContext?.deleteEditData(0, rowData["pigID"])}>刪除</div>
                     </div>
                 )

@@ -58,13 +58,6 @@ app.get('/cleanAllData', (req, res) => {
 
 app.post('/getfolder', multer().none(), (req, res) => {
   const userName = req.cookies.userName;
-<<<<<<< HEAD
-=======
-  // console.log("req",req);
-  console.log("body",req.body);
-  console.log("cookies",req.cookies);
-  
->>>>>>> 33f6014 (i gonna die)
   let fileList = []
   sequelize.sync().then(async () => {
     const files = await jsonFile.findAll({

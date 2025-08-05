@@ -122,103 +122,107 @@ const RegisterFrame = () => {
     const submitInsertData = () => {
         const insertFile = insertData?.insertFile;
 
-        
-            // insertFile.forEach((item, index) => {
-            //     console.log(`第 ${index + 1} 筆 insertFile:`);
-            //     console.log(item);
-            //     if (!Array.isArray(insertFile)) {
-            //         console.log("insertFile 不存在或不是陣列");
-            //         return;
-            //     }
 
-            //     const hasEmptyField = insertFile.some((item) => {
-            //         return Object.entries(item).some(([key, value]) => {
-            //             return key !== "pigID" && key !== "confirmStatus" && value === "";
-            //         });
-            //     });
+        // insertFile.forEach((item, index) => {
+        //     console.log(`第 ${index + 1} 筆 insertFile:`);
+        //     console.log(item);
+        //     if (!Array.isArray(insertFile)) {
+        //         console.log("insertFile 不存在或不是陣列");
+        //         return;
+        //     }
 
-            //     if (hasEmptyField) {
-            //         setNonFillout(1);
-            //         setAlertText("您尚有欄位未填寫完畢");
-            //         return;
-            //     }
-            //     console.log("12312312312312312321321312");
+        //     const hasEmptyField = insertFile.some((item) => {
+        //         return Object.entries(item).some(([key, value]) => {
+        //             return key !== "pigID" && key !== "confirmStatus" && value === "";
+        //         });
+        //     });
 
-            //     fetch("http://localhost:3000/upload", {
-            //         // headers: new Headers({
+        //     if (hasEmptyField) {
+        //         setNonFillout(1);
+        //         setAlertText("您尚有欄位未填寫完畢");
+        //         return;
+        //     }
+        //     console.log("12312312312312312321321312");
 
-            //         // })
-            //         method: "POST",
-            //         credentials: "include",
-            //         body: JSON.stringify(EditViewData)
-            //     })
-            //         .then(res => setSucessFrame(1))
-            // });
-       
+        //     fetch("http://localhost:3000/upload", {
+        //         // headers: new Headers({
+
+        //         // })
+        //         method: "POST",
+        //         credentials: "include",
+        //         body: JSON.stringify(EditViewData)
+        //     })
+        //         .then(res => setSucessFrame(1))
+        // });
+
     }
     const submitEditData = () => {
-        const formData = new FormData(); 
+        // const formData = new FormData();
         const insertFile = EditViewData?.insertFile;
         // const transferValue = 
-        switch(EditViewData.transferType){
+        // setCurrentFolderName()
+        // console.log(data[arg][0]);
+
+
+
+        setEditViewData(prev => ({
+            ...prev,
+            filename: currentFolderName
+        }))
+        switch (EditViewData.insertFile[0]["檢定區別"]) {
             case "全測":
-                setEditViewData(prev=>({
+                setEditViewData(prev => ({
                     ...prev,
-                    transferType : "A"
+                    transferType: "A"
                 }))
                 break;
             case "免學":
-                setEditViewData(prev=>({
+                setEditViewData(prev => ({
                     ...prev,
-                    transferType : "B"
+                    transferType: "B"
                 }))
                 break;
             case "免術":
-                setEditViewData(prev=>({
+                setEditViewData(prev => ({
                     ...prev,
-                    transferType : "C"
+                    transferType: "C"
                 }))
                 break;
             default:
                 console.warn("didnt get value");
-                
+
                 break;
 
         }
 
+        console.log("((((((((((");
+        console.log(EditViewData);
         if (Array.isArray(insertFile)) {
-            insertFile.forEach((item, index) => {
-                console.log(`第 ${index + 1} 筆 insertFile:`);
-                console.log(item);
-                if (!Array.isArray(insertFile)) {
-                    console.log("insertFile 不存在或不是陣列");
-                    return;
-                }
 
-                const hasEmptyField = insertFile.some((item) => {
-                    return Object.entries(item).some(([key, value]) => {
-                        return key !== "pigID" && key !== "confirmStatus" && value === "";
-                    });
+
+            const hasEmptyField = insertFile.some((item) => {
+                return Object.entries(item).some(([key, value]) => {
+                    return key !== "pigID" && key !== "confirmStatus" && value === "";
                 });
-
-                if (hasEmptyField) {
-                    setNonFillout(1);
-                    setAlertText("您尚有欄位未填寫完畢");
-                    return;
-                }
-
-                fetch("http://localhost:3000/editFile", {
-                    // headers: new Headers({
-
-                    // })
-                    method: "POST",
-                    credentials: "include",
-                    body: JSON.stringify(EditViewData)
-                })
-                    .then(res => setSucessFrame(1))
             });
-        } else {
-            console.log("insertFile 不存在或不是陣列");
+
+            if (hasEmptyField) {
+                setNonFillout(1);
+                setAlertText("您尚有欄位未填寫完畢");
+                return;
+            }
+
+            console.log('-------------------------');
+            console.log(EditViewData);
+
+            fetch("http://localhost:3000/editFile", {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(EditViewData)
+            }).then(res => setSucessFrame(1));
         }
     };
 
@@ -282,11 +286,10 @@ const RegisterFrame = () => {
             "座號": "2",
             "身分別": "無",
             "學制": "高級中學"
-
         },
         {
             "pigID": "",
-            "confirmStatus": ""
+            "confirmStatus": false
         }]
 
 
@@ -300,7 +303,7 @@ const RegisterFrame = () => {
 
 
     // const swiper = useSwiper();
-
+    const [currentFolderName, setCurrentFolderName] = useState("");
     const [editFrameState, setEditFrameState] = useState(0);
     const [viewFrameState, setViewFrameState] = useState(0);
     const [fillInIndex, setFillInIndex] = useState(0);
@@ -880,7 +883,7 @@ const RegisterFrame = () => {
                 break;
             case 1:
                 return (
-                    <DataTableContainer deleteEditData={deleteEditData} setEditViewData={setEditViewData} setDoubleCheck={setDoubleCheck} setEditFrameState={setEditFrameState} setViewFrameState={setViewFrameState} setFillInFrame={setFillInFrame} setLoadingState={setLoadingState} modalShow={modalShow} setModalShow={setModalShow} />
+                    <DataTableContainer setCurrentFolderName={setCurrentFolderName} deleteEditData={deleteEditData} setEditViewData={setEditViewData} setDoubleCheck={setDoubleCheck} setEditFrameState={setEditFrameState} setViewFrameState={setViewFrameState} setFillInFrame={setFillInFrame} setLoadingState={setLoadingState} modalShow={modalShow} setModalShow={setModalShow} />
 
                 )
                 break;

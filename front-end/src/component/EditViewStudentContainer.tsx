@@ -274,6 +274,7 @@ const EditViewStudentContainer = ({ setEditViewData, submitEditData, EditViewDat
                                         {TestFile.map((element, index) => (
                                             <div className="viewStudentColumn">
                                                 {element.registerName.map((label, index) => {
+                                                    
                                                     return (
 
                                                     label != "檢定區別" && label != "身分別" ?

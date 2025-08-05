@@ -1,0 +1,27 @@
+[
+
+    {
+        "type-code": "學校編號"
+    },
+    {
+        "type-code": "就讀學校"
+    },
+    {
+        "type-code": "就讀科系"
+    },
+    {
+        "type-code": "班級"
+    },
+    {
+        "type-code": "報簡職類"
+    },
+    {
+        "type-code": "學制"
+    },
+    {
+        "type-code": "上課別"
+    },
+    {
+        "type-code": "身分別"
+    }
+]

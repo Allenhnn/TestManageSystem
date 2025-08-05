@@ -1,0 +1,49 @@
+[
+    {
+        "registerName": [
+            "就讀學校",
+            "就讀科系"
+        ],
+        "registerCount": 2,
+        "isCopy": false
+    },
+    {
+        "registerName": [
+            "學制",
+            "上課別"
+        ],
+        "registerCount": 2,
+        "isCopy": false
+    },
+    {
+        "registerName": [
+            "年級",
+            "班級",
+            "座號"
+        ],
+        "registerCount": 3,
+        "isCopy": false
+    },
+    {
+        "registerName": [
+            "檢定區別",
+            "身分別"
+        ],
+        "registerCount": 2,
+        "isCopy": false
+    },
+    {
+        "registerName": [
+            "報簡職類"
+        ],
+        "registerCount": 1,
+        "isCopy": false
+    },
+    {
+        "registerName": [
+            "准考證號碼"
+        ],
+        "registerCount": 2,
+        "isCopy": false
+    }
+]

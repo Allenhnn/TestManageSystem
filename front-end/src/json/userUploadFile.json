@@ -1,0 +1,46 @@
+[
+    {
+        "registerName": [
+            "中文姓名",
+            "英文姓名"
+        ],
+        "registerCount": 2,
+        "isCopy": false
+    },
+    {
+        "registerName": [
+            "身分證號碼",
+            "出生日期"
+        ],
+        "registerCount": 2,
+        "isCopy": false
+    },
+    {
+        "registerName": [
+            "通訊地址"
+        ],
+        "registerCount": 1,
+        "isCopy": false
+    },
+    {
+        "registerName": [
+            "戶籍地址"
+        ],
+        "registerCount": 1,
+        "isCopy": true
+    },
+    {
+        "registerName": [
+            "聯絡電話(住宅)"
+        ],
+        "registerCount": 1,
+        "isCopy": false
+    },
+    {
+        "registerName": [
+            "聯絡電話(手機)"
+        ],
+        "registerCount": 1,
+        "isCopy": false
+    }
+]

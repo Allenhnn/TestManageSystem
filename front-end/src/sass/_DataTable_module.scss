@@ -1,0 +1,145 @@
+@import "_configs.scss";
+
+.tableContainer {
+    overflow-y: scroll;
+    // height: 100%;
+    max-height: 34rem;
+    height: 34rem;
+
+    width: 100%;
+    border-radius: 12px;
+
+    table {
+        border-collapse: separate;
+        border-spacing: 0;
+        width: 100%;
+        table-layout: auto;
+        border-radius: 15px;
+        border: none;
+        background-color: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(20px);
+        overflow-x: scroll;
+
+        thead {
+            position: sticky;
+            left: 0;
+            top: 0;
+        }
+
+        td,
+        th {
+            border-left: none;
+            border-right: none;
+        }
+
+        tr:nth-of-type(even) {
+            background-color: rgba(178, 97, 212, 0.1);
+
+        }
+
+        tbody td:nth-last-child(1) {}
+
+        thead tr th {
+            // color: red;
+            background-color: $color1;
+            // border: none;
+            border-left: 0;
+            border-right: 0;
+        }
+
+        tbody {
+            color: $black;
+
+            .viewFolder {
+                @include all-center();
+
+                .checkStatus {
+                    min-width: 5rem;
+                }
+            }
+
+            .checkStatus {
+                @include all-center();
+                padding: 0.35rem 0rem;
+                // width:auto;
+                border-radius: 25px;
+                background-color: #bf4f30;
+                font-size: 0.9rem;
+                max-width: 5rem;
+                color: white;
+
+                &.done {
+                    background-color: #32a250;
+                    color: white;
+                }
+            }
+
+            .iconEye {
+                color: rgba(123, 70, 199, 1);
+                cursor: pointer;
+                user-select: none;
+                transition: .25s;
+
+                &:hover {
+                    opacity: 0.6;
+                }
+            }
+
+            .functionBtn {
+                @include all-center();
+                display: inline-flex;
+
+                gap: 1rem;
+
+                // padding: 0 !important;
+                flex-shrink: 1;
+
+                .editButton {
+                    @include all-center();
+                    background-color: $color1;
+                    color: white;
+                    transition: .25s;
+                    padding: 0.35rem 1.5rem;
+                    border-radius: 10px;
+                    white-space: nowrap;
+                    /* ✅ 不換行 */
+                    overflow: hidden;
+                    /* ✅ 超出不顯示 */
+                    text-overflow: ellipsis;
+                    /* 可選，避免撐開 */
+                    cursor: pointer;
+
+                    &:nth-child(1) {
+                        // background-color: rgb(158, 74, 190);
+                        // &:hover{
+                        //     color: rgb(158, 74, 190);
+                        //     background-color: white;
+                        // }
+                        background-color: #7c46c735;
+                        color: #7B46C7;
+
+                        &:hover {
+                            background-color: #7B46C7;
+                            background-color: white;
+                        }
+                    }
+
+                    &:nth-child(3) {
+                        background-color: rgb(217, 70, 41);
+
+                        &:hover {
+                            color: rgb(228, 57, 22);
+                            background-color: white;
+                        }
+                    }
+
+                    &:hover {
+                        background-color: white;
+                        color: $color1;
+                    }
+                }
+            }
+        }
+
+    }
+}

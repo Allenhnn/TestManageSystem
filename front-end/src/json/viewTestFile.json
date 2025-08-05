@@ -1,0 +1,36 @@
+[
+    {
+        "registerName": [
+            "就讀學校",
+            "就讀科系",
+            "學制"
+        ]
+    },
+    {
+        "registerName": [
+            "年級",
+            "班級",
+            "座號"
+        ]
+    },
+    {
+        "registerName": [
+            "報檢職種"
+        ]
+    },
+    {
+        "registerName": [
+            "上課別"
+        ]
+    },
+    {
+        "registerName": [
+            "檢定區別"
+        ]
+    },
+    {
+        "registerName": [
+            "身份別"
+        ]
+    }
+]

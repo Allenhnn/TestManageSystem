@@ -1,0 +1,259 @@
+@import "_configs.scss";
+
+.loading {
+    @include all-center();
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    background-color: #09090978;
+    backdrop-filter: blur(20px);
+    z-index: 99999;
+    transition: .25s;
+
+    .loader {
+        width: 50px;
+        padding: 8px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: white;
+        --_m:
+            conic-gradient(#0000 10%, #000),
+            linear-gradient(#000 0 0) content-box;
+        -webkit-mask: var(--_m);
+        mask: var(--_m);
+        -webkit-mask-composite: source-out;
+        mask-composite: subtract;
+        animation: l3 1s infinite linear;
+    }
+}
+
+@keyframes l3 {
+    to {
+        transform: rotate(1turn)
+    }
+}
+
+.LoginFrameContainer {
+    @include layerDeco();
+    @include all-center();
+    font-family: Notos;
+    height: 100vh;
+    width: 100vw;
+    // background: linear-gradient(125deg, rgba(226, 135, 113, 1) 0%, rgba(201, 80, 125, 1) 40%, rgba(194, 59, 189, 1) 80%, rgba(123, 70, 199, 1) 100%);
+    background: linear-gradient(90deg, rgba(123, 70, 199, 1) 45%, rgba(76, 110, 207, 1) 100%);
+
+    .verifyFrameContainer {
+        @include all-center();
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        background-color: #09090978;
+        backdrop-filter: blur(20px);
+        transition: .25s;
+        z-index: 999;
+
+        .verifyFrame {
+            padding: 2rem 5rem;
+            background: linear-gradient(90deg, rgba(123, 70, 199, 1) 45%, rgba(76, 110, 207, 1) 100%);
+            // background-color: rgba(255, 255, 255, 0.229);
+            box-shadow: $bxShadow;
+            border-radius: 12px;
+
+            h3 {
+                font-size: 1.8rem;
+                letter-spacing: 1px;
+            }
+
+            .verifyCodes {
+                @include all-center();
+                gap: 1rem;
+                margin: 1.5rem 0 1rem 0 ;
+                input {
+                    @include all-center();
+                    height: 4rem;
+                    width: 4rem;
+                    border-radius: 10px;
+                    border: none;
+                    text-align: center;
+                    background-color: white;
+                    color: $black;
+                    aspect-ratio: 1/1;
+                    font-size: 2rem;
+                    font-family: notos;
+                    
+                }
+                
+            }
+
+            .notifySubmit{
+                font-size: 0.9rem;
+                margin: 0 0 1rem 0 ;
+                span{
+                    cursor: pointer;
+                    transition: .25s;
+                    &:hover{
+                        opacity: 0.5;
+                    }
+                }
+            }
+
+            .clsContainer {
+                @include all-center();
+                gap: 1rem;
+
+                .verifycls {
+                    transition: .25s;
+                    &:hover{
+                        opacity: 0.8;
+                    }
+                    cursor: pointer;
+                    &:nth-child(2){
+                        background-color:  $color1;
+                        color: white;
+                        box-shadow: $bxShadow;
+                    }
+                    padding: 0.5rem 2rem;
+                    background-color: white;
+                    color: $black;
+                    border-radius: 15px;
+                    font-size: 1.05rem
+                }
+            }
+        }
+
+
+    }
+
+    .loginbox {
+        @include all-center();
+        // height: 43rem;
+        background-color: rgba(255, 255, 255, 0.61);
+        width: 28rem;
+        // 200px
+        padding: 3rem 0 2.5rem 0;
+        border-radius: 25px;
+
+
+        input {
+            padding: 0.35rem 1.2rem;
+            width: 100%;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            background-color: rgba(255, 255, 255, 0.61);
+            border: none;
+            box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+            box-sizing: border-box;
+            color: $black;
+        }
+
+        label {
+            text-shadow: $txShadow;
+            color: $black;
+            box-sizing: border-box;
+            font-size: 1.15rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .boxContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 65%;
+            max-width: 70%;
+
+            .logoName {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                h3 {
+                    font-size: 1.75rem;
+                    color: $black;
+                    text-shadow: $txShadow ;
+                }
+
+                .logo {
+                    @include all-center();
+                    background-color: #7c46c74c;
+                    color: $color1;
+                    height: 1.5rem;
+                    padding: 0.5rem;
+                    aspect-ratio: 1/1;
+                    border-radius: 12px;
+                    font-size: 1.5rem;
+                    margin-right: 1rem;
+                    box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+                }
+            }
+
+            .loginDataContainer {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                margin: 1.5rem 0;
+
+                .loginData {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: start;
+                    margin: 0.5rem 0;
+                }
+            }
+
+            // .otherFunction{
+            //     // display: flex;ㄑ
+
+            // }
+            .loginButton {
+                @include all-center();
+                width: 100%;
+                flex-direction: column;
+
+                .line {
+                    width: 30px;
+                    height: 3px;
+                    border-radius: 25px;
+                    background-color: $black;
+                    margin: 0.8rem 0;
+                    opacity: 0.2;
+                }
+
+                span {
+                    color: $black;
+                    font-size: 0.95rem;
+
+                    u {
+                        transition: .25s;
+
+                        &:hover {
+                            opacity: 0.6;
+                        }
+
+                        cursor: pointer;
+                    }
+                }
+
+                button {
+                    background-color: $color1;
+                    color: white;
+                    padding: 0.4rem 1.2rem;
+                    width: 100%;
+                    font-size: 1.15rem;
+                    // box-sizing: border-box;
+                    transition: .25s;
+                    border: none;
+
+                    &:hover {
+                        background-color: white;
+                        color: $color1;
+                    }
+                }
+            }
+        }
+
+    }
+}

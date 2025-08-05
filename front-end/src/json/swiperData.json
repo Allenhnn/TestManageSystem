@@ -1,0 +1,33 @@
+[
+    {
+        "swiper_icon":"file",
+        "swiper_title":"下載範本",
+        "swiper_inner":"下載範本後請依範本格式填寫，若已下載範本可略過此步驟。"
+    },
+    {
+        "swiper_icon":"folder",
+        "swiper_title":"創建新檔案",
+        "swiper_inner":"請建立新檔案，並以專案名稱命名，方便日後管理與查找。"
+    },
+    {
+        "swiper_icon":"database",
+        "swiper_title":"上傳Excel檔案",
+        "swiper_inner":"請上傳包含學生資訊的檔案，支援 *.xlsx 格式，請確保符合規範。"
+    },
+    {
+        "swiper_icon":"image",
+        "swiper_title":"上傳學生照片",
+        "swiper_inner":"請上傳學生證件用照片，格式為 JPG 或 PNG，請確保影像清晰、符合規範。"
+    },
+    {
+        "swiper_icon":"edit",
+        "swiper_title":"編輯學生資料",
+        "swiper_inner":"上傳照片後即可編輯照片尺寸與位置，符合證件格式需求。"
+    },
+    
+    {
+        "swiper_icon":"upload",
+        "swiper_title":"送出資料",
+        "swiper_inner":"請確定每一步驟皆已完成，上傳前請再次確認資料是否正確"
+    }
+]

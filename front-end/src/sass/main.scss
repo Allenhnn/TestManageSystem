@@ -1,0 +1,46 @@
+@import "_Register_module.scss";
+@import "_LoginFrame_module.scss";
+@import "_DataTable_module.scss";
+@import "_viewComponent.scss";
+@import "_searchCode_module.scss";
+@import "_configs.scss";
+
+#root {
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    font-size: 16px; // 預設桌機大小
+}
+
+@media (max-width: 1980px) {
+    
+    :root {
+        font-size: 17px;
+    }
+}
+
+@media (max-width: 1600px) {
+    
+    :root {
+        font-size: 15px;
+    }
+}
+@media (max-width: 1440px) {
+    :root {
+        font-size: 12.5px;
+    }
+}
+
+@media (max-width: 1024px) {
+    :root {
+        font-size: 14px; // 平板
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        font-size: 12px; // 手機
+    }
+}

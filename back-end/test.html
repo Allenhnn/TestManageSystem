@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="" id="piyan" method="POST">
+        <h1>test test</h1>
+        <button type="submit">SUBMIT</button>
+    </form>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded",()=>{
+    const fm = document.querySelector("#piyan");
+    const data = {"aa":"./convert_content/1.中壢高商(14901).xlsx"};
+    fm.addEventListener("submit",async (e)=>{
+        e.preventDefault();
+        const URL = "/upload";
+        const res = await fetch(URL,{
+            method:"POST",
+            headers:{"Content-Type":'application/json'},
+            body:JSON.stringify(data)
+        });
+        const rn = await res.json();
+
+        console.log(rn , data);
+
+        // console.log(res);
+    })
+    })
+</script>
+</html>

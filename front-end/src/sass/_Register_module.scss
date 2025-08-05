@@ -1,0 +1,1794 @@
+@import "_configs.scss";
+
+.registerFrameContainer {
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+    font-family: Notos;
+
+    // background: linear-gradient(90deg,rgba(123, 70, 199, 1) 45%, rgba(76, 110, 207, 1) 100%);
+
+    // background: #E28771;
+    background: linear-gradient(125deg, rgba(226, 135, 113, 1) 0%, rgba(201, 80, 125, 1) 40%, rgba(194, 59, 189, 1) 80%, rgba(123, 70, 199, 1) 100%);
+    // animation: gradientShift 10s ease infinite;
+    // background-size: 200% 200%;
+
+    padding: 2rem 2.5rem 1.5rem 2.5rem;
+    box-sizing: border-box;
+
+    .viewStudentDetailContainer {
+        @include all-center();
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        width: 100%;
+        z-index: 9999;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        transition: .25s;
+
+        &.greyBG input {
+            background-color: rgba(0, 0, 0, 0.35) !important;
+            color: white !important;
+        }
+
+        .viewStudentDetail {
+            @include all-center();
+            flex-direction: column;
+            background-color: rgba(255, 255, 255, 0.8);
+            // width: 35rem;
+            padding: 2rem 3rem;
+            border-radius: 12px;
+
+            .line {
+
+                height: 1px;
+                width: 100%;
+                background-color: rgba(41, 40, 40, 0.5);
+                margin: 1.5rem 0 2rem 0;
+
+            }
+
+            .viewStudentTitle {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: start;
+
+                .Viewicon {
+                    @include all-center();
+                    height: 2.5rem;
+                    aspect-ratio: 1/1;
+                    border-radius: 50%;
+                    // $color1 : #7B46C7;
+                    background-color: #7c46c737;
+                    color: $color1;
+                    // color: white;
+                    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+                    font-size: 1.2rem;
+                    margin-right: 1rem;
+                }
+
+                h4 {
+                    font-size: 1.25rem;
+                    color: rgba(25, 25, 25, 0.8)
+                }
+            }
+
+            .viewStudentContent {
+
+                .studentImageContainer {
+                    @include all-center();
+                    background-color: white;
+                    padding: 0.5rem;
+                    border-radius: 12px;
+                    margin-right: 2rem;
+
+                    img {
+                        height: 6rem;
+                        object-fit: cover;
+                    }
+                }
+
+                .fillInData {
+                    .viewStudentColumn {
+                        margin: 1rem 0;
+                    }
+                }
+
+                .viewTestData {
+                    .viewStudentColumn {
+                        margin: 1.5rem 0;
+                    }
+                }
+
+                //  -- template --
+                .viewStudentColumn {
+                    position: relative;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    width: 100%;
+                    margin: 1rem 0;
+                    gap: 1rem;
+
+                    .viewStudentItem {
+                        position: relative;
+                        display: flex;
+                        align-items: start;
+                        justify-content: center;
+                        flex-direction: column;
+                        gap: 0.5rem;
+                        width: 100%;
+
+                        .viewStudentName {
+                            position: relative;
+                            color: rgba(25, 25, 25, 0.8);
+                            font-size: 1rem;
+                            width: 100%;
+
+                            h4 {
+                                text-align: left;
+                                font-size: 0.9rem;
+                            }
+
+                            input {
+                                padding: 0.25rem 0rem 0.25rem 1rem;
+                                border-radius: 8px;
+                                width: 90%;
+                                background-color: white;
+                                color: $black;
+                                border: 1px solid rgba(0, 0, 0, 0.23);
+                                // box-sizing: border-box
+                            }
+
+                            .css-13cymwt-control {
+                                * {
+                                    padding: 0;
+                                }
+
+                                min-height: unset !important;
+
+                                width: 98%;
+                                font-size: 0.9rem;
+                                border-radius: 8px;
+                            }
+                        }
+
+
+                    }
+                }
+
+                .decoR {
+                    justify-content: space-between;
+                    width: 95%;
+
+                    & .viewStudentItem:nth-child(1) {
+                        width: 70%;
+                    }
+
+                    & .viewStudentItem:nth-child(2) {
+                        width: 30%;
+                    }
+                }
+
+                .deco {
+                    & .viewStudentItem:nth-child(1) {
+                        width: 30%;
+                    }
+
+                    & .viewStudentItem:nth-child(2) {
+                        width: 70%;
+                    }
+                }
+
+                // -- template --
+                .bottomSide {
+                    margin-top: 0.5rem;
+
+                    .single .viewStudentName input {
+                        width: 100% !important;
+                    }
+
+                    .viewStudentItem {
+                        display: flex;
+                        justify-content: space-between;
+
+
+
+                        .viewStudentName {
+                            position: relative;
+                            width: 100%;
+
+                            input {
+                                padding: 0.25rem 0rem 0.25rem 1rem;
+                                border-radius: 8px;
+                                width: 90%;
+                                background-color: white;
+                                color: $black;
+                                border: 1px solid rgba(0, 0, 0, 0.23);
+                                // box-sizing: border-box
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            .functionBtnContainer {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 1.5rem;
+                margin: 2rem 0 0rem 0;
+
+
+                .functionBtn {
+                    &:nth-child(2) {
+                        background-color: $color1;
+                        color: white;
+                    }
+
+                    // $color1 : #7B46C7;
+                    &:hover {
+                        background-color: white;
+                        color: $color1;
+                        opacity: 0.8;
+                    }
+
+                    // &:hover{
+                    //     background-color: $color1;
+                    //     color: white;
+                    // }
+                    cursor: pointer;
+                    transition: .25s;
+                    // background-color: rgba(255, 255, 255, 0.2);
+                    background-color: #7c46c74e;
+                    color: $color1;
+                    padding: 0.35rem 1.5rem;
+                    font-size: 1.05rem;
+                    border-radius: 12px;
+                    // box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.25);
+                    letter-spacing: 1px;
+                }
+            }
+        }
+    }
+
+    .viewDataContainer {
+        @include all-center();
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        width: 100%;
+        z-index: 9999;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        transition: .25s;
+
+        .viewData {
+            width: 35rem;
+            padding: 2rem 2.5rem;
+
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            z-index: 1;
+
+            .viewNavigation {
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                .throughLine {
+                    position: absolute;
+                    height: 2px;
+                    width: 95%;
+                    top: 45%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background-color: rgba(0, 0, 0, 0.2);
+
+                    z-index: -1;
+
+                }
+
+                .naviItem {
+                    @include all-center();
+                    flex-direction: column;
+
+                    & * {
+                        transition: .25s;
+                    }
+
+                    &.currentFrame h5 {
+                        opacity: 0.3;
+                    }
+
+                    &.currentFrame .naviIcon {
+                        // $color1 : #7B46C7;
+                        background-color: #7c46c736 !important;
+                        color: $color1 !important;
+                        // opacity: 0.8;
+                        backdrop-filter: blur(20px)
+                    }
+
+                    .naviIcon {
+                        @include all-center();
+                        height: 3rem;
+                        border-radius: 50%;
+                        aspect-ratio: 1/1;
+                        background-color: $color1;
+                        margin-bottom: 0.1rem;
+                        font-size: 1.1rem;
+                    }
+
+                    h5 {
+                        color: $black;
+                    }
+                }
+            }
+
+
+            .line {
+                height: 0.8px;
+                width: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                margin: 2rem 0;
+            }
+
+            .fillInData {
+                @include all-center();
+                flex-direction: column;
+                margin-bottom: 2rem;
+
+
+                .fillInPhoto {
+                    width: 100%;
+
+                    .fillInTitle {
+                        h4 {
+                            color: rgba(25, 25, 25, 0.88);
+                            font-size: 1.25rem;
+                        }
+
+                        h5 {
+                            color: rgba(25, 25, 25, 0.5);
+                        }
+
+                        margin-bottom: 1rem;
+
+                    }
+
+                    .fillInput {
+                        position: relative;
+                        overflow: hidden;
+
+                        .uploadbg {
+                            &.hide {
+                                opacity: 0;
+                                pointer-events: none;
+                            }
+
+                            @include all-center();
+                            position: absolute;
+                            height: 100%;
+                            width: 100%;
+                            background-color: #7c46c79b;
+                            backdrop-filter: blur(10px);
+                            z-index: 5;
+
+                            h4 {
+                                color: white;
+                            }
+                        }
+
+                        @include all-center();
+                        flex-direction: column;
+                        width: 100%;
+                        background-color: white;
+                        border: 1px solid rgba(0, 0, 0, 0.35);
+                        border-radius: 25px;
+                        padding: 2rem 1rem;
+                        transition: .25s;
+                        cursor: pointer;
+                        box-sizing: border-box;
+
+                        &:hover {
+                            opacity: 0.8;
+                        }
+
+                        .fillIcon {
+                            @include all-center();
+                            height: 3.2rem;
+                            aspect-ratio: 1/1;
+                            border-radius: 50%;
+                            background-color: #7c46c742;
+                            color: $color1;
+                            font-size: 1.25rem;
+                            backdrop-filter: blur(10px);
+                            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+                            margin-bottom: 0.5rem;
+                            // box-shadow: rgba(100, 100, 111, 0.1) 0px 7px 29px 0px;
+                        }
+
+                        h4 {
+                            color: $black;
+                            font-weight: normal;
+
+                            span {
+                                transition: .25s;
+                                color: $color1;
+                                cursor: pointer;
+
+                                &:hover {
+                                    opacity: 0.7;
+                                }
+                            }
+                        }
+
+                        h5 {
+                            color: $black;
+                            font-weight: normal;
+                        }
+                    }
+                }
+
+                .fillInTestData,
+                .fillInStudentData {
+                    @include all-center();
+                    flex-direction: column;
+                    width: 100%;
+
+                    .inputColumn {
+                        position: relative;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        width: 100%;
+                        margin: 0.5rem 0;
+
+                        .inputItem {
+                            position: relative;
+                            display: flex;
+                            align-items: start;
+                            justify-content: center;
+                            flex-direction: column;
+                            gap: 0.5rem;
+                            width: 100%;
+
+                            .inputName {
+                                color: rgba(25, 25, 25, 0.8);
+                                font-size: 1rem;
+                            }
+
+                            .copyBtn {
+                                padding: 0.25rem 0.8rem;
+                                background-color: $color1;
+                                color: white;
+                                margin-left: 1.2rem;
+                                font-size: 0.8rem;
+                                border-radius: 5px;
+                                transition: .25s;
+                                box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+                                cursor: pointer;
+
+                                &:hover {
+                                    background-color: white;
+                                    color: $color1;
+                                }
+                            }
+
+                            &.triple input {
+                                width: 8rem;
+                            }
+
+                            &.split input {
+                                padding: 0.25rem 0 0.25rem 1rem;
+                                border-radius: 8px;
+                                width: 14rem;
+                                background-color: white;
+                                border: 1px solid rgba(0, 0, 0, 0.23);
+
+                            }
+
+                            .css-13cymwt-control {
+                                
+                                * {
+                                    padding: 0;
+                                }
+
+                                min-height: unset !important;
+
+                                width: 100%;
+                                font-size: 0.9rem;
+                                border-radius: 8px;
+                            }
+                            .selectClass {
+                                * {
+                                    padding: 0;
+                                }
+                                width: 95%;
+                                border-radius: 8px;
+                                font-size: 0.9rem;
+                                color: #252525;
+                            }
+
+                            input {
+                                padding: 0.25rem 1rem;
+                                border-radius: 8px;
+                                width: 90%;
+                                background-color: white;
+                                color: $black;
+                                border: 1px solid rgba(0, 0, 0, 0.23);
+
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            .functionBtnContainer {
+                display: flex;
+                align-items: center;
+                justify-content: end;
+                gap: 1rem;
+
+
+                .functionBtn {
+                    &:nth-child(2) {
+                        background-color: $color1;
+                        color: white;
+                    }
+
+                    // $color1 : #7B46C7;
+                    &:hover {
+                        background-color: white;
+                        color: $color1;
+                        opacity: 0.8;
+                    }
+
+                    // &:hover{
+                    //     background-color: $color1;
+                    //     color: white;
+                    // }
+                    cursor: pointer;
+                    transition: .25s;
+                    // background-color: rgba(255, 255, 255, 0.2);
+                    background-color: #7c46c74e;
+                    color: $color1;
+                    padding: 0.5rem 2rem;
+                    font-size: 1.05rem;
+                    border-radius: 12px;
+                    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.25)
+                }
+            }
+
+        }
+
+    }
+
+
+    .editFrameContainer {
+        @include all-center();
+        flex-direction: column;
+        position: absolute;
+        height: 100vh;
+        width: 100%;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        transition: .25s;
+        z-index: 999;
+
+
+        .editFrame {
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 1.5rem 6rem;
+            border-radius: 15px;
+
+
+            .editTextsContainer {
+                color: $black;
+                text-align: left;
+
+                h2 {
+                    font-size: 1.8rem;
+                }
+
+                h5 {
+                    margin: 0.5rem 0;
+                    font-size: 1rem;
+                }
+
+            }
+
+            .line {
+                height: 1px;
+                width: 100%;
+                background-color: rgba(0, 0, 0, 0.3);
+                border-radius: 25px;
+                margin: 1.2rem 0 0.2rem 0;
+            }
+
+            .editContent {
+                @include all-center();
+                margin: 1rem 0 2rem 0;
+                gap: 3rem;
+
+                .editPhotoContainer {
+                    @include all-center();
+                    flex-direction: column;
+
+                    .editPhoto {
+                        @include all-center();
+                        height: 8rem;
+                        aspect-ratio: 1/1;
+                        border-radius: 15px;
+
+                        box-shadow: $bxShadow;
+                        font-size: 3rem;
+                        color: $color1;
+
+                        img {
+                            height: 7rem;
+                            max-height: 7rem;
+                            aspect-ratio: 2/3;
+                            object-fit: contain;
+                        }
+
+                        background-color: rgba(255, 255, 255, 0.629);
+                    }
+
+                    .editPhotoName {
+                        @include all-center();
+                        color: $black;
+                        gap: 0.5rem;
+                        margin-top: 0.5rem;
+
+                        h4 {
+                            vertical-align: text-top;
+                            font-weight: 300
+                        }
+
+                        .editIcon {
+                            @include all-center();
+                            height: 1.5rem;
+                            font-size: 0.8rem;
+                            aspect-ratio: 1/1;
+                            border-radius: 50%;
+                            background-color: $color1;
+                            color: white;
+                            transform: translate(0, 0.2rem);
+                            transition: .25s;
+                            box-shadow: $bxShadow;
+                            cursor: pointer;
+
+                            &:hover {
+                                background-color: white;
+                                color: $color1;
+                            }
+                        }
+                    }
+                }
+
+                .editFilesContainer {
+
+                    // margin: 1rem 2rem;
+                    .editFile {
+                        display: flex;
+                        justify-content: start;
+                        align-items: center;
+                        background-color: rgba(255, 255, 255, 0.65);
+                        padding: 0.5rem 1rem;
+
+                        border-radius: 12px;
+                        margin: 1rem 0;
+                        box-shadow: $bxShadow;
+
+                        min-height: 3rem;
+
+                        .editIcon {
+                            @include all-center();
+                            height: 2rem;
+                            aspect-ratio: 1/1;
+                            border-radius: 14px;
+                            background-color: #7c46c755;
+                            color: $color1;
+
+                        }
+
+                        .editFileTexts {
+                            margin: 0 2rem 0 1rem;
+                            color: $black;
+
+                            input {
+
+                                background-color: transparent;
+                                // border: none;
+                                max-width: 4rem;
+                                font-size: 0.9rem;
+                                font-family: notos;
+                                border: 1px solid rgba(0, 0, 0, 0.2);
+                                opacity: 0.6;
+                                color: $black;
+
+                            }
+
+                            h3,
+                            h4 {
+                                padding: 0;
+                                margin: 0;
+                            }
+
+                            h3 {
+                                font-size: 1rem;
+                            }
+
+                            h4 {
+                                font-size: 0.9rem;
+                                opacity: 0.6;
+                            }
+                        }
+
+                        .editControl {
+                            display: flex;
+                            align-items: center;
+                            gap: 0.8rem;
+
+                            .icon {
+                                @include all-center();
+                                height: 2rem;
+                                font-size: 0.8rem;
+                                aspect-ratio: 1/1;
+                                background-color: $color1;
+                                border-radius: 50%;
+                                color: white;
+                                transition: .25s;
+                                cursor: pointer;
+
+                                &:hover {
+                                    background-color: white;
+                                    color: $color1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            .editClsContainer {
+                @include all-center();
+                gap: 2rem;
+
+                .editCls {
+                    padding: 0.5rem 2rem;
+                    background-color: white;
+                    border-radius: 15px;
+                    box-shadow: $bxShadow;
+                    color: $black;
+                    cursor: pointer;
+                    transition: .25s;
+
+                    &:hover {
+                        opacity: 0.7;
+                    }
+
+                    &:nth-child(2) {
+                        background-color: $color1;
+                        color: white;
+                    }
+                }
+            }
+
+        }
+
+
+    }
+
+    .alertFrameContainer {
+        @include all-center();
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        width: 100%;
+        z-index: 9999;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        transition: .25s;
+        &.sucessFrame{
+            .alertFrame {
+                padding: 1rem 8rem 2rem 8rem;
+            }
+             .alert_icon {
+                color: rgb(40, 225, 36) !important;
+            }
+        }
+        &.repeat {
+            .alertFrame {
+                padding: 1rem 4rem 2rem 4rem;
+            }
+
+            .alert_icon {
+                color: rgb(236, 57, 29) !important;
+            }
+
+            .alert_text {
+                h2 {
+                    font-size: 1.8rem !important;
+                    margin-bottom: 0.5rem;
+                }
+            }
+
+            .alert_option_button {
+                &:nth-child(2) {
+                    background-color: rgb(236, 57, 29) !important;
+
+                    &:hover {
+                        color: white !important;
+                    }
+                }
+            }
+        }
+
+        // upload
+        .uploadFrame {
+            background-color: rgba(255, 255, 255, 0.724);
+            backdrop-filter: blur(5px);
+            width: 25rem;
+            padding: 1.5rem 2.5rem;
+            border-radius: 15px;
+
+            .uploadFrameText {
+                color: $black;
+                text-align: left;
+
+                h2 {
+                    font-size: 1.6rem;
+                }
+
+                h5 {
+                    margin: 0.5rem 0;
+                    font-size: 1rem;
+                }
+            }
+
+            .line {
+                height: 0.8px;
+                border-radius: 10px;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.3);
+                margin: 1.2rem 0;
+            }
+
+            .uploadColumn {
+                display: flex;
+                flex-direction: column;
+                align-items: start;
+                justify-content: center;
+                gap: 0.6rem;
+                margin: 1.5rem 0 2rem 0;
+
+                .uploadInput {
+                    position: relative;
+                    overflow: hidden;
+
+                    .uploadbg {
+                        &.hide {
+                            opacity: 0;
+                            pointer-events: none;
+                        }
+
+                        @include all-center();
+                        position: absolute;
+                        height: 100%;
+                        width: 100%;
+                        background-color: #7c46c79b;
+                        backdrop-filter: blur(10px);
+                        z-index: 2;
+
+                        h4 {
+                            color: white;
+                        }
+                    }
+
+                    @include all-center();
+                    flex-direction: column;
+                    width: 100%;
+                    background-color: white;
+                    border: 1px solid rgba(0, 0, 0, 0.35);
+                    border-radius: 25px;
+                    padding: 2rem 1rem;
+                    transition: .25s;
+                    cursor: pointer;
+                    box-sizing: border-box;
+
+                    &:hover {
+                        opacity: 0.8;
+                    }
+
+                    .uploadIcon {
+                        @include all-center();
+                        height: 3.2rem;
+                        aspect-ratio: 1/1;
+                        border-radius: 50%;
+                        background-color: #7c46c742;
+                        color: $color1;
+                        font-size: 1.25rem;
+                        backdrop-filter: blur(10px);
+                        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+                        margin-bottom: 0.5rem;
+                        // box-shadow: rgba(100, 100, 111, 0.1) 0px 7px 29px 0px;
+                    }
+
+                    h4 {
+                        color: $black;
+                        font-weight: normal;
+
+                        span {
+                            transition: .25s;
+                            color: $color1;
+                            cursor: pointer;
+
+                            &:hover {
+                                opacity: 0.7;
+                            }
+                        }
+                    }
+
+                    h5 {
+                        color: $black;
+                        font-weight: normal;
+                    }
+                }
+
+                h3 {
+                    color: $black;
+                }
+
+                input {
+                    background-color: white;
+                    border: 1px solid rgba(0, 0, 0, 0.35);
+                    width: 100%;
+                    padding: 0.6rem 1.5rem;
+                    color: $black;
+                    font-size: 1rem;
+                    border-radius: 25px;
+                    box-sizing: border-box;
+                }
+            }
+
+            .uploadButtonContainer {
+                @include all-center();
+                gap: 1rem;
+
+                .uploadButton {
+                    padding: 0.5rem 2rem;
+                    background-color: white;
+                    color: $black;
+                    border-radius: 25px;
+                    box-shadow: rgba(100, 100, 111, 0.5) 0px 7px 29px 0px;
+                    transition: .25s;
+                    cursor: pointer;
+
+                    &:hover {
+                        opacity: 0.6;
+                    }
+
+                    &:nth-child(2) {
+                        background-color: $color1;
+                        color: white;
+                    }
+                }
+            }
+        }
+
+        // alert 
+        .alertFrame {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 1rem 6rem 2rem 6rem;
+            border-radius: 15px;
+            backdrop-filter: blur(15px);
+            box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
+
+            .alert_icon {
+                font-size: 5rem;
+                color: $color1;
+                // filter: drop-shadow(2px 2px 10px rgba(255, 255, 255, 0.194));
+            }
+
+            .alert_text {
+                margin-bottom: 1.25rem;
+
+                h2 {
+                    font-size: 2rem;
+                }
+
+                h4 {
+                    font-size: 1.25rem;
+                }
+            }
+
+            .alert_option {
+                @include all-center();
+                gap: 1rem;
+
+                .alert_option_button {
+                    &:nth-child(2) {
+                        background-color: $color1;
+                    }
+
+                    &:hover {
+                        background-color: white;
+                        color: $color1;
+                        opacity: 0.8;
+                    }
+
+                    // &:hover{
+                    //     background-color: $color1;
+                    //     color: white;
+                    // }
+                    cursor: pointer;
+                    transition: .25s;
+                    background-color: rgba(255, 255, 255, 0.2);
+                    padding: 0.5rem 2rem;
+                    font-size: 1.05rem;
+                    border-radius: 25px;
+                }
+            }
+        }
+    }
+
+    .innerContainer {
+        @include all-center();
+        flex-direction: column;
+        height: 100%;
+        gap: 0.5rem;
+
+        .navbarContainer {
+            @include layerDeco();
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 1.5rem 2.5rem;
+            box-sizing: border-box;
+
+            // margin-bottom: 2rem;
+            .navbarLogo {
+                display: flex;
+                align-items: center;
+
+                .icon {
+                    @include all-center();
+                    background-color: $color1;
+                    height: 2rem;
+                    padding: 0.5rem;
+                    aspect-ratio: 1/1;
+                    border-radius: 12px;
+                    font-size: 1.5rem;
+                    margin-right: 1rem;
+                }
+
+                .text {
+                    font-size: 2rem;
+                    font-weight: bold;
+                    color: $black;
+                }
+            }
+
+            .navbarButton {
+                &:hover {
+                    background-color: white;
+                    color: $color1;
+                    opacity: 0.7;
+                }
+
+                @include all-center();
+                padding: 0.5rem 1.5rem;
+                border-radius: 15px;
+                background-color: $color1;
+                transition: .25s;
+                border: none;
+
+                .icon {
+                    font-size: 1.5rem;
+                    margin-right: 0.65rem;
+                }
+
+                .text {
+                    font-size: 1.25rem;
+                }
+            }
+        }
+
+        .bottomContainer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            gap: 1.8rem;
+
+            .leftSideContainer {
+                @include all-center();
+                // flex-direction: column;
+                width: $bottomWidth;
+                height: 95%;
+                box-sizing: border-box;
+
+                // gap: 1.5rem;
+                .selectionComponent {
+                    @include all-center();
+                    @include layerDeco();
+                    flex-shrink: 2;
+                    flex-direction: column;
+                    height: 100%;
+                    width: 100%;
+                    padding: 2rem;
+                    box-sizing: border-box;
+                    // margin-bottom: 1rem;
+                    display: flex;
+                    flex-direction: column;
+
+                    .itemContainer {
+                        @include all-center();
+                        flex-direction: column;
+                        // flex:6;
+
+                    }
+
+                    .item {
+                        @include all-center();
+                        transition: .25s;
+                        margin: 1.5rem 0;
+                        cursor: pointer;
+
+                        &:hover h4 {
+                            color: $color1;
+                            opacity: 0.8;
+                        }
+
+                        .decoration {
+                            @include all-center();
+                            height: 2rem;
+                            aspect-ratio: 1/1;
+                            background-color: #7c46c75e;
+                            color: $color1;
+                            border-radius: 50%;
+                            margin-right: 0.8rem;
+                        }
+
+                        h4 {
+                            font-size: 1.5rem;
+                            font-weight: bold;
+                            text-align: center;
+                            color: $black;
+                            text-shadow: $txShadow;
+                            transition: .25s;
+                        }
+                    }
+
+                    .line {
+                        height: 1.5px;
+                        width: 8rem;
+                        background-color: $black;
+                        opacity: 0.2;
+                        border-radius: 15px;
+                        margin: 1rem 0;
+                    }
+
+                    .settingContainer {
+                        display: flex;
+                        // flex :4;
+                        align-items: end;
+                    }
+
+                }
+
+                // .functionComponent{
+
+                //     @include all-center();
+                //     @include layerDeco();
+                //     height: 25%;
+                //     width: 100%;
+                //     gap: 2rem;
+                //     .icon{
+                //         @include all-center();
+                //         background-color: rgba(255,255,255,0.4);
+                //         border-radius: 15px;
+                //         box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+                //         height: 4rem;
+                //         aspect-ratio: 1/1;
+                //         color: $black;
+                //         font-size: 1.5rem;
+
+                //     }
+
+                // }
+            }
+
+            .rightSideContainer {
+                @include all-center();
+                @include layerDeco();
+                width: calc(98% - $bottomWidth);
+                height: 95%;
+                max-height: 95%;
+                border-radius: 15px;
+                padding: 2.5rem 3rem;
+                background-color: rgba(255, 255, 255, 0.6);
+                box-sizing: border-box;
+
+                //  
+
+
+                .dataTableContainer {
+
+                    display: flex;
+                    flex-direction: column;
+                    width: 100%;
+                    // max-height: 30rem;
+                    height: 100%;
+                    box-sizing: border-box;
+
+                    .navigation {
+                        @media (max-width:map-get($breakpoints, "widescreen")) {
+                            margin-bottom: 1.5rem;
+                        }
+
+                        @media (max-width:map-get($breakpoints, "desktop")) {
+                            margin-bottom: 1rem;
+                        }
+
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        margin-bottom: 1rem;
+
+
+                        // .searchInput {
+                        //     padding: 0.5rem 1rem;
+                        //     width: 60%;
+                        //     background-color: rgba(255,255,255,0.5);
+                        //     border: none;
+                        //     border-radius: 25px;
+                        // }
+
+
+                        .navigationItem {
+                            display: flex;
+                            align-items: center;
+                            font-size: 1.25rem;
+                            gap: 0.5rem;
+
+                            .backlast {
+                                padding: 0.5rem 1rem;
+                                border-radius: 10px;
+                                background-color: $color1;
+                                color: white;
+                                margin-right: 1.5rem;
+                                letter-spacing: 1px;
+                                font-size: 1.15rem;
+                                transition: .25s;
+                                cursor: pointer;
+
+                                &:hover {
+                                    background-color: white;
+                                    color: $color1;
+                                }
+                            }
+
+                            .icon {
+                                @include all-center();
+                                height: 2.25rem;
+                                aspect-ratio: 1/1;
+                                border-radius: 50%;
+                                background-color: $color1;
+                                color: white;
+                                font-size: 0.9rem;
+                                margin-right: 0.5rem;
+                            }
+
+                            h2 {
+                                color: $black;
+                            }
+
+                            h4 {
+                                font-size: 1.5rem;
+                                color: $black;
+                                text-align: left;
+                                // text-indent: 1rem;
+                            }
+                        }
+
+                        .searchBarContainer {
+                            display: flex;
+                            align-items: center;
+                            // width: 60%;
+                            gap: 1rem;
+
+                            .totalRows {
+                                font-family: notos;
+                                color: $black;
+                                font-size: 1.15rem;
+                                letter-spacing: -1px;
+
+                                .addNewItem {
+                                    padding: 0.5rem 1rem;
+                                    border-radius: 10px;
+                                    background-color: $color1;
+                                    color: white;
+                                    // margin-right: 1.5rem;
+                                    letter-spacing: 1px;
+                                    white-space: nowrap;
+                                    font-size: 1.15rem;
+                                    transition: 0.25s;
+                                    cursor: pointer;
+
+                                    &:hover {
+                                        background-color: white;
+                                        color: $color1;
+                                    }
+                                }
+
+                                span {
+                                    opacity: 0.6;
+                                }
+                            }
+
+
+                            .searchBar {
+                                // width: fit-content;
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                padding: 0.25rem 0.5rem 0.25rem 2rem;
+                                background-color: rgba(255, 255, 255, 0.5);
+                                border-radius: 25px;
+
+                                // background-color: green;
+                                input {
+                                    font-family: Notos;
+                                    text-indent: 1rem;
+                                    flex: 0.9;
+                                    // flex: 1 1 ;
+                                    // width: calc(100% - 1rem);
+                                    // wid
+                                    color: $black;
+                                    font-size: 1.125rem;
+                                    background: transparent;
+                                    border: none;
+
+                                    &::placeholder {
+                                        color: rgba(0, 0, 0, 0.5)
+                                    }
+                                }
+
+                                .mag-icon {
+                                    @include all-center();
+                                    height: 2.5rem;
+                                    aspect-ratio: 1/1;
+                                    border-radius: 50%;
+                                    background-color: $color1;
+                                    box-shadow: rgba(14, 30, 37, 0.02) 0px 2px 4px 0px, rgba(14, 30, 37, 0.12) 0px 2px 16px 0px;
+                                    transition: .25s;
+                                    cursor: pointer;
+
+                                    &:hover {
+                                        opacity: 0.6;
+                                    }
+
+                                    &:active {
+                                        scale: 0.9;
+                                    }
+                                }
+                            }
+
+                        }
+
+                        .dataButtonContainer {
+                            display: flex;
+                            align-items: center;
+                            justify-content: end;
+                            width: 100%;
+                            margin-top: 1rem;
+
+                            .dataButton {
+                                padding: 0.8rem 2.5rem;
+                                background-color: $color1;
+                                font-size: 1.05rem;
+                                margin: 0 1rem;
+                                box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+                                border: none;
+                                transition: .25s;
+
+                                &:hover {
+                                    background-color: white;
+                                    color: $color1;
+                                }
+                            }
+                        }
+
+
+                    }
+
+                    .tableSwiperContainer {
+                        @media (max-width:map-get($breakpoints, "widescreen")) {
+                            height: auto;
+                            max-height: 38rem;
+
+                        }
+
+                        width: 100%;
+                        transition: .25s;
+                        // max-height: 30rem;
+                        // height: 100%;
+                        box-sizing: border-box;
+                        scroll-behavior: smooth;
+                    }
+                }
+
+                // 
+                .registerContainer {
+                    flex: 1;
+                    min-width: 0;
+                    display: flex;
+                    flex-direction: column;
+
+                    // width: 100%;
+                    // display: flex;
+                    // flex-direction:column;
+                    // align-items: start;
+                    h2 {
+                        text-align: left;
+                        color: $black;
+                        font-size: 2.25rem;
+                        text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+                    }
+
+                    .swiper-wrap-container {
+                        flex: 1;
+                        min-width: 0;
+                    }
+
+                    .progressionContainer {
+                        @media (max-width:map-get($breakpoints, "widescreen")) {
+                            margin: 2rem 0 1rem 0;
+                        }
+
+                        // @media (max-width:map-get($breakpoints, "desktop")) {
+                        //     margin: 1rem 0 0.5rem 0;
+                        // }
+
+                        @include all-center();
+                        width: 100%;
+                        gap: 1.2rem;
+                        margin: 2rem 0 1rem 0;
+
+                        .progression {
+                            width: 95%;
+                            height: 10px;
+                            border-radius: 20px;
+                            background-color: rgba(173, 168, 168, 0.1);
+                            backdrop-filter: blur(10px);
+                            overflow: hidden;
+                            box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+
+                            .progression_percent {
+                                height: inherit;
+                                // width: 25%;
+                                border-radius: 20px;
+                                transition: .25s;
+                                // background-color: $color1;
+                                background: linear-gradient(125deg, rgb(173, 113, 226) 0%, rgb(134, 80, 201) 40%, rgb(149, 59, 194) 80%, rgba(123, 70, 199, 1) 100%);
+                            }
+                        }
+
+                        h5 {
+                            font-size: 1.25rem;
+                            color: $black;
+                            text-shadow: $txShadow;
+                        }
+                    }
+
+                    .line {
+                        width: 100%;
+                        height: 1.5px;
+                        background-color: rgba(255, 255, 255, 0.25);
+                        margin: 1rem 0 1rem 0;
+
+                        @media (max-width:map-get($breakpoints, "widescreen")) {
+                            margin: 2rem 0;
+                        }
+
+                        @media (max-width:map-get($breakpoints, "desktop")) {
+                            margin: 1rem 0;
+                        }
+                    }
+
+                    .submitDiv {
+                        display: flex;
+                        width: 100%;
+                        justify-content: end;
+
+                        .carouselIconContainer {
+                            // position: absolute ;
+                            display: flex;
+                            justify-content: center;
+                            width: 100%;
+                            left: 0;
+                            gap: 1.5rem;
+
+                            .carouselIcon {
+
+                                @include all-center();
+                                font-size: 1.25rem;
+                                user-select: none;
+                                height: 3rem;
+                                aspect-ratio: 1/1;
+                                background-color: $color1;
+                                color: white;
+                                border-radius: 50%;
+                                box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+                                transition: .25s;
+                                cursor: pointer;
+
+                                &:hover {
+                                    background-color: white;
+                                    color: $color1;
+                                }
+                            }
+                        }
+
+                        .registerSubmit {
+                            // position: absolute;
+                            // margin-left: auto;
+                            // right: 0;
+                            border: none;
+                            // margin-top: 2rem;
+                            background-color: $color1;
+                            color: white;
+                            transition: .25s;
+                            font-size: 1.15rem;
+                            padding: 0.65rem 1.5rem;
+                            border-radius: 10px;
+                            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+
+                            &:hover {
+                                background-color: white;
+                                color: $color1;
+                                opacity: 0.6;
+                            }
+                        }
+                    }
+
+                    // carousels
+                    .card_container {
+                        @media (max-width:map-get($breakpoints, "widescreen")) {
+                            min-height: 22rem;
+                            padding: 1rem;
+                        }
+
+                        @media (max-width:map-get($breakpoints, "desktop")) {
+                            min-height: 22rem;
+                            padding: 0.9rem;
+                        }
+
+                        &.done {
+                            background-color: $color1 ;
+
+                            .card_bottom :not(.card_status):not(.card_status *) {
+                                color: white;
+                            }
+
+                            .card_top_icon {
+                                background-color: rgba(255, 255, 255, 0.496);
+                            }
+
+
+                        }
+
+                        // 55 / 45
+                        display: flex;
+                        align-items: center;
+                        flex-direction: column;
+                        // height: 22rem;
+                        // aspect-ratio: 0.55/0.65;
+                        border-radius: 18px;
+                        background-color: rgba(255, 255, 255, 0.6);
+                        padding: 0.9rem;
+                        box-sizing: border-box;
+                        transition: .25s;
+                        cursor: pointer;
+                        box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
+                        rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+
+                        & * {
+                            transition: .25s;
+                        }
+
+                        &:hover {
+                            background-color: $color1;
+                            opacity: 0.8;
+                        }
+
+                        &:hover .card_top_icon {
+                            background-color: rgba(255, 255, 255, 0.496);
+                            // color: white;
+                        }
+
+                        &:hover .card_bottom :not(.card_status):not(.card_status *) {
+                            color: white;
+                        }
+
+                        .card_top_icon {
+                            @include all-center();
+                            width: 100%;
+                            height: 10rem;
+                            border-radius: 20px;
+                            background-color: #7c46c766;
+                            color: $color1;
+                            font-size: 5rem;
+                            margin-bottom: 1rem;
+                        }
+
+                        .card_bottom {
+                            @include all-center();
+                            flex-direction: column;
+
+                            // gap: 1rem;
+                            .card_text {
+                                margin: 0 0 1rem 0.5rem;
+
+                                h3,
+                                p {
+                                    text-align: left;
+                                    vertical-align: middle;
+                                    color: #0f0f0f;
+                                    margin: 0;
+                                }
+
+                                h3 {
+                                    font-size: 1.45rem;
+                                }
+
+                                .num_dec_container {
+                                    display: flex;
+                                    align-items: center;
+                                    margin-bottom: 0.65rem;
+
+                                    .num_dec {
+                                        @include all-center();
+                                        height: 1.5rem;
+                                        font-size: 1rem;
+                                        background-color: $color1;
+                                        border-radius: 50%;
+                                        color: white;
+                                        aspect-ratio: 1/1;
+                                        margin-right: 0.5rem;
+                                    }
+                                }
+                            }
+
+                            .card_status {
+                                padding: 0.25rem 1rem;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                align-self: flex-end;
+                                background-color: #16a548a8;
+                                // backdrop-filter: blur(20px);
+                                border-radius: 15px;
+
+                                &.false {
+                                    background-color: $color1 !important;
+                                    color: white
+                                }
+
+                                &.false .icon {
+                                    color: #7B46C7;
+                                }
+
+                                .icon {
+                                    @include all-center();
+                                    height: 1rem;
+                                    padding: 0.1rem;
+                                    aspect-ratio: 1/1;
+                                    border-radius: 50%;
+                                    font-size: 1rem;
+                                    background-color: white;
+                                    color: #16A549;
+                                    margin-right: 0.4rem;
+                                }
+
+                                .text {
+                                    margin: 0;
+                                    padding: 0;
+                                    text-align: center;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                .codeSearchContainer {
+                    @include all-center();
+                }
+            }
+
+        }
+
+    }
+
+    .viewDataToggler {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        background: #0f0f0fc5;
+        backdrop-filter: blur(20px);
+        transition: .25s;
+
+        .closeBtn {
+            position: absolute;
+            right: 4%;
+            top: 3%;
+            font-size: 1.52rem;
+            cursor: pointer;
+            transition: .25s;
+
+            &:hover {
+                opacity: 0.5;
+            }
+        }
+
+        &.hidden {
+            background: none;
+            user-select: none;
+            pointer-events: none;
+            backdrop-filter: blur(0);
+            opacity: 0;
+
+        }
+    }
+
+}
+
+.wrap-table {
+
+    flex: 1;
+    min-width: 0;
+}
+
+.swiper-wrapper {
+    padding: 1rem 0rem;
+    
+}
+
+.swiper-pagination {
+    transform: translate(0, 50%) !important;
+}
+
+.swiper-pagination-bullet-active {
+    background-color: $color1 !important;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}

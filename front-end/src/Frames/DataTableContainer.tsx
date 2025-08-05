@@ -95,7 +95,7 @@ const DataTableContainer = ({ deleteEditData, setEditViewData, setDoubleCheck, s
                 "Content-Type": "application/json",
             })
 
-            const fetchData = await fetch(URL, { headers: headers, method: "POST", body: JSON.stringify(userInfo) });
+            const fetchData = await fetch(URL, { headers: headers, method: "POST", body: JSON.stringify(userInfo) , credentials:'include' });
             const getData = await fetchData.json();
             setData(getData);
             setLoadingState(true);
@@ -105,7 +105,7 @@ const DataTableContainer = ({ deleteEditData, setEditViewData, setDoubleCheck, s
 
             console.log("slkjf");
             console.log(getData[0][0]);
-            console.log("🚨 getData is", getData);
+            console.log("🚨 getData is", getData);ß
             console.log("🚨 getData[0] is", getData[0]);
             console.log("🚨 getData[0][0] is", getData[0][0]);
 

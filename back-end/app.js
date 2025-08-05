@@ -58,13 +58,6 @@ app.get('/cleanAllData', (req, res) => {
 
 app.post('/getfolder', multer().none(), (req, res) => {
   const userName = req.cookies.userName;
-<<<<<<< HEAD
-=======
-  // console.log("req",req);
-  console.log("body",req.body);
-  console.log("cookies",req.cookies);
-  
->>>>>>> 33f6014 (i gonna die)
   let fileList = []
   sequelize.sync().then(async () => {
     const files = await jsonFile.findAll({
@@ -82,7 +75,7 @@ app.post('/getfolder', multer().none(), (req, res) => {
 
 app.post('/getjsons' , multer().none(),async(req ,res)=>{
   let resultLst =[]
-  const userName = req.body.userName
+  const userName = req.cookies.userName
   const fileName  = req.body.fileName
 
   const fullTest = fs.readFileSync(`./user_data/${userName}/${fileName}/fullTest/fullTest.json`, 'utf-8')
@@ -101,7 +94,7 @@ app.post('/getjsons' , multer().none(),async(req ,res)=>{
     resultLst.push(element)
   });
   
-  res.json(resultLst).status(200)
+  res.status(200).json(resultLst)
 })
 
 // app.post('/createFolder', multer().none(), async (req, res) => {
@@ -414,92 +407,109 @@ app.get("/verifyData", (req, res) => {
 //   // if (!birthRegex.test(b))
 // }
 
-const editUpload = multer()
+// const editUpload = multer()
 
-app.post("/editFile" , editUpload.none() ,(req ,res) =>{
+app.post("/editFile", (req, res) => {
   console.log(req.body);
+  // console.log(req.body["status"])
   testTypeMap = {
-    "A" : "fullTest",
-    "B" : "studyTest",
-    "C" : "technicalTest"
+    "A": "fullTest",
+    "B": "studyTest",
+    "C": "technicalTest"
   }
-  const status = req.body.status; //req.body
-  const userName = req.body.userName; //req.body
-  const fileName = req.body.fileName; //req.body
-  const pigID = req.body.pigID;  //req.body
-  let testTypeCode = pigID.slice(0,1)
-  let testType = testTypeMap[pigID.slice(0,1)]
-  if (status ===  "insert"){
+  const status = req.body["status"]; //req.body
+  const userName = req.cookies.userName; //req.body
+  const fileName = req.body["fileName"]; //req.body
+  const pigID = req.body["pigID"];  //req.body
+  console.log(pigID)
+  let testTypeCode = pigID.slice(0, 1)
+  let testType = testTypeMap[pigID.slice(0, 1)]
+  if (status === "insert") {
     testTypeCode = req.body.insertType
     testType = testTypeMap[testTypeCode]
   }
   // const editIDX = Number(pigID.slice(1))-1
-  fs.readFile(`./user_data/${userName}/${fileName}/${testType}/${testType}.json` , 'utf8' , async(err , jsonList)=>{
-    if (err){
-      console.error( err)
+  fs.readFile(`./user_data/${userName}/${fileName}/${testType}/${testType}.json`, 'utf8', async (err, jsonList) => {
+    if (err) {
+      console.error(err)
     }
     loadJsonList = JSON.parse(jsonList)
-    switch (status){
-      case "edit" : 
-        await editJson()
-        res.send("done").status(200)
+    switch (status) {
+      case "edit":
+        try {
+          await editJson()
+          res.send("done").status(200)
+        } catch (err) {
+          console.log(err)
+          res.status(400).send('fail')
+        }
         break;
-      case "insert" : 
-        await insertJson()
-        res.send("done").status(200)
-        break
-      case "delete" :
-        await deleteJson()
-        res.send("done").status(200)
+      case "insert":
+        try {
+          await insertJson()
+          res.send("done").status(200)
+        } catch (err) {
+          console.log(err)
+          res.status(400).send("fail")
+        }
         break;
+      case "delete":
+        try {
+          await deleteJson()
+          res.send("done").status(200)
+        } catch (err) {
+          res.status(400).send("fail")
+        }
+        break;
+
     };
-    
-    function editJson(){
-      const editIDX = Number(pigID.slice(1))-1
-      const transferType  = req.body.transferType
-      const inserFile = [{ "准考證號碼": "7", "身分證號碼": "F203568912", "中文姓名": "王怡婷", "出生日期": "95072", "報簡職類": "行政助理", "英文姓名": "WANG,YI-TING", "檢定區別": "全測", "通訊地址": "新北市板橋區文化路二段", "戶籍地址": "新北市新莊區幸福街", "聯絡電話(住宅)": "0229634456", "聯絡電話(手機)": "0987654321", "就讀學校": "板橋高商", "就讀科系": "資料處理科", "上課別": "日間部", "年級": "2", "班級": "5", "座號": "7", "身分別": "無", "學制": "高級中學" }, { "pigID": "A00004", "comfirmStatus": false }]
-      
-      if (transferType === testTypeCode){
+
+    function editJson() {
+      const editIDX = Number(pigID.slice(1)) - 1
+      const transferType = req.body["transferType"]
+      const inserFile = req.body["inserFile"]
+
+      if (transferType === testTypeCode) {
         loadJsonList[editIDX] = inserFile
-      }else {
-        transferJson = loadJsonList.splice(editIDX,1)[0]
-        loadJsonList = checkID(loadJsonList,testTypeCode)
-        fs.readFile(`./user_data/${userName}/${fileName}/${testTypeMap[transferType]}/${testTypeMap[transferType]}.json` , "utf-8" , (err , transferLst)=>{
+      } else {
+        transferJson = loadJsonList.splice(editIDX, 1)[0]
+        loadJsonList = checkID(loadJsonList, testTypeCode)
+        fs.readFile(`./user_data/${userName}/${fileName}/${testTypeMap[transferType]}/${testTypeMap[transferType]}.json`, "utf-8", (err, transferLst) => {
           loadTransferLst = JSON.parse(transferLst)
           loadTransferLst.push(transferJson)
-          loadTransferLst = checkID(loadTransferLst , transferType)
-          saveChange(loadTransferLst , testTypeMap[transferType])
+          loadTransferLst = checkID(loadTransferLst, transferType)
+          saveChange(loadTransferLst, testTypeMap[transferType])
         })
       }
-      saveChange(loadJsonList , testType)
-    }
-
-    function insertJson(){
-      const insertFile =JSON.parse( req.body.insertFile)
-      loadJsonList.push(insertFile)
-      checkID(loadJsonList , testTypeCode)
-      saveChange(loadJsonList , testType)
-    }
-
-    function deleteJson(){
-      const editIDX = Number(pigID.slice(1))-1
-      loadJsonList.splice(editIDX,1)
-      checkID(loadJsonList , testTypeCode)
       saveChange(loadJsonList, testType)
     }
 
-    function checkID(lst , type){
-      lst.forEach((jsons , idx) => {
+    function insertJson() {
+      const insertFile = JSON.parse(req.body["insertFile"])
+      loadJsonList.push(insertFile)
+      checkID(loadJsonList, testTypeCode)
+      saveChange(loadJsonList, testType)
+    }
+
+    function deleteJson() {
+      const editIDX = Number(pigID.slice(1)) - 1
+      loadJsonList.splice(editIDX, 1)
+      checkID(loadJsonList, testTypeCode)
+      saveChange(loadJsonList, testType)
+    }
+
+    function checkID(lst, type) {
+      lst.forEach((jsons, idx) => {
         jsons[1]["pigID"] = type + String(idx + 1).padStart(5, '0');
       });
       return lst
     }
 
-    function saveChange(data , type){
-      fs.writeFile(`./user_data/${userName}/${fileName}/${type}/${type}.json`  , JSON.stringify(data, null, 2)  , (err) =>{
-        if (err){
+    function saveChange(data, type) {
+      fs.writeFile(`./user_data/${userName}/${fileName}/${type}/${type}.json`, JSON.stringify(data, null, 2), (err) => {
+        if (err) {
           console.error(err);
-        }else{
+        } else {
           console.log("file write success")
         }
       })
@@ -507,9 +517,29 @@ app.post("/editFile" , editUpload.none() ,(req ,res) =>{
   });
 })
 
+app.post('/comfirm' , (req, res)=>{
+  testTypeMap = {
+    "A": "fullTest",
+    "B": "studyTest",
+    "C": "technicalTest"
+  }
+  const userName = req.cookies.userName
+  const fileName = req.body.fileName
+  const pigID  = req.body.pigID
+  const insertFile = req.body.inserFile
+  let testTypeCode = pigID.slice(0, 1)
+  const testType = testTypeMap[testTypeCode]
+  fs.readFile(`./user_data/${userName}/${fileName}/${testType}/${testType}.json` , 'utf-8' , (err , loadData)=>{
+    const editIDX = Number(pigID.slice(1)) - 1
+    jsondatas  = JSON.parse(loadData)
+    jsondatas[editIDX] = insertFile
+    fs.writeFile(`./user_data/${userName}/${fileName}/${testType}/${testType}.json`  , JSON.stringify(jsondatas , null,2))
+  })
+})
+
 app.post('/getPdf' ,multer().none(), (req , res)=>{
   const fileName = req.body.fileName
-  const userName = req.body.userName
+  const userName = req.cookies.userName
   const pdfPath = path.join(__dirname , "user_data" , userName , fileName , 'combine.pdf')
   res.setHeader('Content-Type', 'application/pdf');
   res.sendFile(pdfPath);

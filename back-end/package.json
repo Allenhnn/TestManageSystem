@@ -2,8 +2,8 @@
   "name": "node",
   "version": "1.0.0",
   "main": "app.js",
-    "scripts": {
-    "test": "echo "Error: no test specified" && exit 1",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --watch app.js app.js",
     "start": "node app.js"
   },
@@ -25,6 +25,7 @@
     "mysql2": "^3.14.1",
     "nodemailer": "^7.0.3",
     "nodemon": "^3.1.10",
+    "package.json": "^0.0.0",
     "react": "^19.1.0",
     "sequelize": "^6.37.7",
     "sqlite3": "^5.1.7"

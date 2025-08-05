@@ -157,68 +157,58 @@ const RegisterFrame = () => {
        
     }
     const submitEditData = () => {
-        const formData = new FormData(); 
+        // const formData = new FormData();
         const insertFile = EditViewData?.insertFile;
         // const transferValue = 
-        switch(EditViewData.transferType){
+        switch (EditViewData.transferType) {
             case "全測":
-                setEditViewData(prev=>({
+                setEditViewData(prev => ({
                     ...prev,
-                    transferType : "A"
+                    transferType: "A"
                 }))
                 break;
             case "免學":
-                setEditViewData(prev=>({
+                setEditViewData(prev => ({
                     ...prev,
-                    transferType : "B"
+                    transferType: "B"
                 }))
                 break;
             case "免術":
-                setEditViewData(prev=>({
+                setEditViewData(prev => ({
                     ...prev,
-                    transferType : "C"
+                    transferType: "C"
                 }))
                 break;
             default:
                 console.warn("didnt get value");
-                
+
                 break;
 
         }
 
         if (Array.isArray(insertFile)) {
-            insertFile.forEach((item, index) => {
-                console.log(`第 ${index + 1} 筆 insertFile:`);
-                console.log(item);
-                if (!Array.isArray(insertFile)) {
-                    console.log("insertFile 不存在或不是陣列");
-                    return;
-                }
-
-                const hasEmptyField = insertFile.some((item) => {
-                    return Object.entries(item).some(([key, value]) => {
-                        return key !== "pigID" && key !== "confirmStatus" && value === "";
-                    });
+            const hasEmptyField = insertFile.some((item) => {
+                return Object.entries(item).some(([key, value]) => {
+                    return key !== "pigID" && key !== "confirmStatus" && value === "";
                 });
-
-                if (hasEmptyField) {
-                    setNonFillout(1);
-                    setAlertText("您尚有欄位未填寫完畢");
-                    return;
-                }
-
-                fetch("http://localhost:3000/editFile", {
-                    // headers: new Headers({
-
-                    // })
-                    method: "POST",
-                    credentials: "include",
-                    body: JSON.stringify(EditViewData)
-                })
-                    .then(res => setSucessFrame(1))
             });
-        } else {
-            console.log("insertFile 不存在或不是陣列");
+
+            if (hasEmptyField) {
+                setNonFillout(1);
+                setAlertText("您尚有欄位未填寫完畢");
+                return;
+            }
+
+            console.log(EditViewData);
+
+            fetch("http://localhost:3000/editFile", {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(EditViewData)
+            }).then(res => setSucessFrame(1));
         }
     };
 

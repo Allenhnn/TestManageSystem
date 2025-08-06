@@ -68,9 +68,9 @@ def getData(filePath,dataFrame , frameType , pigID):
         testNumber = idDataframe.loc[i , "流水號"] 
         identification = dataFrame.loc[i , '身分證號碼']
         chName = dataFrame.loc[i, '中文姓名']
-        birthYear = str(dataFrame.loc[i,'出生年'])
-        birthMounth = str(dataFrame.loc[i,'出生月'])
-        birthDay = str(dataFrame.loc[i, '出生日'])
+        birthYear = dataFrame.loc[i,'出生年']
+        birthMounth = dataFrame.loc[i,'出生月']
+        birthDay = dataFrame.loc[i, '出生日']
         testTypeLst = testTypeCode(filePath)    
         testTypeID = int(dataFrame.loc[i,"測驗類別"])
         testType = testTypeLst[testTypeID-1]
@@ -105,7 +105,7 @@ def getData(filePath,dataFrame , frameType , pigID):
             '准考證號碼':str(testNumber),
             '身分證號碼':str(identification),
             '中文姓名':str(chName),
-            '出生日期':birthYear + birthMounth + birthDay,  
+            '出生日期':f"{int(birthYear):03d}{int(birthMounth):02d}{int(birthDay):02d}",  
             '報簡職類':str(testSubject),
             '英文姓名':str(engName),
             '檢定區別':str(testType),
@@ -144,6 +144,7 @@ if __name__ == "__main__":
     getDataTable(filePath)
 
 # getDataTable("./back-end/convert_content/1.中壢高商(14901).xlsx")
+
 
 
 

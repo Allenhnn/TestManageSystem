@@ -9,6 +9,7 @@ const cors = require('cors');
 const fs = require('fs');
 const  cookieParser =  require("cookie-parser")
 const multer = require('multer');
+const { log } = require('console');
 
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser())
@@ -51,10 +52,8 @@ app.get('/cleanAllData', (req, res) => {
   });
 });
 
-// app.get('/autoset' , async(req,res) =>{
-//   const createOneAcc =await fetch('http://localhost:3000/createOneAcc')
-//   const upload = await fetch('http://localhost:3000/upload')
-// })
+
+
 
 app.post('/getfolder', multer().none(), (req, res) => {
   const userName = req.cookies.userName;
@@ -75,9 +74,11 @@ app.post('/getfolder', multer().none(), (req, res) => {
 
 app.post('/getjsons' , multer().none(),async(req ,res)=>{
   let resultLst =[]
-  const userName = req.cookies.userName
+  const userName = req.cookies.userName 
   const fileName  = req.body.fileName
-
+  console.log(userName);
+  console.log(fileName);
+  
   const fullTest = fs.readFileSync(`./user_data/${userName}/${fileName}/fullTest/fullTest.json`, 'utf-8')
   const studyTest = fs.readFileSync(`./user_data/${userName}/${fileName}/studyTest/studyTest.json`, 'utf-8')
   const technicalTest = fs.readFileSync(`./user_data/${userName}/${fileName}/technicalTest/technicalTest.json`, 'utf-8')
@@ -85,16 +86,30 @@ app.post('/getjsons' , multer().none(),async(req ,res)=>{
   const studyData = JSON.parse(studyTest)
   const tecData = JSON.parse(technicalTest)
   fullData.forEach((data) =>{
+    const birthYear = (Number(data[0]['出生日期'].slice(0,3))+1911).toString()
+    const birthDay = data[0]['出生日期'].slice(3)
+    data[0]['出生日期'] = birthYear + birthDay
+    console.log(data[0]['出生日期'])
     resultLst.push(data)
   })
   studyData.forEach(element => {
+    const birthYear = (Number(element[0]['出生日期'].slice(0,3))+1911).toString()
+    const birthDay = element[0]['出生日期'].slice(3)
+    element[0]['出生日期'] = birthYear + birthDay
     resultLst.push(element)
   });
   tecData.forEach(element => {
+    const birthYear = (Number(element[0]['出生日期'].slice(0,3))+1911).toString()
+    const birthDay = element[0]['出生日期'].slice(3,0)
+    element[0]['出生日期'] = birthYear + birthDay
     resultLst.push(element)
   });
-  
-  res.status(200).json(resultLst)
+  // console.log(resultLst)
+  res.cookie("fileName", fileName, {
+    httpOnly: false,
+    sameSite: "None",
+    secure: true
+  }).status(200).send("成功了!!")
 })
 
 // app.post('/createFolder', multer().none(), async (req, res) => {
@@ -186,19 +201,26 @@ const storage = multer.diskStorage({
     cb(null, folderPath)
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname )
+    const extName  = path.extname(file.originalname)
+    let uploadFileName = ""
+    if(extName === ".xlsx"){
+      uploadFileName = req.cookies.fileName + ".xlsx"
+    }else if(extName === ".jpg"){
+      uploadFileName = file.originalname
+    }
+    cb(null, uploadFileName )
   }
 })
 
 const upload = multer({ storage: storage })
-
-app.post('/upload', upload.fields([{ name:'excelFile' }, { name:'photoFile'}]) , async (req, res) => {  
+app.post('/upload',  upload.fields([{ name:'excelFile' }, { name:'photoFile'}]), async (req, res) => {  
+  console.log("reqBOdy:" , req.body)
   const userName = req.cookies.userName
-  const fileName = req.body.fileName
+  const fileName = req.cookies.fileName
   const excelFile = req.body.originalName
   const filePath = `./user_data/${userName}/${fileName}/${excelFile}.xlsx`
 
-  const py = await spawn('python', ['process.py', filePath, userName, fileName])
+  const py = await spawn('python3', ['process.py', filePath, userName, fileName])
   let outputData = ''
   py.stdout.on('data', (data) => {
     outputData += data.toString('utf-8')
@@ -353,7 +375,7 @@ app.get("/seeAllJson" , async(req,res)=>{
 
 app.post("/fillWd" , multer().none() ,async(req,res)=>{
   // const userName = "dexter" ;//req.body['username']
-  const userName = req.body.userName
+  const userName = req.cookies.userName
   const chooseFile = req.body.chooseFile
   // const chooseFile = "test-1" ;//req.body['test-1.json]
   // const filePath = path.join(__dirname  , "user_data" , userName , )
@@ -419,9 +441,8 @@ app.post("/editFile", (req, res) => {
   }
   const status = req.body["status"]; //req.body
   const userName = req.cookies.userName; //req.body
-  const fileName = req.body["fileName"]; //req.body
+  const fileName = req.cookies.fileName; //req.body
   const pigID = req.body["pigID"];  //req.body
-  console.log(pigID)
   let testTypeCode = pigID.slice(0, 1)
   let testType = testTypeMap[pigID.slice(0, 1)]
   if (status === "insert") {
@@ -456,6 +477,7 @@ app.post("/editFile", (req, res) => {
       case "delete":
         try {
           await deleteJson()
+          console.log(loadJsonList)
           res.send("done").status(200)
         } catch (err) {
           res.status(400).send("fail")
@@ -468,7 +490,9 @@ app.post("/editFile", (req, res) => {
       const editIDX = Number(pigID.slice(1)) - 1
       const transferType = req.body["transferType"]
       const inserFile = req.body["inserFile"]
-
+      const birthYear = String(Number(inserFile[0]['出生日期'].slice(0,3))-1911).padStart(3,"0")
+      const birthDay = inserFile[0]['出生日期'].slice(3)
+      inserFile[0]['出生日期'] = birthYear + birthDay
       if (transferType === testTypeCode) {
         loadJsonList[editIDX] = inserFile
       } else {
@@ -486,6 +510,9 @@ app.post("/editFile", (req, res) => {
 
     function insertJson() {
       const insertFile = JSON.parse(req.body["insertFile"])
+      const birthYear = String(Number(inserFile[0]['出生日期'].slice(0,3))-1911).padStart(3,'0')
+      const birthDay = inserFile[0]['出生日期'].slice(3)
+      inserFile[0]['出生日期'] = birthYear + birthDay
       loadJsonList.push(insertFile)
       checkID(loadJsonList, testTypeCode)
       saveChange(loadJsonList, testType)
@@ -517,7 +544,11 @@ app.post("/editFile", (req, res) => {
   });
 })
 
-app.post('/comfirm' , (req, res)=>{
+app.post('/insertPhoto' , upload.single("insertPhoto") , (req, res)=>{
+  res.status(200).send('success')
+})
+
+app.post('/confirm' , (req, res)=>{
   testTypeMap = {
     "A": "fullTest",
     "B": "studyTest",
@@ -526,13 +557,13 @@ app.post('/comfirm' , (req, res)=>{
   const userName = req.cookies.userName
   const fileName = req.body.fileName
   const pigID  = req.body.pigID
-  const insertFile = req.body.inserFile
+  // const insertFile = req.body.inserFile
   let testTypeCode = pigID.slice(0, 1)
   const testType = testTypeMap[testTypeCode]
   fs.readFile(`./user_data/${userName}/${fileName}/${testType}/${testType}.json` , 'utf-8' , (err , loadData)=>{
     const editIDX = Number(pigID.slice(1)) - 1
     jsondatas  = JSON.parse(loadData)
-    jsondatas[editIDX] = insertFile
+    jsondatas[editIDX][1]["confirmStatus"] = true
     fs.writeFile(`./user_data/${userName}/${fileName}/${testType}/${testType}.json`  , JSON.stringify(jsondatas , null,2))
   })
 })
@@ -543,6 +574,33 @@ app.post('/getPdf' ,multer().none(), (req , res)=>{
   const pdfPath = path.join(__dirname , "user_data" , userName , fileName , 'combine.pdf')
   res.setHeader('Content-Type', 'application/pdf');
   res.sendFile(pdfPath);
+})
+
+app.post('/confirmAll', multer().none(), (req, res) => {
+  const userName = req.cookies.userName
+  const fileName = req.body.fileName
+
+  const fullTest = fs.readFileSync(`./user_data/${userName}/${fileName}/fullTest/fullTest.json`)
+  const studyTest = fs.readFileSync(`./user_data/${userName}/${fileName}/studyTest/studyTest.json`)
+  const technicalTest = fs.readFileSync(`./user_data/${userName}/${fileName}/technicalTest/technicalTest.json`)
+
+  const fullTestJsons = writeList(JSON.parse(fullTest))
+  fs.writeFileSync(`./user_data/${userName}/${fileName}/fullTest/fullTest.json` , JSON.stringify(fullTestJsons , null ,2))
+  
+  const studyTestJsons = writeList(JSON.parse(studyTest))
+  fs.writeFileSync(`./user_data/${userName}/${fileName}/studyTest/studyTest.json` , JSON.stringify(studyTestJsons , null , 2))
+
+  const technicalTestJsons = writeList(JSON.parse(technicalTest))
+  fs.writeFileSync(`./user_data/${userName}/${fileName}/technicalTest/technicalTest.json` , JSON.stringify(technicalTestJsons , null,2))
+
+  function writeList(jsons){
+    jsons.forEach(json => {
+      json[1]["confirmStatus"] = true
+    });
+    return jsons
+  }
+
+  res.status(200).send('success')
 })
 
 app.listen(3000 , ()=>{

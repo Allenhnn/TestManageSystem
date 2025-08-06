@@ -15,7 +15,6 @@ import type { _ReloadStudentType } from "../types/_ReloadStudentType.ts";
 import type { _ReloadStudentTypeList } from "../types/_ReloadStudentType.ts";
 import type { _EditType } from "../types/_EditType.ts";
 
-
 type userInfoType = {
     userName: string,
     fileName: string
@@ -46,7 +45,7 @@ type InputProps = {
 const DataTableContainer = ({ setCurrentFolderName,deleteEditData, setEditViewData, setDoubleCheck, setEditFrameState, setViewFrameState, setLoadingState, modalShow, setModalShow, setFillInFrame }: InputProps) => {
 
     const [data, setData] = useState<_ReloadStudentType[]>([]);
-    const [userInfo, setUserInfo] = useState<userInfoType>({ "userName": "dexter", "fileName": "test-1" })
+    const [userInfo, setUserInfo] = useState<userInfoType>({ "userName": "dexter", "fileName":  "test-1"})
     // const [modalShow, setModalShow] = useState(0);
     const [currentTable, setCurrentTable] = useState<currentTableType>({ text: "報名資料", status: false });
     const [globalFilter, setGlobalFilter] = useState<string>("");
@@ -108,7 +107,7 @@ const DataTableContainer = ({ setCurrentFolderName,deleteEditData, setEditViewDa
 
             console.log("slkjf");
             console.log(getData[0][0]);
-            console.log("🚨 getData is", getData);ß
+            console.log("🚨 getData is", getData);
             console.log("🚨 getData[0] is", getData[0]);
             console.log("🚨 getData[0][0] is", getData[0][0]);
 

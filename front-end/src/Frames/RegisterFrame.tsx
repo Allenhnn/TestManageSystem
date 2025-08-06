@@ -89,21 +89,26 @@ const RegisterFrame = () => {
             // 2 submit
             console.log(10000000);
             setDoubleCheck(0);
-            submitDeleteEditData(pigID);
+            submitDeleteEditData(pigID,currentFolderName);
 
         }
     }
-    const submitDeleteEditData = async (arg: string) => {
+    const submitDeleteEditData = async (arg: string , fileName:string) => {
 
         setLoadingState(false);
-        const URL: string = "";
+        const URL: string = "http://localhost:3000/editFile";
         try {
             const res = await fetch(URL, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ "deleteName": arg })
+                credentials:"include",
+                body: JSON.stringify({
+                    "status" : "delete",
+                    "pigID": arg ,
+                    "fileName" : fileName
+                })
             })
 
             if (!res.ok) throw new Error("500 server error");
@@ -121,7 +126,12 @@ const RegisterFrame = () => {
     }
     const submitInsertData = () => {
         const insertFile = insertData?.insertFile;
+        
+        if(insertPhotoRef.current){
 
+        }
+// ----------------------
+        // if
 
         // insertFile.forEach((item, index) => {
         //     console.log(`第 ${index + 1} 筆 insertFile:`);
@@ -165,28 +175,20 @@ const RegisterFrame = () => {
 
 
 
-        setEditViewData(prev => ({
-            ...prev,
-            filename: currentFolderName
-        }))
+        // setEditViewData(prev => ({
+        //     ...prev,
+        //     filename: currentFolderName
+        // }))
+        let transferText = ""
         switch (EditViewData.insertFile[0]["檢定區別"]) {
             case "全測":
-                setEditViewData(prev => ({
-                    ...prev,
-                    transferType: "A"
-                }))
+                transferText = "A"
                 break;
             case "免學":
-                setEditViewData(prev => ({
-                    ...prev,
-                    transferType: "B"
-                }))
+                transferText = "B"
                 break;
             case "免術":
-                setEditViewData(prev => ({
-                    ...prev,
-                    transferType: "C"
-                }))
+                transferText = "C"
                 break;
             default:
                 console.warn("didnt get value");
@@ -194,12 +196,16 @@ const RegisterFrame = () => {
                 break;
 
         }
+        const uploadData: any = {
+            ...EditViewData,
+            filename: currentFolderName,
+            transferType: transferText,
+            insertFile: [...EditViewData.insertFile]
+        }
 
-        console.log("((((((((((");
-        console.log(EditViewData);
+
+        setEditViewData(uploadData)
         if (Array.isArray(insertFile)) {
-
-
             const hasEmptyField = insertFile.some((item) => {
                 return Object.entries(item).some(([key, value]) => {
                     return key !== "pigID" && key !== "confirmStatus" && value === "";
@@ -212,8 +218,6 @@ const RegisterFrame = () => {
                 return;
             }
 
-            console.log('-------------------------');
-            console.log(EditViewData);
 
             fetch("http://localhost:3000/editFile", {
                 method: "POST",
@@ -221,7 +225,7 @@ const RegisterFrame = () => {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(EditViewData)
+                body: JSON.stringify(uploadData)
             }).then(res => setSucessFrame(1));
         }
     };
@@ -591,37 +595,47 @@ const RegisterFrame = () => {
 
     const submitForm = () => {
 
-        const finalData = new FormData();
-        const data_photo = uploadPhotoRef.current?.files;
-        const data_file = uploadFileRef.current?.files;
-        const data_name = uploadFileNameRef.current?.value;
-        if (data_photo && data_file && data_name && template) {
-            // finalData.append("user_photo",data_photo);
-            // finalData.append("user_file",data_file);
-            // finalData.append("data_name",data_name);
-            // alert();
-            const URL = "http://localhost:3000/upload";
-            fetch(URL, {
-                method: "POST",
-                credentials: "include",
-                // headers:{
-                //     "Content-Type" : ""
-                // },
-                body: JSON.stringify({ "excelFile": data_file, "fileName": data_name, "photoFile": data_photo })
-            })
-                .then(res => {
-                    console.log("ress---------", res);
-                })
-                .catch(err => console.warn(err))
-        }
-        else {
-            // alert(2);
-            console.log(data_photo);
-            console.log(data_file);
-            console.log(data_name);
+    const finalData = new FormData();
+    const photoFile = uploadPhotoRef.current?.files;
+    const excelFile = uploadFileRef.current?.files?.[0] ;
+    const dataName = uploadFileNameRef.current?.value;
+    console.log("1232131232132logogoogogogog", photoFile, excelFile, dataName);
 
-        }
+    if (photoFile && excelFile && dataName ) {
+        console.log("im in if");
+        
+        finalData.append("excelFile", excelFile);
+        Array.from(photoFile).forEach((ele, index) => {
+            finalData.append("photoFile", ele);
+        })
+        finalData.append("originalName", dataName);
+        // alert();
+        console.log("logoogogogoogogogog", finalData);
+        const URL = "http://localhost:3000/upload";
+        fetch(URL, {
+            method: "POST",
+            credentials: "include",
+            // headers:{
+            //     "Content-Type" : ""
+            // },
+            // body: JSON.stringify({ "excelFile": excelFile, "fileName": dataName, "photoFile": data_photo })
+            body: finalData
+        })
+            .then(res => {
+                console.log("ress---------", res);
+            })
+            .catch(err => console.warn(err))
     }
+    else {
+        console.log("im out of if");
+        
+        // alert(2);
+        console.log(photoFile);
+        console.log(excelFile);
+        console.log(dataName);
+
+    }
+}
 
     const preSubmitUpload = (): void => {
         // const uploadPhoto : FileList | null | undefined = uploadPhotoRef.current?.files;

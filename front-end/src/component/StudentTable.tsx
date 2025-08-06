@@ -7,6 +7,7 @@ import { DeclareContextType } from "../types/DeclareContextType";
 import { forwardRef, useState, useImperativeHandle, useEffect, useContext } from "react";
 import type { _ReloadStudentType } from "../types/_ReloadStudentType";
 import type { _CommonType } from "../types/_CommonType";
+import type { InputAction } from "react-select";
 
 export type ExportDataType = {
     triggerExport: () => void;
@@ -24,7 +25,10 @@ type rowType = {
     value1: string,
     value2: string
 }
-
+type tempType = {
+    pigID: string,
+    index: number
+}
 
 type rowData = {
     // "name": string,
@@ -64,19 +68,23 @@ type allProps = {
     datas: _ReloadStudentType[],
     setData: React.Dispatch<React.SetStateAction<_ReloadStudentType[]>>,
     studentFilter: string,
+    radioRef: any
     setStudentFilter: React.Dispatch<React.SetStateAction<string>>,
     setCalRows: React.Dispatch<React.SetStateAction<rowType>>,
     setModalShow: React.Dispatch<React.SetStateAction<number>>,
+    setRadioChecked: React.Dispatch<React.SetStateAction<number>>,
+    radioChecked: number,
+    setTempPigID: React.Dispatch<React.SetStateAction<tempType>>,
 }
 
 // higher order function only receive two arguments , props needs to become a set.
-const StudentTable = forwardRef<ExportDataType, allProps>(({ EditViewData, handleViewData, datas, setData, studentFilter, setStudentFilter, setCalRows, setModalShow }, ref) => {
+const StudentTable = forwardRef<ExportDataType, allProps>(({ radioRef, setTempPigID, setRadioChecked, radioChecked, EditViewData, handleViewData, datas, studentFilter, setStudentFilter, setCalRows, setModalShow }, ref) => {
     // const { modalOut } = props; 
     // const [data, setData] = useState<rowData[]>(inputData);
     // 解構版本
     console.log("data", datas);
-    
-    const [ViewData, setViewData] = useState<_CommonType[] >([]); // initial 要給空陣列
+
+    const [ViewData, setViewData] = useState<_CommonType[]>([]); // initial 要給空陣列
 
     useEffect(() => {
         const merge = datas.map(([std, nested]) => ({
@@ -97,7 +105,18 @@ const StudentTable = forwardRef<ExportDataType, allProps>(({ EditViewData, handl
 
     //  ▲
     //  ▼
+    const handleStatus = (arg: React.MouseEvent<HTMLInputElement>, row: any, index: number) => {
+        // alert(row["pigID"]);
+        arg.preventDefault();
+        setTempPigID({
+            pigID: row["pigID"],
+            index: index
+        })
+        setRadioChecked(1);
+
+    }
     const [columns, setColumn] = useState<ColumnDef<any>[]>([
+
         // {
         //     accessorKey: "pigID",
         //     // header: "準考證號碼",
@@ -143,14 +162,14 @@ const StudentTable = forwardRef<ExportDataType, allProps>(({ EditViewData, handl
 
         {
             accessorKey: "confirmStatus",
-            header: "填寫狀態",
+            header: "目前狀態",
             cell: (props: any) => {
                 if (props.getValue()) {
 
-                    return (<div className="checkStatus done">完成</div>)
+                    return (<div className="checkStatus done">確認</div>)
                 }
                 else {
-                    return (<div className="checkStatus">未完成</div>)
+                    return (<div className="checkStatus">未確認</div>)
                 }
             }
         }
@@ -161,7 +180,7 @@ const StudentTable = forwardRef<ExportDataType, allProps>(({ EditViewData, handl
             size: 1,
             // maxSize: 100,
             cell: (props: any) => {
-                const { pigID, confirmStatus , ...filterData} = props.row.original;
+                const { pigID, confirmStatus, ...filterData } = props.row.original;
                 const rowData = props.row.original;
                 const index = props.row.index;
                 // alert(rowData["pigID"])
@@ -169,12 +188,23 @@ const StudentTable = forwardRef<ExportDataType, allProps>(({ EditViewData, handl
                 return (
                     <div className="functionBtn">
                         <div className="editButton" onClick={() => handleViewData(rowData)}>查看</div>
-                        <div className="editButton" onClick={() => EditViewData(filterData,rowData["pigID"])}>編輯</div>
+                        <div className="editButton" onClick={() => EditViewData(filterData, rowData["pigID"])}>編輯</div>
                         <div className="editButton" onClick={() => handleContext?.deleteEditData(0, rowData["pigID"])}>刪除</div>
                     </div>
                 )
             }
+        },
+        {
+            accessorKey: "身分別",
+            header: "確認狀態",
+            cell: (props: any) => {
+                const index = props.row.index;
+                return (
+                    <input type="radio" name="" id="" ref={(el) => { if (el) radioRef.current[index] = el }} onClick={(e) => { handleStatus(e, props.row.original, props.row.index) }} />
+                )
+            }
         }
+
     ])
 
     const table = useReactTable({
@@ -222,7 +252,7 @@ const StudentTable = forwardRef<ExportDataType, allProps>(({ EditViewData, handl
 
 
     return (
-        <div className="tableContainer">
+        <div className="tableContainer studentTable">
             <table border={1} cellPadding={6} >
                 <thead>
                     {table.getHeaderGroups().map((headerGroup) => (

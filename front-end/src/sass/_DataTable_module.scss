@@ -9,6 +9,8 @@
     width: 100%;
     border-radius: 12px;
 
+
+
     table {
         border-collapse: separate;
         border-spacing: 0;
@@ -142,4 +144,11 @@
         }
 
     }
+}
+
+// .studentTable table tr td:nth-child(8) {
+//     border-left: 2px solid #2525253e;
+// }
+.studentTable table tr td:last-child {
+    border-left: 2px solid #2525253e;
 }

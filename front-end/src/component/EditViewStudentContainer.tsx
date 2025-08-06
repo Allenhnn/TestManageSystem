@@ -272,14 +272,14 @@ const EditViewStudentContainer = ({ setEditViewData, submitEditData, EditViewDat
                                 <div className="fillInData">
                                     <div className="fillInTestData">
                                         {TestFile.map((element, index) => (
-                                            <div className="viewStudentColumn">
+                                            <div className="viewStudentColumn" key={`viewStudentColumn-${index}`}>
                                                 {element.registerName.map((label, index) => {
                                                     
                                                     return (
 
                                                     label != "檢定區別" && label != "身分別" ?
                                                             (
-                                                                <div className={`viewStudentItem ${element.registerCount == 1 ? "single" : element.registerCount == 2 ? "split" : element.registerCount == 3 ? "triple" : ""} `}>
+                                                                <div className={`viewStudentItem ${element.registerCount == 1 ? "single" : element.registerCount == 2 ? "split" : element.registerCount == 3 ? "triple" : ""} `} key={`viewStudentItem-${index}`}>
                                                                     <div className="viewStudentName">
                                                                         <h4>*{label}</h4>
                                                                         <input type="text" value={EditViewData["insertFile"][0][label]}

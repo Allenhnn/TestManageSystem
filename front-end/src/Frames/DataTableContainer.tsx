@@ -2,7 +2,7 @@ import React, { use, useEffect, useImperativeHandle, useRef, useState } from "re
 import type { Swiper as SwiperClass } from "swiper/types";
 import NavbarComponent from "../component/NavbarComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd, faAngleLeft, faAngleRight, faBackward, faCheck, faCheckCircle, faCircleChevronLeft, faCirclePlus, faCircleQuestion, faDatabase, faFile, faGear, faMagnifyingGlass, faPaperPlane, faPen, faPrint, faRecycle, faRepeat, faTrash, faUpload, faUser, faUserCircle, faWarning, faX } from '@fortawesome/free-solid-svg-icons'
+import { faAdd, faAngleLeft, faAngleRight, faBackward, faCheck, faCheckCircle, faCircleChevronDown, faCircleChevronLeft, faCirclePlus, faCircleQuestion, faDatabase, faFile, faGear, faMagnifyingGlass, faPaperPlane, faPen, faPrint, faRecycle, faRepeat, faTrash, faTriangleCircleSquare, faUpload, faUser, faUserCircle, faWarning, faX } from '@fortawesome/free-solid-svg-icons'
 import SwiperCarousel from '../component/SwiperCarousel.tsx';
 import ViewComponent from "../component/ViewComponent.tsx";
 import TableSwiper from "../component/TableSwiper.tsx";
@@ -16,6 +16,10 @@ import type { _ReloadStudentTypeList } from "../types/_ReloadStudentType.ts";
 import type { _EditType } from "../types/_EditType.ts";
 
 
+type tempType = {
+    pigID: string,
+    index: number
+}
 type userInfoType = {
     userName: string,
     fileName: string
@@ -32,6 +36,7 @@ type rowType = {
 type InputProps = {
     setLoadingState: Function,
     modalShow: number,
+    radioRef: any
     deleteEditData: (index: number, arg: string) => void,
     setEditViewData: React.Dispatch<React.SetStateAction<_EditType>>,
     setModalShow: React.Dispatch<React.SetStateAction<number>>,
@@ -39,44 +44,65 @@ type InputProps = {
     setViewFrameState: React.Dispatch<React.SetStateAction<number>>,
     setEditFrameState: React.Dispatch<React.SetStateAction<number>>,
     setDoubleCheck: React.Dispatch<React.SetStateAction<number>>;
-    setCurrentFolderName : any;
+    setRadioChecked: React.Dispatch<React.SetStateAction<number>>;
+    setCurrentFolderName: any,
+    radioChecked: number,
+    setTempPigID: React.Dispatch<React.SetStateAction<tempType>>,
+    setConfirmAll: React.Dispatch<React.SetStateAction<number>>,
+    handleFetch: boolean
 }
 
 
-const DataTableContainer = ({ setCurrentFolderName,deleteEditData, setEditViewData, setDoubleCheck, setEditFrameState, setViewFrameState, setLoadingState, modalShow, setModalShow, setFillInFrame }: InputProps) => {
+const DataTableContainer = ({ handleFetch, setConfirmAll, radioRef, setTempPigID, setRadioChecked, radioChecked, setCurrentFolderName, deleteEditData, setEditViewData, setDoubleCheck, setEditFrameState, setViewFrameState, setLoadingState, modalShow, setModalShow, setFillInFrame }: InputProps) => {
 
     const [data, setData] = useState<_ReloadStudentType[]>([]);
     const [userInfo, setUserInfo] = useState<userInfoType>({ "userName": "dexter", "fileName": "test-1" })
     // const [modalShow, setModalShow] = useState(0);
+
     const [currentTable, setCurrentTable] = useState<currentTableType>({ text: "報名資料", status: false });
     const [globalFilter, setGlobalFilter] = useState<string>("");
     const [studentFilter, setStudentFilter] = useState<string>("");
     const [changePage, setChangePage] = useState<number>(0);
     const [calRows, setCalRows] = useState<rowType>({ value1: "", value2: "" });
+    const [moreFn, setMoreFn] = useState(false);
     // const [pigID, setPigID] = useState("");
 
     const triggerExportRef = useRef<ExportDataType | null>(null);
     const tableHeightRef = useRef<HTMLDivElement>(null);
     const swiperRef = useRef<SwiperClass>(null);
 
+    // const [tempStorage , setTempStorage] = useState()
 
-    // const enterDetailData = () => {
-    //     try {
-    //         const URL: string = "";
-    //         fetch(URL, {
-    //             headers: new Headers({
-    //                 "Content-Type": "application/json",
-    //                 method: "GET",
-    //             })
-    //         })
-    //             .then(res => { res.json() })
-    //             .then((jsonData:rowData[]) => { setData(jsonData) });
-    //         handleLoading();
-    //     }
-    //     catch (err) {
-    //         console.error(err);
-    //     }
+    useEffect(() => {
+        fetchFn();
+        // alert()
+        // setHandleFetch(handleFetch?false:true)
+    }, [handleFetch])
+    // const confirmAll = () => {
+
     // }
+    const fetchFn = async() => {
+        try {
+            setLoadingState(false);
+            const URL: string = "http://localhost:3000/getjsons";
+            const headers = new Headers({
+                "Content-Type": "application/json",
+            })
+
+            const fetchData = await fetch(URL, { headers: headers, credentials: "include", method: "POST", body: JSON.stringify(userInfo) });
+            const getData = await fetchData.json();
+            setData(getData);
+            setLoadingState(true);
+            // console.log(data);
+
+
+        }
+        catch (err) {
+            console.error("enterDetailData", err);
+            setLoadingState(true);
+        }
+    }
+
     const enterDetailData = async (arg: string) => {
         // alert(arg)
         setCurrentFolderName(arg)
@@ -90,44 +116,29 @@ const DataTableContainer = ({ setCurrentFolderName,deleteEditData, setEditViewDa
         if (swiperRef.current) {
             swiperRef.current.slideNext();
         }
-        try {
+        fetchFn()
+        // try {
+        //     setLoadingState(false);
+        //     const URL: string = "http://localhost:3000/getjsons";
+        //     const headers = new Headers({
+        //         "Content-Type": "application/json",
+        //     })
 
-            setLoadingState(false);
-            const URL: string = "http://localhost:3000/getjsons";
-            const headers = new Headers({
-                "Content-Type": "application/json",
-            })
-
-            const fetchData = await fetch(URL, { headers: headers, credentials:"include",method: "POST", body: JSON.stringify(userInfo) });
-            const getData = await fetchData.json();
-            setData(getData);
-            setLoadingState(true);
-            setTimeout(() => {
-                console.log("new data in timeout", data); // ✅可能會有資料，但不保證
-            }, 0);
-
-            console.log("slkjf");
-            console.log(getData[0][0]);
-            console.log("🚨 getData is", getData);
-            console.log("🚨 getData[0] is", getData[0]);
-            console.log("🚨 getData[0][0] is", getData[0][0]);
+        //     const fetchData = await fetch(URL, { headers: headers, credentials: "include", method: "POST", body: JSON.stringify(userInfo) });
+        //     const getData = await fetchData.json();
+        //     setData(getData);
+        //     setLoadingState(true);
+        //     // console.log(data);
 
 
-            // console.log(data);
-
-
-        }
-        catch (err) {
-            console.error("enterDetailData", err);
-            setLoadingState(true);
-        }
+        // }
+        // catch (err) {
+        //     console.error("enterDetailData", err);
+        //     setLoadingState(true);
+        // }
 
 
     }
-    useEffect(() => {
-        console.log("effect data", data);
-
-    }, [data])
     // 查看
     const handleViewData = (arg: any) => {
         console.log("haaaaaaa", arg);
@@ -139,25 +150,25 @@ const DataTableContainer = ({ setCurrentFolderName,deleteEditData, setEditViewDa
         // setEditViewData();
         // fetch -> setState
         // 豬解：反正這邊就是明天要跟豬串起來的fetch 明天再用 更新資料而已
-        
+
         setViewFrameState(1);
     }
     // 編輯***********
-    const EditViewData = (arg:any , pigID:string ) => {
+    const EditViewData = (arg: any, pigID: string) => {
         // alert(pigID)
-     // setEditViewData(prev => ({
+        // setEditViewData(prev => ({
         //     ...prev,
         //     insertFile: [{ ...arg }, { confirmStatus: "false", pigID: pigid }]
         // }));
         console.log("-------editview=-------");
         console.log(arg);
-        let tempVal 
-        
+        let tempVal
+
         setEditViewData(prev => ({
             ...prev,
-            "insertFile": [arg, {...prev.insertFile[1] ,pigID:pigID}]
+            "insertFile": [arg, { ...prev.insertFile[1], pigID: pigID }]
         }));
-        
+
         setEditFrameState(1);
 
     }
@@ -182,8 +193,13 @@ const DataTableContainer = ({ setCurrentFolderName,deleteEditData, setEditViewDa
 
                         </div>
                         <div className="totalRows">
-
-                            <div className={`addNewItem ${!currentTable.status ? "divNone" : ""}`} onClick={() => setFillInFrame(true)} ><FontAwesomeIcon icon={faCirclePlus} /> 新增</div>
+                            <div className={`dropdownList ${moreFn ? "" : "op0"}`} >
+                                <div className="dropdownItem" onClick={() => setFillInFrame(true)} > 新增 <FontAwesomeIcon icon={faCirclePlus} /></div>
+                                <div className="dropdownItem" onClick={() => setConfirmAll(1)}> 確認全部 <FontAwesomeIcon icon={faCheckCircle} /></div>
+                            </div>
+                            {/* <Select options={function_type} placeholder="更多" /> */}
+                            <div className={`addNewItem ${!currentTable.status ? "divNone" : ""}`} onClick={() => setMoreFn(moreFn ? false : true)}>更多功能 <FontAwesomeIcon icon={faCircleChevronDown} /> </div>
+                            {/* <div className={`addNewItem ${!currentTable.status ? "divNone" : ""}`} onClick={() => setFillInFrame(true)} ><FontAwesomeIcon icon={faCirclePlus} /> 新增</div> */}
 
                         </div>
                     </div>
@@ -193,7 +209,7 @@ const DataTableContainer = ({ setCurrentFolderName,deleteEditData, setEditViewDa
                         swiperRef={swiperRef}
                         arg1={<DataTable datas={data} setData={setData} swiperRef={swiperRef.current} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} setCalRows={setCalRows} ref={triggerExportRef}
                             enterDetailData={enterDetailData} />}
-                        arg2={<StudentTable EditViewData={EditViewData} studentFilter={studentFilter} setStudentFilter={setStudentFilter} setCalRows={setCalRows} setModalShow={setModalShow} ref={triggerExportRef}
+                        arg2={<StudentTable radioRef={radioRef} setTempPigID={setTempPigID} setRadioChecked={setRadioChecked} radioChecked={radioChecked} EditViewData={EditViewData} studentFilter={studentFilter} setStudentFilter={setStudentFilter} setCalRows={setCalRows} setModalShow={setModalShow} ref={triggerExportRef}
                             datas={data} setData={setData} handleViewData={handleViewData} />}
 
                         setText={setCurrentTable}

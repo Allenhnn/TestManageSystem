@@ -2,7 +2,7 @@ import { use, useContext, useEffect, useRef, useState } from "react";
 import NavbarComponent from "../component/NavbarComponent";
 import Select from "react-select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd, faAngleLeft, faAngleRight, faBackward, faCheck, faCheckCircle, faCircleChevronLeft, faCirclePlus, faCircleQuestion, faDatabase, faEye, faFile, faGear, faImage, faMagnifyingGlass, faPaperPlane, faPen, faPhotoFilm, faPhotoVideo, faPrint, faRecycle, faRepeat, faTableList, faTrash, faUpload, faUser, faUserCircle, faWarning, faX } from '@fortawesome/free-solid-svg-icons'
+import { faAdd, faAngleLeft, faAngleRight, faBackward, faCheck, faCheckCircle, faCircleChevronLeft, faCirclePlus, faCircleQuestion, faDatabase, faEye, faFile, faFolder, faGear, faImage, faMagnifyingGlass, faPaperPlane, faPen, faPhotoFilm, faPhotoVideo, faPrint, faRecycle, faRepeat, faTableList, faTrash, faUpload, faUser, faUserCircle, faWarning, faX } from '@fortawesome/free-solid-svg-icons'
 import SwiperCarousel from '../component/SwiperCarousel.tsx';
 import ViewComponent from "../component/ViewComponent.tsx";
 import TableSwiper from "../component/TableSwiper.tsx";
@@ -57,7 +57,70 @@ type uploadType = {
     "uploadPhotoName": string
 }
 const RegisterFrame = () => {
-    const formData = new FormData();
+    // const formData = new FormData();
+
+
+    const [insertPhotoName, setInsertPhotoName] = useState({ "name": "", "status": false });
+
+    const [loadingState, setLoadingState] = useState(true);
+
+    const [cookie, setCookie] = useState(false);
+
+
+    // const swiper = useSwiper();
+    const [currentFolderName, setCurrentFolderName] = useState("");
+    const [editFrameState, setEditFrameState] = useState(0);
+    const [viewFrameState, setViewFrameState] = useState(0);
+    const [fillInIndex, setFillInIndex] = useState(0);
+    const [fillInFrame, setFillInFrame] = useState(false);
+
+    const [template, setTemplate] = useState(false);
+    const [penEdit, setpenEdit] = useState(false);
+    const [progressionValue, setProgressionValue] = useState(0);
+    const [carouselItemDone, setCarouselItemDone] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
+
+    const [modalShow, setModalShow] = useState(0);
+    const [currentPage, setCurrentPage] = useState(0);
+
+    const [tempData, setTempData] = useState([]);
+
+    // alert frame
+    const [nonFillout, setNonFillout] = useState(0);
+    const [repeatAlert, setRepeatAlert] = useState(0);
+    const [repeatText, setRepeatText] = useState("您已經輸入 / 上傳資料，確定要退出嗎？");
+    const [doubleCheck, setDoubleCheck] = useState(0);
+    const [editAlertFrame, setEditAlertFrame] = useState(0);
+    const [sucessFrame, setSucessFrame] = useState(0);
+    const [alertFrameShow0, setAlertFrameShow0] = useState(0);
+    const [alertFrameShow1, setAlertFrameShow1] = useState(0);
+    const [radioChecked, setRadioChecked] = useState(0);
+    const [confirmAll, setConfirmAll] = useState(0);
+
+
+    // success & error
+    const [notifyFrame, setNotifyFrame] = useState(0);
+
+    // info
+    const [uploadStatus, setUploadStatus] = useState<uploadType>({ "status": false, "fileName": "", "userInputName": "", "uploadPhotoName": "" });
+
+    const [alertText, setAlertText] = useState("您有欄位尚未填寫完畢");
+    const [handleFetch, setHandleFetch] = useState(false);
+
+
+
+    // useRef 
+
+
+    const triggerExportRef = useRef<ExportDataType | null>(null);
+    // const loadingRef = useRef<LoadingType | null>(null);
+    const uploadFileNameRef = useRef<HTMLInputElement>(null);
+    const uploadFileRef = useRef<HTMLInputElement>(null);
+    const uploadPhotoRef = useRef<HTMLInputElement>(null);
+    const pendingRef = useRef<HTMLInputElement>(null); // 編輯的input 
+    const insertPhotoRef = useRef<HTMLInputElement>(null); // insert的input 
+    const wordFileRef = useRef<HTMLInputElement>(null);
+    const radioRef = useRef<HTMLInputElement[]>([]);
+
 
     useEffect(() => {
 
@@ -76,6 +139,7 @@ const RegisterFrame = () => {
     }, [])
     const handleContext = useContext(DeclareContextType);
 
+    const [tempPigID, setTempPigID] = useState<{ pigID: string, index: number }>({ "pigID": "", "index": 0 });
     const [pigID, setPigID] = useState("");
     const deleteEditData = (index: number, arg: string) => {
         console.log(arg);
@@ -89,21 +153,26 @@ const RegisterFrame = () => {
             // 2 submit
             console.log(10000000);
             setDoubleCheck(0);
-            submitDeleteEditData(pigID);
+            submitDeleteEditData(pigID, currentFolderName);
 
         }
     }
-    const submitDeleteEditData = async (arg: string) => {
+    const submitDeleteEditData = async (arg: string, fileName: string) => {
 
         setLoadingState(false);
-        const URL: string = "";
+        const URL: string = "http://localhost:3000/editFile";
         try {
             const res = await fetch(URL, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ "deleteName": arg })
+                credentials: "include",
+                body: JSON.stringify({
+                    "status": "delete",
+                    "pigID": arg,
+                    "fileName": fileName
+                })
             })
 
             if (!res.ok) throw new Error("500 server error");
@@ -120,8 +189,67 @@ const RegisterFrame = () => {
         }
     }
     const submitInsertData = () => {
-        const insertFile = insertData?.insertFile;
+        // formData.append()
+        // const insertFile = insertData?.insertFile;
+        const formData = new FormData();
+        const insertPhoto = insertPhotoRef.current?.files?.[0];
+        // Array.from(insertPhoto).forEach((ele, index) => {
+        //     formData.append("user_file", ele);
+        // })
+        insertPhoto ? formData.append("insertPhoto", insertPhoto) : "";
 
+        const isAllFieldsFilled = Object.values(insertData.insertFile).every(value => value.trim() !== "");
+        if (insertPhotoRef.current != null) {
+
+            if (!isAllFieldsFilled) {
+                // alert("請確保所有欄位都已填寫！");
+
+                setNonFillout(1);
+                setAlertText("請確保所有欄位都已填寫！");
+                return;
+            }
+            else {
+                try {
+                    fetch("http://localhost:3000/upload", {
+
+                        method: "POST",
+                        credentials: "include",
+                        body: formData
+                    })
+                        .then(res => setHandleFetch(handleFetch ? false : true))
+                    console.log(3);
+
+                }
+                catch (err) {
+                    console.warn("errorrrr");
+
+                }
+
+                // -------------------------------------
+                try {
+                    fetch("http://localhost:3000/upload", {
+                        headers: new Headers({
+                            "Content-Type": "application/json"
+                        }),
+                        method: "POST",
+                        credentials: "include",
+                        body: JSON.stringify(insertData)
+                    })
+                        .then(res => setHandleFetch(handleFetch ? false : true))
+                    console.log(3);
+
+                }
+                catch (err) {
+                    console.warn("errorrrr");
+
+                }
+
+            }
+
+
+        }
+        // ----------------------
+        // if
 
         // insertFile.forEach((item, index) => {
         //     console.log(`第 ${index + 1} 筆 insertFile:`);
@@ -156,6 +284,25 @@ const RegisterFrame = () => {
         // });
 
     }
+
+    const submitConfirmAll = () => {
+        const folderName = currentFolderName;
+        setConfirmAll(0);
+
+        fetch("http://localhost:3000/confirmAll", {
+            credentials: "include",
+            method: "POST",
+            body: JSON.stringify({"fileName":folderName})
+        })
+            .then((res) => setHandleFetch(handleFetch ? false : true))
+        // .then((res)=>res.json())
+        // .then(req => setTempData(req))
+
+        radioRef.current[tempPigID.index].checked = true;
+
+
+
+    }
     const submitEditData = () => {
         // const formData = new FormData();
         const insertFile = EditViewData?.insertFile;
@@ -165,28 +312,20 @@ const RegisterFrame = () => {
 
 
 
-        setEditViewData(prev => ({
-            ...prev,
-            filename: currentFolderName
-        }))
+        // setEditViewData(prev => ({
+        //     ...prev,
+        //     filename: currentFolderName
+        // }))
+        let transferText = ""
         switch (EditViewData.insertFile[0]["檢定區別"]) {
             case "全測":
-                setEditViewData(prev => ({
-                    ...prev,
-                    transferType: "A"
-                }))
+                transferText = "A"
                 break;
             case "免學":
-                setEditViewData(prev => ({
-                    ...prev,
-                    transferType: "B"
-                }))
+                transferText = "B"
                 break;
             case "免術":
-                setEditViewData(prev => ({
-                    ...prev,
-                    transferType: "C"
-                }))
+                transferText = "C"
                 break;
             default:
                 console.warn("didnt get value");
@@ -194,12 +333,16 @@ const RegisterFrame = () => {
                 break;
 
         }
+        const uploadData: any = {
+            ...EditViewData,
+            filename: currentFolderName,
+            transferType: transferText,
+            insertFile: [...EditViewData.insertFile]
+        }
 
-        console.log("((((((((((");
-        console.log(EditViewData);
+
+        setEditViewData(uploadData)
         if (Array.isArray(insertFile)) {
-
-
             const hasEmptyField = insertFile.some((item) => {
                 return Object.entries(item).some(([key, value]) => {
                     return key !== "pigID" && key !== "confirmStatus" && value === "";
@@ -212,8 +355,6 @@ const RegisterFrame = () => {
                 return;
             }
 
-            console.log('-------------------------');
-            console.log(EditViewData);
 
             fetch("http://localhost:3000/editFile", {
                 method: "POST",
@@ -221,10 +362,31 @@ const RegisterFrame = () => {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(EditViewData)
+                body: JSON.stringify(uploadData)
             }).then(res => setSucessFrame(1));
         }
     };
+
+
+    const confirmSubmit = () => {
+        setRadioChecked(0);
+        const formData = new FormData();
+        // formData.append("")
+        formData.append("fileName", currentFolderName);
+        formData.append("pigID", tempPigID.pigID);
+
+        fetch("http://localhost:3000/confirm", {
+            credentials: "include",
+            method: "POST",
+            body: formData
+        })
+            .then((res) => setHandleFetch(handleFetch ? false : true))
+        // .then((res)=>res.json())
+        // .then(req => setTempData(req))
+
+        radioRef.current[tempPigID.index].checked = true;
+
+    }
 
     // const submitEditData = () => {
     //     console.log("data-----", EditViewData);
@@ -295,61 +457,6 @@ const RegisterFrame = () => {
 
 
     })
-    const [insertPhotoName, setInsertPhotoName] = useState({ "name": "", "status": false });
-
-    const [loadingState, setLoadingState] = useState(true);
-
-    const [cookie, setCookie] = useState(false);
-
-
-    // const swiper = useSwiper();
-    const [currentFolderName, setCurrentFolderName] = useState("");
-    const [editFrameState, setEditFrameState] = useState(0);
-    const [viewFrameState, setViewFrameState] = useState(0);
-    const [fillInIndex, setFillInIndex] = useState(0);
-    const [fillInFrame, setFillInFrame] = useState(false);
-
-    const [template, setTemplate] = useState(false);
-    const [penEdit, setpenEdit] = useState(false);
-    const [progressionValue, setProgressionValue] = useState(0);
-    const [carouselItemDone, setCarouselItemDone] = useState<number[]>([0, 0, 0, 0, 0]);
-
-    const [modalShow, setModalShow] = useState(0);
-    const [currentPage, setCurrentPage] = useState(0);
-
-    // alert frame
-    const [nonFillout, setNonFillout] = useState(0);
-    const [repeatAlert, setRepeatAlert] = useState(0);
-    const [repeatText, setRepeatText] = useState("您已經輸入 / 上傳資料，確定要退出嗎？");
-    const [doubleCheck, setDoubleCheck] = useState(0);
-    const [editAlertFrame, setEditAlertFrame] = useState(0);
-    const [sucessFrame, setSucessFrame] = useState(0);
-    const [alertFrameShow0, setAlertFrameShow0] = useState(0);
-    const [alertFrameShow1, setAlertFrameShow1] = useState(0);
-
-
-    // success & error
-    const [notifyFrame, setNotifyFrame] = useState(0);
-
-    // info
-    const [uploadStatus, setUploadStatus] = useState<uploadType>({ "status": false, "fileName": "", "userInputName": "", "uploadPhotoName": "" });
-
-    const [alertText, setAlertText] = useState("您有欄位尚未填寫完畢");
-
-
-
-    // useRef 
-
-
-    const triggerExportRef = useRef<ExportDataType | null>(null);
-    // const loadingRef = useRef<LoadingType | null>(null);
-    const uploadFileNameRef = useRef<HTMLInputElement>(null);
-    const uploadFileRef = useRef<HTMLInputElement>(null);
-    const uploadPhotoRef = useRef<HTMLInputElement>(null);
-    const pendingRef = useRef<HTMLInputElement>(null); // 編輯的input 
-    const insertPhotoRef = useRef<HTMLInputElement>(null); // insert的input 
-
-
     const functionBtnLogic = () => {
         // 取消 下一步
         // 上一步 下一步
@@ -389,11 +496,11 @@ const RegisterFrame = () => {
                             <div className="fillInStudentData">
                                 {userUploadFile.map((element, index) => (
 
-                                    <div className="inputColumn">
+                                    <div className="inputColumn" key={`inputColumn-${index}`}>
                                         {element.registerName.map((ele, index) => {
                                             const key = ele as keyof _CommonType;
                                             return (
-                                                <div className={`inputItem ${element.registerName.length == 1 ? "single" : element.registerName.length == 2 ? "split" : element.registerName.length == 3 ? "triple" : ""}`} >
+                                                <div key={`inputItem-${index}`} className={`inputItem ${element.registerName.length == 1 ? "single" : element.registerName.length == 2 ? "split" : element.registerName.length == 3 ? "triple" : ""}`} >
                                                     <div style={{ display: "flex", alignItems: "center" }}>
                                                         <h5 className="inputName">*{ele}</h5>
                                                         {element.isCopy ? <div className="copyBtn" onClick={() => {
@@ -443,12 +550,12 @@ const RegisterFrame = () => {
                             <div className="fillInTestData">
                                 {userUploadTestFile.map((element, index) => (
 
-                                    <div className="inputColumn">
+                                    <div className="inputColumn" key={`inputColumn-2-${index}`}>
                                         {element.registerName.map((ele, index) => {
 
                                             const key = ele as keyof _CommonType;
                                             return (
-                                                <div className={`inputItem ${element.registerName.length == 2 ? "split" : element.registerName.length == 3 ? "triple" : ""}`}>
+                                                <div key={`inputItem-2-${index}`} className={`inputItem ${element.registerName.length == 2 ? "split" : element.registerName.length == 3 ? "triple" : ""}`}>
                                                     <div style={{ display: "flex", alignItems: "center" }}>
                                                         <h5 className="inputName">*{ele}</h5>
                                                         {element.isCopy ? <div className="copyBtn">同 上</div> :
@@ -560,7 +667,7 @@ const RegisterFrame = () => {
         if (uploadPhotoRef.current) {
             photoName = uploadPhotoRef.current.value;
         }
-        handleCarouselItemSep(3);
+        handleCarouselItemSep(4);
         setUploadStatus(prev => ({ ...prev, uploadPhotoName: photoName }))
         // files deliver
     }
@@ -570,6 +677,14 @@ const RegisterFrame = () => {
             photoName = insertPhotoRef.current.value;
         }
         setInsertPhotoName(prev => ({ ...prev, "status": true, "name": photoName }));
+    }
+    const handleInsertWord = (): void => {
+        // let photoName = "";
+        // if (insertPhotoRef.current) {
+        //     photoName = insertPhotoRef.current.value;
+        // }
+        // setInsertPhotoName(prev => ({ ...prev, "status": true, "name": photoName }));
+        handleCarouselItemSep(2);
     }
 
     const stringSplit = (arg: string | undefined) => {
@@ -592,14 +707,19 @@ const RegisterFrame = () => {
     const submitForm = () => {
 
         const finalData = new FormData();
-        const data_photo = uploadPhotoRef.current?.files;
+        const data_photo = uploadPhotoRef.current?.files?.[0];
         const data_file = uploadFileRef.current?.files;
         const data_name = uploadFileNameRef.current?.value;
+        console.log("1232131232132logogoogogogog", data_photo, data_file, data_name);
+
         if (data_photo && data_file && data_name && template) {
-            // finalData.append("user_photo",data_photo);
-            // finalData.append("user_file",data_file);
-            // finalData.append("data_name",data_name);
-            // alert();
+            finalData.append("user_photo", data_photo);
+            Array.from(data_file).forEach((ele, index) => {
+                finalData.append("user_file", ele);
+            })
+            finalData.append("data_name", data_name);
+            console.log("logoogogogoogogogog", finalData);
+
             const URL = "http://localhost:3000/upload";
             fetch(URL, {
                 method: "POST",
@@ -607,7 +727,8 @@ const RegisterFrame = () => {
                 // headers:{
                 //     "Content-Type" : ""
                 // },
-                body: JSON.stringify({ "excelFile": data_file, "fileName": data_name, "photoFile": data_photo })
+                // body: JSON.stringify({ "excelFile": data_file, "fileName": data_name, "photoFile": data_photo })
+                body: finalData
             })
                 .then(res => {
                     console.log("ress---------", res);
@@ -703,7 +824,6 @@ const RegisterFrame = () => {
     const fileChange = () => {
 
         const file: string | undefined = uploadFileRef.current?.files?.[0]?.name;
-
         console.log(file);
         // setUploadStatus((prev) => {
         //     const pending = prev;
@@ -717,6 +837,7 @@ const RegisterFrame = () => {
             status: true,
             fileName: file
         }))
+        handleCarouselItemSep(3);
     }
 
 
@@ -744,7 +865,11 @@ const RegisterFrame = () => {
     }
     ///////////////////////////////////////////
 
-
+    const clickWordRef = (): void => {
+        if (wordFileRef) {
+            wordFileRef.current?.click();
+        }
+    }
     const clickAlertRef = (): void => {
         if (uploadFileRef) {
             uploadFileRef.current?.click();
@@ -769,24 +894,29 @@ const RegisterFrame = () => {
                     }
                     break;
                 case 2:
-                    clickAlertRef();
-                    handleCarouselItemSep(2);
+                    clickWordRef()
+                    // handleCarouselItemSep(2);
                     break;
                 case 3:
-                    clickPhotoRef();
+                    clickAlertRef();
                     break;
                 case 4:
-                    setEditAlertFrame(1);
+                    clickPhotoRef();
                     break;
                 case 5:
+                    setEditAlertFrame(1);
+                    break;
+                case 6:
                     submitForm();
                     break;
                 default:
                     console.error("there's an error of argument deliever");
             }
         }
+        else if (arg == 5) {
+            setEditAlertFrame(1);
+        }
         else {
-
             setNonFillout(1);
             setAlertText("您已上傳過資料");
         }
@@ -797,11 +927,11 @@ const RegisterFrame = () => {
             if (!prev[index]) {
                 const newArr = [...prev];
                 newArr[index] += 1;
-                if (progressionValue + 17 > 100) {
+                if (progressionValue + 14 > 100) {
                     setProgressionValue(100);
                 }
                 else {
-                    setProgressionValue(progressionValue + 17);
+                    setProgressionValue(progressionValue + 14);
                 }
 
                 return newArr;
@@ -845,7 +975,7 @@ const RegisterFrame = () => {
 
     const saveFile = () => {
         setEditAlertFrame(0);
-        handleCarouselItemSep(4);
+        handleCarouselItemSep(5);
 
     }
 
@@ -883,7 +1013,7 @@ const RegisterFrame = () => {
                 break;
             case 1:
                 return (
-                    <DataTableContainer setCurrentFolderName={setCurrentFolderName} deleteEditData={deleteEditData} setEditViewData={setEditViewData} setDoubleCheck={setDoubleCheck} setEditFrameState={setEditFrameState} setViewFrameState={setViewFrameState} setFillInFrame={setFillInFrame} setLoadingState={setLoadingState} modalShow={modalShow} setModalShow={setModalShow} />
+                    <DataTableContainer handleFetch={handleFetch} setConfirmAll={setConfirmAll} radioRef={radioRef} setTempPigID={setTempPigID} setRadioChecked={setRadioChecked} radioChecked={radioChecked} setCurrentFolderName={setCurrentFolderName} deleteEditData={deleteEditData} setEditViewData={setEditViewData} setDoubleCheck={setDoubleCheck} setEditFrameState={setEditFrameState} setViewFrameState={setViewFrameState} setFillInFrame={setFillInFrame} setLoadingState={setLoadingState} modalShow={modalShow} setModalShow={setModalShow} />
 
                 )
                 break;
@@ -912,9 +1042,10 @@ const RegisterFrame = () => {
             <div className="registerFrameContainer">
                 <input type="file" id="hiddenInput" style={{ display: "none" }} ref={uploadFileRef} onChange={fileChange} />
                 <input type="file" id="uploadPhotoRef" style={{ display: "none" }} ref={uploadPhotoRef} onChange={photoUpload} accept="image/*," webkitdirectory="true"  {...({ webkitdirectory: "" } as any)} />
+                <input type="file" id="wordFileRef" style={{ display: "none" }} ref={wordFileRef} onChange={handleInsertWord} accept="image/*," webkitdirectory="true"  {...({ webkitdirectory: "" } as any)} />
 
 
-                <input type="file" id="insertPhotoRef" style={{ display: "none" }} ref={insertPhotoRef} onChange={handleinsertPhotoName} accept="image/*," webkitdirectory="true"  {...({ webkitdirectory: "" } as any)} />
+                <input type="file" id="insertPhotoRef" style={{ display: "none" }} ref={insertPhotoRef} onChange={handleinsertPhotoName} accept="image/*," />
 
                 {/* <div className="notify">
 
@@ -971,14 +1102,13 @@ const RegisterFrame = () => {
                     <div className="editFrame">
 
                         <div className="editTextsContainer">
-                            <h2>編輯學生資料</h2>
+                            <h2>確認資料</h2>
                             <h5>請再次確認學生資料，編輯完畢點擊下方儲存鍵</h5>
                         </div>
 
                         <div className="line" />
                         <div className="editContent">
                             <div className="editPhotoContainer">
-                                {/* <div className="editPhoto"><img src="../../public/vite.svg" alt="" /></div> */}
                                 <div className="editPhoto"><FontAwesomeIcon icon={faImage} /></div>
                                 <div className="editPhotoName">
                                     <h4>{stringSplit(uploadStatus.uploadPhotoName)}</h4>
@@ -987,40 +1117,20 @@ const RegisterFrame = () => {
                             </div>
                             <div className="editFilesContainer">
                                 <div className="editFile">
-                                    <div className="editIcon"><FontAwesomeIcon icon={faUserCircle} /></div>
-                                    <div className="editFileTexts ff">
-                                        <h3 className={`${uploadStatus.userInputName == "" ? "redT" : ""}`}>檔案名稱</h3>
-                                        {penEdit ? (
-                                            <input type="text" ref={pendingRef} />)
-                                            :
-                                            <h4>{stringSplit(uploadStatus.userInputName)}</h4>
-                                        }
-
-
+                                    <div className="editIcon"><FontAwesomeIcon icon={faDatabase} /></div>
+                                    <div className="editFileTexts">
+                                        <h3 className={`${uploadStatus.fileName == "" ? "redT" : ""}`}>Word檔案</h3>
+                                        <h4>{stringSplit(uploadStatus.fileName)}</h4>
                                     </div>
-                                    {/* <div className="editControlContainer"> */}
-                                    <div className="editControl">
-                                        {!penEdit ? (
-                                            <>
-                                                <div className="icon" onClick={() => { setpenEdit(true) }}>
-                                                    <FontAwesomeIcon icon={faPen} />
-                                                </div>
-                                                <div className="icon" onClick={() => { setUploadStatus(prev => ({ ...prev, userInputName: "" })) }}>
-                                                    <FontAwesomeIcon icon={faTrash} />
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <div className="icon op0" />
-                                                <div className="icon" onClick={handleEditDone}>
-                                                    <FontAwesomeIcon icon={faCheck} />
-                                                </div>
-                                            </>
-                                        )
-
-                                        }
-
-                                        {/* </div> */}
+                                    <div className="editControlContainer">
+                                        <div className="editControl">
+                                            <div className="icon" onClick={() => { uploadFileRef.current?.click() }}>
+                                                <FontAwesomeIcon icon={faUpload} />
+                                            </div>
+                                            <div className="icon" onClick={() => { setUploadStatus(prev => ({ ...prev, fileName: "" })) }}>
+                                                <FontAwesomeIcon icon={faTrash} />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1083,6 +1193,36 @@ const RegisterFrame = () => {
                 </div>
 
                 {/* ** alertFrame repeat problem */}
+                <div className={`alertFrameContainer ${!confirmAll ? "op0" : ""}`}>
+                    <div className="alertFrame">
+                        <div className="alert_icon" style={{ color: "rgb(204, 194, 56)" }}>
+                            <FontAwesomeIcon icon={faWarning} />
+                        </div>
+                        <div className="alert_text">
+                            <h2>您是否要確定全部資料</h2>
+                            {/* <h4>( 若已下載過即可略過 )</h4> */}
+                        </div>
+                        <div className="alert_option">
+                            <div className="alert_option_button" onClick={() => setConfirmAll(0)}>取 消</div>
+                            <div className="alert_option_button" onClick={() => submitConfirmAll()}>確 定</div>
+                        </div>
+                    </div>
+                </div>
+                <div className={`alertFrameContainer ${!radioChecked ? "op0" : ""}`}>
+                    <div className="alertFrame">
+                        <div className="alert_icon" style={{ color: "rgb(204, 194, 56)" }}>
+                            <FontAwesomeIcon icon={faWarning} />
+                        </div>
+                        <div className="alert_text">
+                            <h2>您是否要確定此筆資料</h2>
+                            {/* <h4>( 若已下載過即可略過 )</h4> */}
+                        </div>
+                        <div className="alert_option">
+                            <div className="alert_option_button" onClick={() => setRadioChecked(0)}>取 消</div>
+                            <div className="alert_option_button" onClick={() => confirmSubmit()}>確 定</div>
+                        </div>
+                    </div>
+                </div>
                 <div className={`alertFrameContainer ${!alertFrameShow0 ? "op0" : ""}`}>
                     <div className="alertFrame">
                         <div className="alert_icon">

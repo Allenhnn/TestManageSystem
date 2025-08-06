@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from 'swiper/modules';
+import { Navigation, Pagination , Mousewheel} from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
@@ -33,7 +33,8 @@ const SwiperCarousel :React.FC<swiperDone>= ({handleAlertFrame , carouselItemDon
       slidesPerView={2.8}
       allowSlidePrev={true}
       allowSlideNext={true}
-      modules={[Pagination, Navigation]}
+      mousewheel={true}
+      modules={[Pagination, Navigation,Mousewheel]}
       navigation={{
         nextEl: '.icon_next',
         prevEl: '.icon_prev',

@@ -109,7 +109,7 @@ app.post('/getjsons' , multer().none(),async(req ,res)=>{
     httpOnly: false,
     sameSite: "None",
     secure: true
-  }).status(200).send("成功了!!")
+  }).status(200).json(resultLst)
 })
 
 // app.post('/createFolder', multer().none(), async (req, res) => {
@@ -197,6 +197,8 @@ const storage = multer.diskStorage({
       folderPath = `./user_data/${userName}/${filePath}`
     }else if(extName === ".jpg"){
       folderPath = `./user_data/${userName}/${filePath}/image`
+    }else if (extName === ".docx"){
+      folderPath = "./convert_content"
     }
     cb(null, folderPath)
   },
@@ -206,6 +208,8 @@ const storage = multer.diskStorage({
     if(extName === ".xlsx"){
       uploadFileName = req.cookies.fileName + ".xlsx"
     }else if(extName === ".jpg"){
+      uploadFileName = file.originalname
+    }else {
       uploadFileName = file.originalname
     }
     cb(null, uploadFileName )
@@ -376,7 +380,7 @@ app.get("/seeAllJson" , async(req,res)=>{
 app.post("/fillWd" , multer().none() ,async(req,res)=>{
   // const userName = "dexter" ;//req.body['username']
   const userName = req.cookies.userName
-  const chooseFile = req.body.chooseFile
+  const chooseFile = req.body.fileName
   // const chooseFile = "test-1" ;//req.body['test-1.json]
   // const filePath = path.join(__dirname  , "user_data" , userName , )
   const py = spawn('python' , ['fillWord.py' , userName , chooseFile]);
@@ -428,7 +432,6 @@ app.get("/verifyData", (req, res) => {
 //   const birthDay = json_data["出生日期"]  
 //   // if (!birthRegex.test(b))
 // }
-
 // const editUpload = multer()
 
 app.post("/editFile", (req, res) => {
@@ -439,14 +442,23 @@ app.post("/editFile", (req, res) => {
     "B": "studyTest",
     "C": "technicalTest"
   }
+  let testTypeCode = ''
+  let testType = ''
+  let pigID = ''
   const status = req.body["status"]; //req.body
   const userName = req.cookies.userName; //req.body
-  const fileName = req.cookies.fileName; //req.body
-  const pigID = req.body["pigID"];  //req.body
-  let testTypeCode = pigID.slice(0, 1)
-  let testType = testTypeMap[pigID.slice(0, 1)]
+  const fileName = req.body["filename"]; //req.body
+  // const testTypeCode = pigID.slice(0, 1)
+  // const testType = testTypeMap[testTypeCode]
+  if (status === "edit"){
+    
+    const insertFile = req.body["insertFile"]
+    pigID = insertFile[1]["pigID"]
+    testTypeCode  = pigID.slice(0,1)
+    testType = testTypeMap[testTypeCode]
+  }
   if (status === "insert") {
-    testTypeCode = req.body.insertType
+    testTypeCode = req.body["insertType"]
     testType = testTypeMap[testTypeCode]
   }
   // const editIDX = Number(pigID.slice(1))-1
@@ -487,14 +499,18 @@ app.post("/editFile", (req, res) => {
     };
 
     function editJson() {
-      const editIDX = Number(pigID.slice(1)) - 1
       const transferType = req.body["transferType"]
-      const inserFile = req.body["inserFile"]
-      const birthYear = String(Number(inserFile[0]['出生日期'].slice(0,3))-1911).padStart(3,"0")
-      const birthDay = inserFile[0]['出生日期'].slice(3)
-      inserFile[0]['出生日期'] = birthYear + birthDay
+      const insertFile = req.body["insertFile"]
+      const editIDX = Number(pigID.slice(1)) - 1
+      const birthYear = String(Number(insertFile[0]['出生日期'].replaceAll("-","").slice(0,4))-1911).padStart(3,"0")
+      const birthDay = insertFile[0]['出生日期'].replaceAll("-","").slice(4)
+      insertFile[0]['出生日期'] = birthYear + birthDay
+      
+
       if (transferType === testTypeCode) {
-        loadJsonList[editIDX] = inserFile
+        loadJsonList[editIDX] = insertFile
+        // console.log(loadJsonList);
+        
       } else {
         transferJson = loadJsonList.splice(editIDX, 1)[0]
         loadJsonList = checkID(loadJsonList, testTypeCode)
@@ -510,10 +526,14 @@ app.post("/editFile", (req, res) => {
 
     function insertJson() {
       const insertFile = JSON.parse(req.body["insertFile"])
-      const birthYear = String(Number(inserFile[0]['出生日期'].slice(0,3))-1911).padStart(3,'0')
-      const birthDay = inserFile[0]['出生日期'].slice(3)
-      inserFile[0]['出生日期'] = birthYear + birthDay
-      loadJsonList.push(insertFile)
+      let insertFileLst = []
+      const birthYear =  String(Number(insertFile[0]["出生日期"].replaceAll("-" , "").slice(0,4))-1911).padStart(3,"0")
+      const birthDay = insertFile[0]['出生日期'].replaceAll("-","").slice(4)
+      const initInsertFile  = {"pigID": "" , "confirmStatus": false}
+      insertFile[0]['出生日期'] = birthYear + birthDay
+      insertFileLst.push(insertFile)
+      insertFileLst.push(initInsertFile)
+      loadJsonList.push(insertFileLst)
       checkID(loadJsonList, testTypeCode)
       saveChange(loadJsonList, testType)
     }
@@ -545,6 +565,10 @@ app.post("/editFile", (req, res) => {
 })
 
 app.post('/insertPhoto' , upload.single("insertPhoto") , (req, res)=>{
+  res.status(200).send('success')
+})
+
+app.post('/uploadWordTem' , upload.single("uploadWordTem") , (req, res)=>{
   res.status(200).send('success')
 })
 

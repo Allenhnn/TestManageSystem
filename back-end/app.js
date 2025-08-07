@@ -73,18 +73,22 @@ app.post('/getfolder', multer().none(), (req, res) => {
 })
 
 app.post('/getjsons' , multer().none(),async(req ,res)=>{
+  
+  
   let resultLst =[]
   const userName = req.cookies.userName 
   const fileName  = req.body.fileName
-  console.log(userName);
-  console.log(fileName);
+  
   
   const fullTest = fs.readFileSync(`./user_data/${userName}/${fileName}/fullTest/fullTest.json`, 'utf-8')
   const studyTest = fs.readFileSync(`./user_data/${userName}/${fileName}/studyTest/studyTest.json`, 'utf-8')
   const technicalTest = fs.readFileSync(`./user_data/${userName}/${fileName}/technicalTest/technicalTest.json`, 'utf-8')
+  
+  
   const fullData = JSON.parse(fullTest)
   const studyData = JSON.parse(studyTest)
   const tecData = JSON.parse(technicalTest)
+  
   fullData.forEach((data) =>{
     const birthYear = (Number(data[0]['出生日期'].slice(0,3))+1911).toString()
     const birthDay = data[0]['出生日期'].slice(3)
@@ -104,7 +108,8 @@ app.post('/getjsons' , multer().none(),async(req ,res)=>{
     element[0]['出生日期'] = birthYear + birthDay
     resultLst.push(element)
   });
-  // console.log(resultLst)
+
+  
   res.cookie("fileName", fileName, {
     httpOnly: false,
     sameSite: "None",
@@ -383,7 +388,7 @@ app.post("/fillWd" , multer().none() ,async(req,res)=>{
   const chooseFile = req.body.fileName
   // const chooseFile = "test-1" ;//req.body['test-1.json]
   // const filePath = path.join(__dirname  , "user_data" , userName , )
-  const py = spawn('python' , ['fillWord.py' , userName , chooseFile]);
+  const py = spawn('python3' , ['fillWord.py' , userName , chooseFile]);
   let outputData =''
   py.stdout.on('data' , (data)=>{
     outputData += data.toString('utf-8')
@@ -433,7 +438,6 @@ app.get("/verifyData", (req, res) => {
 //   // if (!birthRegex.test(b))
 // }
 // const editUpload = multer()
-
 app.post("/editFile", (req, res) => {
   console.log(req.body);
   // console.log(req.body["status"])
@@ -568,9 +572,6 @@ app.post('/insertPhoto' , upload.single("insertPhoto") , (req, res)=>{
   res.status(200).send('success')
 })
 
-app.post('/uploadWordTem' , upload.single("uploadWordTem") , (req, res)=>{
-  res.status(200).send('success')
-})
 
 app.post('/confirm' , (req, res)=>{
   testTypeMap = {
@@ -581,7 +582,7 @@ app.post('/confirm' , (req, res)=>{
   const userName = req.cookies.userName
   const fileName = req.body.fileName
   const pigID  = req.body.pigID
-  // const insertFile = req.body.inserFile
+  // const insertFile = req.body.insertFile
   let testTypeCode = pigID.slice(0, 1)
   const testType = testTypeMap[testTypeCode]
   fs.readFile(`./user_data/${userName}/${fileName}/${testType}/${testType}.json` , 'utf-8' , (err , loadData)=>{
@@ -627,7 +628,10 @@ app.post('/confirmAll', multer().none(), (req, res) => {
   res.status(200).send('success')
 })
 
+app.post('/uploadWordTem' , upload.single("uploadWordTem") , (req, res)=>{
+  res.status(200).send('success')
+})
+
 app.listen(3000 , ()=>{
   console.log("server is running"); 
 })
-

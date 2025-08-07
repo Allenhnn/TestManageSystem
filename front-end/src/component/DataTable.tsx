@@ -59,7 +59,7 @@ type allProps = {
 }
 
 // higher order function only receive two arguments , props needs to become a set.
-const DataTable = forwardRef<ExportDataType, allProps>(({ datas, setData,swiperRef, enterDetailData, globalFilter, setGlobalFilter, setCalRows }, ref) => {
+const DataTable = forwardRef<ExportDataType, allProps>(({ datas,swiperRef, enterDetailData, globalFilter, setGlobalFilter, setCalRows }, ref) => {
     // const { modalOut } = props; 
 
     // const [data, setData] = useState(DATA);

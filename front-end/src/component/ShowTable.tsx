@@ -1,6 +1,6 @@
 import { useReactTable, getCoreRowModel, getFilteredRowModel, flexRender } from "@tanstack/react-table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faFileExport, faRightToBracket } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faFileExport, faPrint, faRightToBracket } from '@fortawesome/free-solid-svg-icons'
 import type { ColumnDef, ColumnFiltersState } from "@tanstack/react-table";
 import DATA from "../json/testPigID.json";
 import { forwardRef, useState, useImperativeHandle, useEffect } from "react";
@@ -44,7 +44,7 @@ export type rowData = {
     "comfirmStatus": boolean;
 }
 type receiveData = {
-    
+
 }
 
 type allProps = {
@@ -56,14 +56,15 @@ type allProps = {
     setCalRows: React.Dispatch<React.SetStateAction<rowType>>;
     datas: _ReloadStudentType[],
     setData: React.Dispatch<React.SetStateAction<_ReloadStudentType[]>>,
+    handlePDF : Function
 }
 
 // higher order function only receive two arguments , props needs to become a set.
-const ShowTable = forwardRef<ExportDataType, allProps>(({ datas, setData,swiperRef, enterDetailData, globalFilter, setGlobalFilter, setCalRows }, ref) => {
+const ShowTable = forwardRef<ExportDataType, allProps>(({handlePDF, datas, setData, swiperRef, enterDetailData, globalFilter, setGlobalFilter, setCalRows }, ref) => {
     // const { modalOut } = props; 
 
     // const [data, setData] = useState(DATA);
-    const [folder , setFolder] = useState<string[]>([]);
+    const [folder, setFolder] = useState<string[]>([]);
 
     // const [data, setData] = useState(() => {
     //     // 變平化 （解構 合併）
@@ -89,16 +90,16 @@ const ShowTable = forwardRef<ExportDataType, allProps>(({ datas, setData,swiperR
 
     const columns: ColumnDef<any>[] = [
         {
-            
+
             header: "No.",
             cell: (props: any) => <p>{props.row.index + 1}</p>
         }
         ,
         {
-            
+
             header: "資料夾名稱",
             // cell: (props: any) => <p>{props.getValue()}</p>
-            accessorFn : row => row
+            accessorFn: row => row
         }
         // ,
         // {
@@ -124,27 +125,29 @@ const ShowTable = forwardRef<ExportDataType, allProps>(({ datas, setData,swiperR
         //     header: "身分別",
         //     cell: (props: any) => <p>{props.getValue()}</p>
         // }
-        ,
-        {
-            accessorKey: "confirmStatus",
-            header: "報名狀態",
-            cell: (props: any) => {
-                if (props.getValue()) {
 
-                    return (
-                        <div className="viewFolder">
-                            <div className="checkStatus done">完成</div>
-                        </div>)
-                }
-                else {
-                    return (
-                        <div className="viewFolder">
-                            <div className="checkStatus">未完成</div>
-                        </div>
-                    )
-                }
-            }
-        }
+
+        // ,
+        // {
+        //     accessorKey: "confirmStatus",
+        //     header: "報名狀態",
+        //     cell: (props: any) => {
+        //         if (props.getValue()) {
+
+        //             return (
+        //                 <div className="viewFolder">
+        //                     <div className="checkStatus done">完成</div>
+        //                 </div>)
+        //         }
+        //         else {
+        //             return (
+        //                 <div className="viewFolder">
+        //                     <div className="checkStatus">未完成</div>
+        //                 </div>
+        //             )
+        //         }
+        //     }
+        // }
     ]
 
     const table = useReactTable({
@@ -160,12 +163,12 @@ const ShowTable = forwardRef<ExportDataType, allProps>(({ datas, setData,swiperR
     const totalRows = datas.length; // 全部資料筆數
     const filteredRows = table.getRowModel().rows.length; // 過濾後資料筆數
 
-    useEffect(()=>{
-        console.log("folder",folder);
-        
-    },[folder])
+    useEffect(() => {
+        console.log("folder", folder);
 
-    const receiveData = async() => {
+    }, [folder])
+
+    const receiveData = async () => {
         const URL: string = "http://localhost:3000/getfolder";
         try {
             const res = await fetch(URL, {
@@ -175,7 +178,7 @@ const ShowTable = forwardRef<ExportDataType, allProps>(({ datas, setData,swiperR
                     'Content-Type': 'application/json'
                 },
 
-                
+
             })
 
             if (!res.ok) throw new Error("500 server error");
@@ -190,7 +193,7 @@ const ShowTable = forwardRef<ExportDataType, allProps>(({ datas, setData,swiperR
         }
     }
     useEffect(() => {
-    receiveData();
+        receiveData();
         setCalRows((prev) => ({
             ...prev,
             value1: String(totalRows),
@@ -211,7 +214,7 @@ const ShowTable = forwardRef<ExportDataType, allProps>(({ datas, setData,swiperR
 
 
     return (
-    <div className="tableContainer">
+        <div className="tableContainer">
             <table border={1} cellPadding={6} >
                 <thead>
                     {table.getHeaderGroups().map((headerGroup) => (
@@ -245,9 +248,13 @@ const ShowTable = forwardRef<ExportDataType, allProps>(({ datas, setData,swiperR
                                 </td>
                             ))}
                             <td>
-                                {/* <div style={{ display: "flex" }}> */}
-                                <div className="iconEye next" onClick={() => enterDetailData(row.original)}>
-                                    <FontAwesomeIcon icon={faRightToBracket} />
+                                <div className="functionContainter">
+                                    <div className="iconEye next" onClick={() => enterDetailData(row.original)}>
+                                        <FontAwesomeIcon icon={faEye} />
+                                    </div>
+                                    <div className="iconEye next" onClick={() => enterDetailData(row.original)}>
+                                        <FontAwesomeIcon icon={faPrint} /> 
+                                    </div>
                                 </div>
                                 {/* 先view就好
                                     checkbox -> multiple export 

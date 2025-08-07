@@ -133,6 +133,9 @@ const ViewComponent = ({ setEditViewData, setEditFrameState, setViewFrameState, 
         }));
         setEditFrameState(1);
     }
+    const handlePDF = () =>{
+
+    }
     // ------------------------------------------------------------
 
     return (
@@ -149,7 +152,7 @@ const ViewComponent = ({ setEditViewData, setEditFrameState, setViewFrameState, 
 
 
                 <div className="tableSwiperContainer">
-                    <ShowTable datas={data} setData={setData} swiperRef={swiperRef.current} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} setCalRows={setCalRows} ref={triggerExportRef}
+                    <ShowTable handlePDF={handlePDF} datas={data} setData={setData} swiperRef={swiperRef.current} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} setCalRows={setCalRows} ref={triggerExportRef}
                         enterDetailData={enterDetailData} />
 
 

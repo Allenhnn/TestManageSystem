@@ -210,14 +210,17 @@ const RegisterFrame = () => {
             }
             else {
                 try {
-                    fetch("http://localhost:3000/upload", {
+                    console.log("123213",insertData);
+                    
+                    fetch("http://localhost:3000/editFile", {
 
                         method: "POST",
                         credentials: "include",
-                        body: formData
+                        body: JSON.stringify(insertData)
                     })
                         .then(res => setHandleFetch(handleFetch ? false : true))
-                    console.log(3);
+                        .then()
+                    // console.log(3)
 
                 }
                 catch (err) {
@@ -227,7 +230,7 @@ const RegisterFrame = () => {
 
                 // -------------------------------------
                 try {
-                    fetch("http://localhost:3000/upload", {
+                    fetch("http://localhost:3000/insertPhoto", {
                         headers: new Headers({
                             "Content-Type": "application/json"
                         }),
@@ -292,7 +295,7 @@ const RegisterFrame = () => {
         fetch("http://localhost:3000/confirmAll", {
             credentials: "include",
             method: "POST",
-            body: JSON.stringify({"fileName":folderName})
+            body: JSON.stringify({ "fileName": folderName })
         })
             .then((res) => setHandleFetch(handleFetch ? false : true))
         // .then((res)=>res.json())
@@ -303,19 +306,11 @@ const RegisterFrame = () => {
 
 
     }
+    
     const submitEditData = () => {
         // const formData = new FormData();
         const insertFile = EditViewData?.insertFile;
         // const transferValue = 
-        // setCurrentFolderName()
-        // console.log(data[arg][0]);
-
-
-
-        // setEditViewData(prev => ({
-        //     ...prev,
-        //     filename: currentFolderName
-        // }))
         let transferText = ""
         switch (EditViewData.insertFile[0]["檢定區別"]) {
             case "全測":
@@ -333,6 +328,7 @@ const RegisterFrame = () => {
                 break;
 
         }
+
         const uploadData: any = {
             ...EditViewData,
             filename: currentFolderName,
@@ -340,8 +336,8 @@ const RegisterFrame = () => {
             insertFile: [...EditViewData.insertFile]
         }
 
-
         setEditViewData(uploadData)
+
         if (Array.isArray(insertFile)) {
             const hasEmptyField = insertFile.some((item) => {
                 return Object.entries(item).some(([key, value]) => {
@@ -396,10 +392,10 @@ const RegisterFrame = () => {
     // }
     // table 細項切換//
     const [insertData, setInsertData] = useState<_InsertType>({
-        "status": "",
+        "status": "insert",
         "userName": "",
         "filename": "",
-        "insertType": "",
+        "insertType": "A",
         "insertFile": {
             "准考證號碼": "",
             "身分證號碼": "",
@@ -1013,7 +1009,7 @@ const RegisterFrame = () => {
                 break;
             case 1:
                 return (
-                    <DataTableContainer handleFetch={handleFetch} setConfirmAll={setConfirmAll} radioRef={radioRef} setTempPigID={setTempPigID} setRadioChecked={setRadioChecked} radioChecked={radioChecked} setCurrentFolderName={setCurrentFolderName} deleteEditData={deleteEditData} setEditViewData={setEditViewData} setDoubleCheck={setDoubleCheck} setEditFrameState={setEditFrameState} setViewFrameState={setViewFrameState} setFillInFrame={setFillInFrame} setLoadingState={setLoadingState} modalShow={modalShow} setModalShow={setModalShow} />
+                    <DataTableContainer handleFetch={handleFetch} setConfirmAll={setConfirmAll} radioRef={radioRef} setTempPigID={setTempPigID} setRadioChecked={setRadioChecked} radioChecked={radioChecked} currentFolderName={currentFolderName} setCurrentFolderName={setCurrentFolderName} deleteEditData={deleteEditData} setEditViewData={setEditViewData} setDoubleCheck={setDoubleCheck} setEditFrameState={setEditFrameState} setViewFrameState={setViewFrameState} setFillInFrame={setFillInFrame} setLoadingState={setLoadingState} modalShow={modalShow} setModalShow={setModalShow} />
 
                 )
                 break;

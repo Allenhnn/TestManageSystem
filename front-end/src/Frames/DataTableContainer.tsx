@@ -49,11 +49,12 @@ type InputProps = {
     radioChecked: number,
     setTempPigID: React.Dispatch<React.SetStateAction<tempType>>,
     setConfirmAll: React.Dispatch<React.SetStateAction<number>>,
-    handleFetch: boolean
+    handleFetch: boolean,
+    currentFolderName: string
 }
 
 
-const DataTableContainer = ({ handleFetch, setConfirmAll, radioRef, setTempPigID, setRadioChecked, radioChecked, setCurrentFolderName, deleteEditData, setEditViewData, setDoubleCheck, setEditFrameState, setViewFrameState, setLoadingState, modalShow, setModalShow, setFillInFrame }: InputProps) => {
+const DataTableContainer = ({ handleFetch, setConfirmAll, radioRef, setTempPigID, setRadioChecked, radioChecked, currentFolderName, setCurrentFolderName, deleteEditData, setEditViewData, setDoubleCheck, setEditFrameState, setViewFrameState, setLoadingState, modalShow, setModalShow, setFillInFrame }: InputProps) => {
 
     const [data, setData] = useState<_ReloadStudentType[]>([]);
     const [userInfo, setUserInfo] = useState<userInfoType>({ "userName": "dexter", "fileName": "test-1" })
@@ -73,23 +74,24 @@ const DataTableContainer = ({ handleFetch, setConfirmAll, radioRef, setTempPigID
 
     // const [tempStorage , setTempStorage] = useState()
 
+
     useEffect(() => {
-        fetchFn();
-        // alert()
-        // setHandleFetch(handleFetch?false:true)
-    }, [handleFetch])
-    // const confirmAll = () => {
+
+        fetchFn(currentFolderName);
+        // ✅ 第二次之後才執行
+        // if(currentFolderName && handleFetch){}
+    }, [handleFetch]);
+
 
     // }
-    const fetchFn = async() => {
+    const fetchFn = async (arg: string) => {
         try {
             setLoadingState(false);
             const URL: string = "http://localhost:3000/getjsons";
             const headers = new Headers({
                 "Content-Type": "application/json",
             })
-
-            const fetchData = await fetch(URL, { headers: headers, credentials: "include", method: "POST", body: JSON.stringify(userInfo) });
+            const fetchData = await fetch(URL, { headers: headers, credentials: "include", method: "POST", body: JSON.stringify({ "fileName": arg }) });
             const getData = await fetchData.json();
             setData(getData);
             setLoadingState(true);
@@ -116,7 +118,8 @@ const DataTableContainer = ({ handleFetch, setConfirmAll, radioRef, setTempPigID
         if (swiperRef.current) {
             swiperRef.current.slideNext();
         }
-        fetchFn()
+        // alert(currentFolderName)
+        fetchFn(arg)
         // try {
         //     setLoadingState(false);
         //     const URL: string = "http://localhost:3000/getjsons";
@@ -153,6 +156,23 @@ const DataTableContainer = ({ handleFetch, setConfirmAll, radioRef, setTempPigID
 
         setViewFrameState(1);
     }
+    const handleCombine = () => {
+        try {
+            const formData = new FormData();
+            const folderName = currentFolderName;
+            formData.append("chooseFile", folderName)
+            fetch("http://localhost:3000/fillWd", {
+                credentials: "include",
+                method: "POST",
+                body: formData
+            })
+                .then(res => { if (res.status == 200) { alert("success") } })
+        }
+        catch(err){
+            console.error("error")
+        }
+
+    }
     // 編輯***********
     const EditViewData = (arg: any, pigID: string) => {
         // alert(pigID)
@@ -162,7 +182,6 @@ const DataTableContainer = ({ handleFetch, setConfirmAll, radioRef, setTempPigID
         // }));
         console.log("-------editview=-------");
         console.log(arg);
-        let tempVal
 
         setEditViewData(prev => ({
             ...prev,
@@ -195,6 +214,7 @@ const DataTableContainer = ({ handleFetch, setConfirmAll, radioRef, setTempPigID
                         <div className="totalRows">
                             <div className={`dropdownList ${moreFn ? "" : "op0"}`} >
                                 <div className="dropdownItem" onClick={() => setFillInFrame(true)} > 新增 <FontAwesomeIcon icon={faCirclePlus} /></div>
+                                <div className="dropdownItem" onClick={() => handleCombine()} > 合併資料 <FontAwesomeIcon icon={faDatabase} /></div>
                                 <div className="dropdownItem" onClick={() => setConfirmAll(1)}> 確認全部 <FontAwesomeIcon icon={faCheckCircle} /></div>
                             </div>
                             {/* <Select options={function_type} placeholder="更多" /> */}

@@ -31,6 +31,22 @@
                 max-height: 30rem;
                 // height: 30rem;
                 overflow-y: scroll;
+                .functionContainter{
+                    display: flex;
+                    justify-content: center;
+                    gap: 1rem;
+                    // max-width: rem;
+                    // width: 10rem;
+                    .iconEye{
+                        @include all-center();
+
+                        height: 2rem;
+                        aspect-ratio: 1/1;
+                        border-radius: 50%;
+                        background-color: #7B46C7;
+                        color: white
+                    }
+                }
             }
         }
 
@@ -69,7 +85,7 @@
             // justify-content: center;
             justify-content: space-around;
             align-items: center;
-            width: 100%;
+            width: 98%;
             // background-color: red;
             border-radius: 25px;
             margin-bottom: 1rem;
@@ -84,6 +100,8 @@
                 justify-content: space-between;
                 align-items: center;
                 padding: 0.25rem 2rem;
+                width: 100%;
+                // box-sizing: border-box;
 
                 // background-color: green;
                 input {

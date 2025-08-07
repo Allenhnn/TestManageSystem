@@ -72,6 +72,9 @@ def fillin(userName , chooseFile , inputJsons , fileType):
                 elif table.cell(idxr,idxc-1).text.replace("\n" , '') == "英文姓名":
                     paragraphs = cell.paragraphs
                     paragraphs[0].text  = inputJson['英文姓名']
+                elif "准考證號碼" in table.cell(idxr,idxc-1).text.replace("\n" , '') :
+                    paragraphs = cell.paragraphs
+                    paragraphs[0].text  = inputJson['准考證號碼']
                 elif table.cell(idxr,idxc-1).text.replace("\n" , '') == "檢定區別" :
                     testTypeDic = {
                         "全測":"學術科全測 ",
@@ -279,12 +282,12 @@ def docxConvert():
     convert(f'./user_data/{userName}/{chooseFile}/combine.docx',f'./user_data/{userName}/{chooseFile}/combine.pdf')
 
 if __name__ == "__main__":
-    print("im running python")
     userName = sys.argv[1]
     chooseFile = sys.argv[2]
     combineWordPath = []
     if os.path.exists(f'./user_data/{userName}/{chooseFile}/fullTest/fullTest.json'):
-        with open(f'./user_data/{userName}/{chooseFile}/fullTest/fullTest.json' , encoding="utf-8") as f:
+        print("imin")
+        with open(f'./user_data/{userName}/{chooseFile}/fullTest/fullTest.json' , encoding="utf-8") as f:      
             inputJsons = json.load(f) 
         wordFilePath = fillin(userName , chooseFile , inputJsons  , "fullTest")
         path = combineWord(wordFilePath , "fullTest")
@@ -306,7 +309,6 @@ if __name__ == "__main__":
         path = combineWord(wordFilePath , "technicalTest")
         combineWordPath.append(path)
         # docxConvert()
-    
     combineWord(combineWordPath , "")
     docxConvert()
     

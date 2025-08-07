@@ -9,6 +9,7 @@ const cors = require('cors');
 const fs = require('fs');
 const  cookieParser =  require("cookie-parser")
 const multer = require('multer');
+const { log } = require('console');
 
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser())
@@ -72,27 +73,48 @@ app.post('/getfolder', multer().none(), (req, res) => {
 })
 
 app.post('/getjsons' , multer().none(),async(req ,res)=>{
+  
+  
   let resultLst =[]
   const userName = req.cookies.userName 
   const fileName  = req.body.fileName
-
+  
+  
   const fullTest = fs.readFileSync(`./user_data/${userName}/${fileName}/fullTest/fullTest.json`, 'utf-8')
   const studyTest = fs.readFileSync(`./user_data/${userName}/${fileName}/studyTest/studyTest.json`, 'utf-8')
   const technicalTest = fs.readFileSync(`./user_data/${userName}/${fileName}/technicalTest/technicalTest.json`, 'utf-8')
+  
+  
   const fullData = JSON.parse(fullTest)
   const studyData = JSON.parse(studyTest)
   const tecData = JSON.parse(technicalTest)
+  
   fullData.forEach((data) =>{
+    const birthYear = (Number(data[0]['出生日期'].slice(0,3))+1911).toString()
+    const birthDay = data[0]['出生日期'].slice(3)
+    data[0]['出生日期'] = birthYear + birthDay
+    console.log(data[0]['出生日期'])
     resultLst.push(data)
   })
   studyData.forEach(element => {
+    const birthYear = (Number(element[0]['出生日期'].slice(0,3))+1911).toString()
+    const birthDay = element[0]['出生日期'].slice(3)
+    element[0]['出生日期'] = birthYear + birthDay
     resultLst.push(element)
   });
   tecData.forEach(element => {
+    const birthYear = (Number(element[0]['出生日期'].slice(0,3))+1911).toString()
+    const birthDay = element[0]['出生日期'].slice(3,0)
+    element[0]['出生日期'] = birthYear + birthDay
     resultLst.push(element)
   });
+
   
-  res.status(200).json(resultLst)
+  res.cookie("fileName", fileName, {
+    httpOnly: false,
+    sameSite: "None",
+    secure: true
+  }).status(200).json(resultLst)
 })
 
 // app.post('/createFolder', multer().none(), async (req, res) => {
@@ -180,6 +202,8 @@ const storage = multer.diskStorage({
       folderPath = `./user_data/${userName}/${filePath}`
     }else if(extName === ".jpg"){
       folderPath = `./user_data/${userName}/${filePath}/image`
+    }else if (extName === ".docx"){
+      folderPath = "./convert_content"
     }
     cb(null, folderPath)
   },
@@ -189,6 +213,8 @@ const storage = multer.diskStorage({
     if(extName === ".xlsx"){
       uploadFileName = req.cookies.fileName + ".xlsx"
     }else if(extName === ".jpg"){
+      uploadFileName = file.originalname
+    }else {
       uploadFileName = file.originalname
     }
     cb(null, uploadFileName )
@@ -362,7 +388,7 @@ app.post("/fillWd" , multer().none() ,async(req,res)=>{
   const chooseFile = req.body.chooseFile
   // const chooseFile = "test-1" ;//req.body['test-1.json]
   // const filePath = path.join(__dirname  , "user_data" , userName , )
-  const py = spawn('python' , ['fillWord.py' , userName , chooseFile]);
+  const py = spawn('python3' , ['fillWord.py' , userName , chooseFile]);
   let outputData =''
   py.stdout.on('data' , (data)=>{
     outputData += data.toString('utf-8')
@@ -413,7 +439,6 @@ app.get("/verifyData", (req, res) => {
 // }
 
 // const editUpload = multer()
-
 app.post("/editFile", (req, res) => {
   console.log(req.body);
   // console.log(req.body["status"])
@@ -422,14 +447,23 @@ app.post("/editFile", (req, res) => {
     "B": "studyTest",
     "C": "technicalTest"
   }
+  let testTypeCode = ''
+  let testType = ''
+  let pigID = ''
   const status = req.body["status"]; //req.body
   const userName = req.cookies.userName; //req.body
-  const fileName = req.body["fileName"]; //req.body
-  const pigID = req.body["pigID"];  //req.body
-  let testTypeCode = pigID.slice(0, 1)
-  let testType = testTypeMap[pigID.slice(0, 1)]
+  const fileName = req.body["filename"]; //req.body
+  // const testTypeCode = pigID.slice(0, 1)
+  // const testType = testTypeMap[testTypeCode]
+  if (status === "edit"){
+    
+    const insertFile = req.body["insertFile"]
+    pigID = insertFile[1]["pigID"]
+    testTypeCode  = pigID.slice(0,1)
+    testType = testTypeMap[testTypeCode]
+  }
   if (status === "insert") {
-    testTypeCode = req.body.insertType
+    testTypeCode = req.body["insertType"]
     testType = testTypeMap[testTypeCode]
   }
   // const editIDX = Number(pigID.slice(1))-1
@@ -470,12 +504,18 @@ app.post("/editFile", (req, res) => {
     };
 
     function editJson() {
-      const editIDX = Number(pigID.slice(1)) - 1
       const transferType = req.body["transferType"]
-      const inserFile = req.body["inserFile"]
+      const insertFile = req.body["insertFile"]
+      const editIDX = Number(pigID.slice(1)) - 1
+      const birthYear = String(Number(insertFile[0]['出生日期'].replaceAll("-","").slice(0,4))-1911).padStart(3,"0")
+      const birthDay = insertFile[0]['出生日期'].replaceAll("-","").slice(4)
+      insertFile[0]['出生日期'] = birthYear + birthDay
+      
 
       if (transferType === testTypeCode) {
-        loadJsonList[editIDX] = inserFile
+        loadJsonList[editIDX] = insertFile
+        // console.log(loadJsonList);
+        
       } else {
         transferJson = loadJsonList.splice(editIDX, 1)[0]
         loadJsonList = checkID(loadJsonList, testTypeCode)
@@ -491,7 +531,14 @@ app.post("/editFile", (req, res) => {
 
     function insertJson() {
       const insertFile = JSON.parse(req.body["insertFile"])
-      loadJsonList.push(insertFile)
+      let insertFileLst = []
+      const birthYear =  String(Number(insertFile[0]["出生日期"].replaceAll("-" , "").slice(0,4))-1911).padStart(3,"0")
+      const birthDay = insertFile[0]['出生日期'].replaceAll("-","").slice(4)
+      const initInsertFile  = {"pigID": "" , "confirmStatus": false}
+      insertFile[0]['出生日期'] = birthYear + birthDay
+      insertFileLst.push(insertFile)
+      insertFileLst.push(initInsertFile)
+      loadJsonList.push(insertFileLst)
       checkID(loadJsonList, testTypeCode)
       saveChange(loadJsonList, testType)
     }
@@ -522,6 +569,11 @@ app.post("/editFile", (req, res) => {
   });
 })
 
+app.post('/insertPhoto' , upload.single("insertPhoto") , (req, res)=>{
+  res.status(200).send('success')
+})
+
+
 app.post('/confirm' , (req, res)=>{
   testTypeMap = {
     "A": "fullTest",
@@ -531,7 +583,7 @@ app.post('/confirm' , (req, res)=>{
   const userName = req.cookies.userName
   const fileName = req.body.fileName
   const pigID  = req.body.pigID
-  // const insertFile = req.body.inserFile
+  // const insertFile = req.body.insertFile
   let testTypeCode = pigID.slice(0, 1)
   const testType = testTypeMap[testTypeCode]
   fs.readFile(`./user_data/${userName}/${fileName}/${testType}/${testType}.json` , 'utf-8' , (err , loadData)=>{
@@ -574,6 +626,10 @@ app.post('/confirmAll', multer().none(), (req, res) => {
     return jsons
   }
 
+  res.status(200).send('success')
+})
+
+app.post('/uploadWordTem' , upload.single("uploadWordTem") , (req, res)=>{
   res.status(200).send('success')
 })
 

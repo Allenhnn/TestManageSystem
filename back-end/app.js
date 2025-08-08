@@ -387,7 +387,7 @@ app.get("/seeAllJson", async (req, res) => {
 app.post("/fillWd", multer().none(), async (req, res) => {
   // const userName = "dexter" ;//req.body['username']
   const userName = req.cookies.userName
-  const chooseFile = req.body.chooseFile
+  const chooseFile = req.body.fileName
   // const chooseFile = "test-1" ;//req.body['test-1.json]
   // const filePath = path.join(__dirname  , "user_data" , userName , )
   const py = spawn('python3', ['fillWord.py', userName, chooseFile]);
@@ -439,7 +439,6 @@ app.get("/verifyData", (req, res) => {
 //   const birthDay = json_data["出生日期"]  
 //   // if (!birthRegex.test(b))
 // }
-
 // const editUpload = multer()
 app.post("/editFile", (req, res) => {
   console.log(req.body);

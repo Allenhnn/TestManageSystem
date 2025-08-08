@@ -270,9 +270,6 @@ const RegisterFrame = () => {
 
                     console.log("123213", insertData);
                     fetch("http://localhost:3000/editFile", {
-                        headers:{
-                            "Content-type" : 'application/json'
-                        },
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"

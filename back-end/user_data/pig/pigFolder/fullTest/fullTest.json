@@ -57,13 +57,8 @@
     {
       "准考證號碼": "3",
       "身分證號碼": "N126976985",
-<<<<<<< HEAD:back-end/user_data/dexter/test-1/fullTest/fullTest.json
-      "中文姓名": "呂誠意",
-      "出生日期": "9546",
-=======
       "中文姓名": "呂億億",
       "出生日期": "0950406",
->>>>>>> refs/remotes/origin/main:back-end/user_data/allenhnn/kkkkkkk/fullTest/fullTest.json
       "報簡職類": "會資",
       "英文姓名": "LU,MING-YI",
       "檢定區別": "全測",

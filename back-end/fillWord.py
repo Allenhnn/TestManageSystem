@@ -31,6 +31,9 @@ def fillin(userName , chooseFile , inputJsons , fileType):
         for idxr, row in enumerate(table.rows):
             for idxc , cell in enumerate(row.cells):
                 if cell.text == "" and table.cell(idxr,idxc-1) not in filledInfo:
+                    if "准考證號碼" in table.cell(idxr,idxc-1).text :
+                        paragraphs = cell.paragraphs
+                        paragraphs[0].text  = inputJson['准考證號碼']
                     fillitemIdx = table.cell(idxr,idxc-1).text.replace('\n','')
                     try:
                         cell.text = inputJson[fillitemIdx]
@@ -39,7 +42,7 @@ def fillin(userName , chooseFile , inputJsons , fileType):
                         pass
                 elif table.cell(idxr,idxc-1).text.replace("\n" , '') == "報檢職類":
                     type_dict = {
-                        '視覺':'視覺傳達設計',
+                        '視覺':'視覺傳達設計', 
                         '會計人工':'會計事務 -人工記帳',
                         '會計資訊':'會計事務 -資訊',
                         '會資':'會計事務 -資訊',
@@ -73,9 +76,6 @@ def fillin(userName , chooseFile , inputJsons , fileType):
                 elif table.cell(idxr,idxc-1).text.replace("\n" , '') == "英文姓名":
                     paragraphs = cell.paragraphs
                     paragraphs[0].text  = inputJson['英文姓名']
-                elif "准考證號碼" in table.cell(idxr,idxc-1).text.replace("\n" , '') :
-                    paragraphs = cell.paragraphs
-                    paragraphs[0].text  = inputJson['准考證號碼']
                 elif table.cell(idxr,idxc-1).text.replace("\n" , '') == "檢定區別" :
                     testTypeDic = {
                         "全測":"學術科全測 ",

@@ -396,6 +396,7 @@ app.get("/seeAllJson", async (req, res) => {
 
 app.post("/fillWd", multer().none(), async (req, res) => {
   // const userName = "dexter" ;//req.body['username']
+  console.log(req.body)
   const userName = req.cookies.userName
   const chooseFile = req.body.chooseFile
   // const chooseFile = "test-1" ;//req.body['test-1.json]

@@ -42,7 +42,7 @@ def fillin(userName , chooseFile , inputJsons , fileType):
                         pass
                 elif table.cell(idxr,idxc-1).text.replace("\n" , '') == "報檢職類":
                     type_dict = {
-                        '視覺':'視覺傳達設計',
+                        '視覺':'視覺傳達設計', 
                         '會計人工':'會計事務 -人工記帳',
                         '會計資訊':'會計事務 -資訊',
                         '會資':'會計事務 -資訊',

@@ -3,29 +3,29 @@ const express = require('express');
 const app = express();
 const path = require("path")
 const nodemailer = require("nodemailer")
-const { sequelize, userAccounts  , fileInfo , jsonFile} = require('./sqlSetting');
+const { sequelize, userAccounts, fileInfo, jsonFile } = require('./sqlSetting');
 const { where, json, AsyncQueueError } = require('sequelize');
 const cors = require('cors');
 const fs = require('fs');
-const  cookieParser =  require("cookie-parser")
+const cookieParser = require("cookie-parser")
 const multer = require('multer');
 const { log } = require('console');
 
-app.use(express.urlencoded({extended:true}))
+app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(cors({
   origin: "http://localhost:5173", // 只允許這個來源的前端請求
-  credentials : true
+  credentials: true
 }));
 app.use(express.json())
 
 
-app.get("/test" , (req, res) => {
+app.get("/test", (req, res) => {
   console.log("test success")
   res.send('success')
 })
 
-app.get('/' , async(req,res)=>{
+app.get('/', async (req, res) => {
   res.sendFile(path.join(__dirname, 'test.html'));
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
@@ -72,49 +72,53 @@ app.post('/getfolder', multer().none(), (req, res) => {
   })
 })
 
-app.post('/getjsons' , multer().none(),async(req ,res)=>{
-  let resultLst =[]
-  const userName = req.cookies.userName 
-  const fileName  = req.body.fileName
+app.post('/getjsons', multer().none(), async (req, res) => {
+  console.log(req.body);
+  let resultLst = []
+  const userName = req.cookies.userName
+  const fileName = req.body.fileName
   const fullTest = fs.readFileSync(`./user_data/${userName}/${fileName}/fullTest/fullTest.json`, 'utf-8')
   const studyTest = fs.readFileSync(`./user_data/${userName}/${fileName}/studyTest/studyTest.json`, 'utf-8')
   const technicalTest = fs.readFileSync(`./user_data/${userName}/${fileName}/technicalTest/technicalTest.json`, 'utf-8')
-  
   const fullData = JSON.parse(fullTest)
   const studyData = JSON.parse(studyTest)
   const tecData = JSON.parse(technicalTest)
-  let imgList = []
 
-  fullData.forEach((data) =>{
-    const birthYear = (Number(data[0]['出生日期'].slice(0,3))+1911).toString()
+  fullData.forEach((data) => {
+    const birthYear = (Number(data[0]['出生日期'].slice(0, 3)) + 1911).toString()
     const birthDay = data[0]['出生日期'].slice(3)
     data[0]['出生日期'] = birthYear + birthDay
     resultLst.push(data)
   })
   studyData.forEach(element => {
-    const birthYear = (Number(element[0]['出生日期'].slice(0,3))+1911).toString()
+    const birthYear = (Number(element[0]['出生日期'].slice(0, 3)) + 1911).toString()
     const birthDay = element[0]['出生日期'].slice(3)
     element[0]['出生日期'] = birthYear + birthDay
     resultLst.push(element)
   });
   tecData.forEach(element => {
-    const birthYear = (Number(element[0]['出生日期'].slice(0,3))+1911).toString()
-    const birthDay = element[0]['出生日期'].slice(3,0)
+    const birthYear = (Number(element[0]['出生日期'].slice(0, 3)) + 1911).toString()
+    const birthDay = element[0]['出生日期'].slice(3, 0)
     element[0]['出生日期'] = birthYear + birthDay
     resultLst.push(element)
   });
-  
+
   res.cookie("fileName", fileName, {
     httpOnly: false,
     sameSite: "None",
     secure: true
   }).status(200).json(resultLst)
+
 })
 
-app.get('/:userName/:fileName/:imgFile' , (req,res)=>{
-  const imgFile = path.join(__dirname , `./user_data/${req.params.userName}/${req.params.fileName}/image/${req.params.imgFile}.jpg`)
+app.get('/:userName/:fileName/:imgFile', (req, res) => {
+  console.log("123123123");
+
+  const imgFile = path.join(__dirname, `./user_data/${req.params.userName}/${req.params.fileName}/image/${req.params.imgFile}.jpg`)
   res.sendFile(imgFile)
 })
+
+
 // app.post('/createFolder', multer().none(), async (req, res) => {
 //   console.log(req.body);
 //   console.log(1231231231231232112321321321323+"piyna")
@@ -126,7 +130,7 @@ app.get('/:userName/:fileName/:imgFile' , (req,res)=>{
 //         jsonName: fileName
 //       }
 //     });
-    
+
 
 //     if (!files) {
 //       console.log(1231231231231232112321321321323+"piyna")
@@ -184,7 +188,7 @@ app.post('/createFolder', multer().none(), async (req, res) => {
         sameSite: "None",
         secure: true
       }).status(200).send("成功了!!")
-    }else{
+    } else {
       res.status(400).send("file duplicated")
     }
   })
@@ -192,38 +196,37 @@ app.post('/createFolder', multer().none(), async (req, res) => {
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const extName = path.extname(file.originalname).toLowerCase
+    // console.log(fill.originalName);
+    const extName = path.extname(file.originalname)
     const userName = req.cookies.userName
     const filePath = req.cookies.fileName
     let folderPath = ''
-    if(extName === ".xlsx"){
+    if (extName === ".xlsx") {
       folderPath = `./user_data/${userName}/${filePath}`
-    }else if(extName === ".jpg"){
+    } else if (extName === ".jpg") {
       folderPath = `./user_data/${userName}/${filePath}/image`
-    }else if (extName === ".docx"){
+    } else if (extName === ".docx") {
       folderPath = `./user_data/${userName}/${filePath}`
-    }else{
-      folderPath = `./user_data/${userName}/${filePath}/image`
     }
     cb(null, folderPath)
   },
   filename: function (req, file, cb) {
-    const extName  = path.extname(file.originalname)
+    const extName = path.extname(file.originalname)
     let uploadFileName = ""
-    if(extName === ".xlsx"){
+    if (extName === ".xlsx") {
       uploadFileName = req.cookies.fileName + ".xlsx"
-    }else if(extName === ".jpg"){
+    } else if (extName === ".jpg") {
       uploadFileName = file.originalname
-    }else {
+    } else {
       uploadFileName = "5.報名表正面.docx"
     }
-    cb(null, uploadFileName )
+    cb(null, uploadFileName)
   }
 })
 
 const upload = multer({ storage: storage })
-app.post('/upload',  upload.fields([{ name:'excelFile' }, { name:'photoFile'}]), async (req, res) => {  
-  console.log("reqBOdy:" , req.body)
+app.post('/upload', upload.fields([{ name: 'excelFile' }, { name: 'photoFile' }]), async (req, res) => {
+  console.log("reqBOdy:", req.body)
   const userName = req.cookies.userName
   const fileName = req.cookies.fileName
   const excelFile = req.body.originalName
@@ -235,7 +238,7 @@ app.post('/upload',  upload.fields([{ name:'excelFile' }, { name:'photoFile'}]),
     outputData += data.toString('utf-8')
   })
 
-  py.stderr.on('data' , (data) =>{
+  py.stderr.on('data', (data) => {
     console.log(data.toString('utf-8'));
   })
 
@@ -256,10 +259,10 @@ app.post('/upload',  upload.fields([{ name:'excelFile' }, { name:'photoFile'}]),
   })
 })
 
-app.post('/signup' , (req,res) =>{
-  const applier  = req.body.signEmail;
+app.post('/signup', (req, res) => {
+  const applier = req.body["signEmail"];
   // console.log(req.body.signEmail);
-  
+
   console.log(applier);
   const transporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -269,7 +272,7 @@ app.post('/signup' , (req,res) =>{
     }
   })
 
-  const randomCode = Math.floor(Math.random()*9000)+1000;
+  const randomCode = Math.floor(Math.random() * 9000) + 1000;
   console.log(randomCode)
   const mailOptions = {
     from: "TestSystem",
@@ -287,50 +290,54 @@ app.post('/signup' , (req,res) =>{
   })
 })
 
-app.post("/login" ,async (req, res) =>{
+app.post("/login", async (req, res) => {
   console.log(req.body)
-  const reqAcc = req.body.loginAccount;
-  const reqPsd  = req.body.loginPassword;
-  sequelize.sync().then(async()=>{
-    const targetAcc = await userAccounts.findOne({where:{
-      userAcc:reqAcc
+  const reqAcc = req.body["loginAccount"];
+  const reqPsd = req.body["loginPassword"];
+  sequelize.sync().then(async () => {
+    const targetAcc = await userAccounts.findOne({
+      where: {
+        userAcc: reqAcc
       }
     });
-    
+
     console.log(`targetAcc:${targetAcc.userAcc}`);
     console.log(`targetPsd:${targetAcc.userPsd}`)
-    if (targetAcc.userPsd === reqPsd){
-      res.cookie("userName" , reqAcc ,{
-        httpOnly:false,
-        sameSite:"None",
-        secure :true
+    if (targetAcc.userPsd === reqPsd) {
+      res.cookie("userName", reqAcc, {
+        httpOnly: false,
+        sameSite: "None",
+        secure: true
       }).status(200).send("success")
-      }else{
-        res.status(400).send("false")
-      }
+    } else {
+      res.status(400).send("false")
+    }
   })
 })
 
-app.post("/createOneAcc" , multer().none(),async(req, res) => {
-  const userAccount = req.body.signAccount
-  const userPassword = req.body.signPassword
-  const newFolderPath = path.join(__dirname , "user_data" , userAccount)
+app.post("/createOneAcc", multer().none(), async (req, res) => {
+  console.log(req.body);
+
+  const userAccount = req.body["signAccount"]
+  const userPassword = req.body["signPassword"]
+  const newFolderPath = path.join(__dirname, "user_data", userAccount)
   sequelize.sync().then(() => {
     userAccounts.create({
-      userAcc : userAccount,
-      userPsd : userPassword
-    }).then(()=>{
-      fs.mkdirSync(newFolderPath, { recursive: true }); 
+      userAcc: userAccount,
+      userPsd: userPassword
+    }).then(() => {
+      fs.mkdirSync(newFolderPath, { recursive: true });
       console.log("account already ready")
-      res.cookie("userName" , userAccount ,{
-        httpOnly:false,
-        sameSite:"None",
-        secure :true
-      })   
+      res.cookie("userName", userAccount, {
+        httpOnly: false,
+        sameSite: "None",
+        secure: true
+      })
       res.status(200).send("成功了!!")
-    }).catch(err=>{
-      if(err.name === "SequelizeUniqueConstraintError"){
+    }).catch(err => {
+      if (err.name === "SequelizeUniqueConstraintError") {
         console.log('帳號重複')
+        res.status(400).send("duplicated")
         return;
       };
     })
@@ -343,7 +350,7 @@ app.get("/desTestAcc", async (req, res) => {
     const accounts = await userAccounts.findAll();
     for (const account of accounts) {
       console.log(`useracc: ${account.userAcc} has been deleted`);
-      await account.destroy();  
+      await account.destroy();
     }
     res.json({ message: "All accounts deleted" });
   } catch (error) {
@@ -352,53 +359,53 @@ app.get("/desTestAcc", async (req, res) => {
   }
 });
 
-app.get("/showAllAcc" , async(req,res)=>{
-    sequelize.sync().then(async()=>{
-      const accounts = await userAccounts.findAll();
-      var counter=0 ;
-      for (const account of accounts){
-        counter++;
-        console.log(`userID ${counter}:${account.userID}`)
-        console.log(`userAccount ${counter} :${account.userAcc}`);
-        console.log(`userPassword ${counter} :${account.userPsd}`);
-      }
-    })
+app.get("/showAllAcc", async (req, res) => {
+  sequelize.sync().then(async () => {
+    const accounts = await userAccounts.findAll();
+    var counter = 0;
+    for (const account of accounts) {
+      counter++;
+      console.log(`userID ${counter}:${account.userID}`)
+      console.log(`userAccount ${counter} :${account.userAcc}`);
+      console.log(`userPassword ${counter} :${account.userPsd}`);
+    }
+  })
 })
 
-app.get("/seeAllJson" , async(req,res)=>{
-  sequelize.sync().then(async()=>{
-      const files = await jsonFile.findAll();
-      var counter=0 ;
-      for (const file of files){
-        counter++;
-        console.log(` ${counter}:${file.jsonID}`)
-        console.log(` ${counter} :${file.jsonName}`);
-        console.log(` ${counter} :${file.userAcc}`);
-      }
+app.get("/seeAllJson", async (req, res) => {
+  sequelize.sync().then(async () => {
+    const files = await jsonFile.findAll();
+    var counter = 0;
+    for (const file of files) {
+      counter++;
+      console.log(` ${counter}:${file.jsonID}`)
+      console.log(` ${counter} :${file.jsonName}`);
+      console.log(` ${counter} :${file.userAcc}`);
+    }
   })
 })
 
 // function verify_regular(){
-  
+
 // }
 
-app.post("/fillWd" , multer().none() ,async(req,res)=>{
+app.post("/fillWd", multer().none(), async (req, res) => {
   // const userName = "dexter" ;//req.body['username']
   const userName = req.cookies.userName
   const chooseFile = req.body.fileName
   // const chooseFile = "test-1" ;//req.body['test-1.json]
   // const filePath = path.join(__dirname  , "user_data" , userName , )
-  const py = spawn('python3' , ['fillWord.py' , userName , chooseFile]);
-  let outputData =''
-  py.stdout.on('data' , (data)=>{
+  const py = spawn('python3', ['fillWord.py', userName, chooseFile]);
+  let outputData = ''
+  py.stdout.on('data', (data) => {
     outputData += data.toString('utf-8')
   });
 
   py.stderr.on('data', (data) => {
-    console.error("Python error:", data.toString('utf-8'));  
+    console.error("Python error:", data.toString('utf-8'));
   });
 
-  py.on('close' , ()=>{
+  py.on('close', () => {
     console.log(outputData)
     res.send('success').status(200)
   })
@@ -413,10 +420,10 @@ app.get("/verifyData", (req, res) => {
       console.log(err)
       return;
     }
-    const jsonList =JSON.parse(loadJsonList)
-    jsonList.forEach((jsonData , idx) => {
+    const jsonList = JSON.parse(loadJsonList)
+    jsonList.forEach((jsonData, idx) => {
       const badInfo = verify_data(jsonData, idx)
-      if (badInfo != null){
+      if (badInfo != null) {
         badInfoList.push(badInfo)
       }
     });
@@ -440,6 +447,7 @@ app.get("/verifyData", (req, res) => {
 // const editUpload = multer()
 app.post("/editFile",multer().none(), (req, res) => {
   console.log(req.body);
+
   // console.log(req.body["status"])
   testTypeMap = {
     "A": "fullTest",
@@ -454,26 +462,21 @@ app.post("/editFile",multer().none(), (req, res) => {
   const fileName = req.body["filename"]; //req.body
   // const testTypeCode = pigID.slice(0, 1)
   // const testType = testTypeMap[testTypeCode]
-  if (status === "edit"){
-    
+  if (status === "edit") {
     const insertFile = req.body["insertFile"]
     pigID = insertFile[1]["pigID"]
-    testTypeCode  = pigID.slice(0,1)
+    testTypeCode = pigID.slice(0, 1)
     testType = testTypeMap[testTypeCode]
   }
   if (status === "insert") {
     testTypeCode = req.body["insertType"]
     testType = testTypeMap[testTypeCode]
   }
-
-  if (status === "delete"){
+  if (status === "delete") {
     pigID = req.body["pigID"]
-    testTypeCode  = pigID.slice(0,1)
+    testTypeCode = pigID.slice(0, 1)
     testType = testTypeMap[testTypeCode]
   }
-
-  console.log(pigID , "=" , testType );
-  
   // const editIDX = Number(pigID.slice(1))-1
   fs.readFile(`./user_data/${userName}/${fileName}/${testType}/${testType}.json`, 'utf8', async (err, jsonList) => {
     if (err) {
@@ -515,15 +518,15 @@ app.post("/editFile",multer().none(), (req, res) => {
       const transferType = req.body["transferType"]
       const insertFile = req.body["insertFile"]
       const editIDX = Number(pigID.slice(1)) - 1
-      const birthYear = String(Number(insertFile[0]['出生日期'].replaceAll("-","").slice(0,4))-1911).padStart(3,"0")
-      const birthDay = insertFile[0]['出生日期'].replaceAll("-","").slice(4)
+      const birthYear = String(Number(insertFile[0]['出生日期'].replaceAll("-", "").slice(0, 4)) - 1911).padStart(3, "0")
+      const birthDay = insertFile[0]['出生日期'].replaceAll("-", "").slice(4)
       insertFile[0]['出生日期'] = birthYear + birthDay
-      
+
 
       if (transferType === testTypeCode) {
         loadJsonList[editIDX] = insertFile
         // console.log(loadJsonList);
-        
+
       } else {
         transferJson = loadJsonList.splice(editIDX, 1)[0]
         loadJsonList = checkID(loadJsonList, testTypeCode)
@@ -538,12 +541,14 @@ app.post("/editFile",multer().none(), (req, res) => {
     }
 
     function insertJson() {
-      const insertFile = JSON.parse(req.body["insertFile"])
+      console.log(req.body["insertFile"]);
+
+      const insertFile = req.body["insertFile"]
       let insertFileLst = []
-      const birthYear =  String(Number(insertFile[0]["出生日期"].replaceAll("-" , "").slice(0,4))-1911).padStart(3,"0")
-      const birthDay = insertFile[0]['出生日期'].replaceAll("-","").slice(4)
-      const initInsertFile  = {"pigID": "" , "confirmStatus": false}
-      insertFile[0]['出生日期'] = birthYear + birthDay
+      const birthYear = String(Number(insertFile["出生日期"].replaceAll("-", "").slice(0, 4)) - 1911).padStart(3, "0")
+      const birthDay = insertFile['出生日期'].replaceAll("-", "").slice(4)
+      const initInsertFile = { "pigID": "", "confirmStatus": false }
+      insertFile['出生日期'] = birthYear + birthDay
       insertFileLst.push(insertFile)
       insertFileLst.push(initInsertFile)
       loadJsonList.push(insertFileLst)
@@ -577,13 +582,13 @@ app.post("/editFile",multer().none(), (req, res) => {
   });
 })
 
-app.post('/insertPhoto' , upload.single("insertPhoto") , (req, res)=>{
-  console.log('in inserting')
+app.post('/insertPhoto', upload.single("insertPhoto"), (req, res) => {
+  console.log("pypypypypy");
   res.status(200).send('success')
 })
 
 
-app.post('/confirm' , (req, res)=>{
+app.post('/confirm', multer().none(), (req, res) => {
   testTypeMap = {
     "A": "fullTest",
     "B": "studyTest",
@@ -591,22 +596,41 @@ app.post('/confirm' , (req, res)=>{
   }
   const userName = req.cookies.userName
   const fileName = req.body.fileName
-  const pigID  = req.body.pigID
+  const pigID = req.body.pigID
   // const insertFile = req.body.insertFile
   let testTypeCode = pigID.slice(0, 1)
   const testType = testTypeMap[testTypeCode]
-  fs.readFile(`./user_data/${userName}/${fileName}/${testType}/${testType}.json` , 'utf-8' , (err , loadData)=>{
+
+  console.log("pigIDpigIDpigIDpigIDpigIDpigID");
+  console.log(pigID);
+  console.log(testTypeCode);
+  console.log(testType);
+
+  fs.readFile(`./user_data/${userName}/${fileName}/${testType}/${testType}.json`, 'utf-8', (err, loadData) => {
     const editIDX = Number(pigID.slice(1)) - 1
-    jsondatas  = JSON.parse(loadData)
+    jsondatas = JSON.parse(loadData)
     jsondatas[editIDX][1]["confirmStatus"] = true
-    fs.writeFile(`./user_data/${userName}/${fileName}/${testType}/${testType}.json`  , JSON.stringify(jsondatas , null,2))
+    fs.writeFile(`./user_data/${userName}/${fileName}/${testType}/${testType}.json`, JSON.stringify(jsondatas, null, 2), (err) => {
+      if (err) {
+        res.status(400).send("fail")
+        console.error("寫入 JSON 檔失敗:", err);
+      } else {
+        res.status(200).send("success")
+        console.log("寫入 JSON 檔成功");
+      }
+    })
   })
 })
 
-app.post('/getPdf' ,multer().none(), (req , res)=>{
+app.post('/getPdf', multer().none(), (req, res) => {
+  console.log("我已經好多天沒有正常睡覺了 希望老闆可以給我好一點的待遇 我從小時後就過得沒有很好 到了國小 也被同學們排擠 老師也都對我不好 上了國中成績又不好 上了不好了高中 也避不了業 大學也考了一個私立的科大 去711上班 跳樓");
+  console.log(req.body);
+  console.log(req.cookies.userName);
+
+
   const fileName = req.body.fileName
   const userName = req.cookies.userName
-  const pdfPath = path.join(__dirname , "user_data" , userName , fileName , 'combine.pdf')
+  const pdfPath = path.join(__dirname, "user_data", userName, fileName, 'combine.pdf')
   res.setHeader('Content-Type', 'application/pdf');
   res.sendFile(pdfPath);
 })
@@ -620,15 +644,15 @@ app.post('/confirmAll', multer().none(), (req, res) => {
   const technicalTest = fs.readFileSync(`./user_data/${userName}/${fileName}/technicalTest/technicalTest.json`)
 
   const fullTestJsons = writeList(JSON.parse(fullTest))
-  fs.writeFileSync(`./user_data/${userName}/${fileName}/fullTest/fullTest.json` , JSON.stringify(fullTestJsons , null ,2))
-  
+  fs.writeFileSync(`./user_data/${userName}/${fileName}/fullTest/fullTest.json`, JSON.stringify(fullTestJsons, null, 2))
+
   const studyTestJsons = writeList(JSON.parse(studyTest))
-  fs.writeFileSync(`./user_data/${userName}/${fileName}/studyTest/studyTest.json` , JSON.stringify(studyTestJsons , null , 2))
+  fs.writeFileSync(`./user_data/${userName}/${fileName}/studyTest/studyTest.json`, JSON.stringify(studyTestJsons, null, 2))
 
   const technicalTestJsons = writeList(JSON.parse(technicalTest))
-  fs.writeFileSync(`./user_data/${userName}/${fileName}/technicalTest/technicalTest.json` , JSON.stringify(technicalTestJsons , null,2))
+  fs.writeFileSync(`./user_data/${userName}/${fileName}/technicalTest/technicalTest.json`, JSON.stringify(technicalTestJsons, null, 2))
 
-  function writeList(jsons){
+  function writeList(jsons) {
     jsons.forEach(json => {
       json[1]["confirmStatus"] = true
     });
@@ -638,10 +662,11 @@ app.post('/confirmAll', multer().none(), (req, res) => {
   res.status(200).send('success')
 })
 
-app.post('/uploadWordTem' , upload.single("uploadWordTem") , (req, res)=>{
+app.post('/uploadWordTem', upload.single("uploadWordTem"), (req, res) => {
+  console.log("server is bombing");
   res.status(200).send('success')
 })
 
-app.listen(3000 , ()=>{
-  console.log("server is running"); 
+app.listen(3000, () => {
+  console.log("server is running");
 })

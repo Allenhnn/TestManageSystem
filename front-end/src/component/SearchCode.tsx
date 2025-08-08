@@ -76,13 +76,13 @@ const SearchCode = () => {
     return (
         <div className="SearchCode">
             <div className="leftsideContainer">
-                <div className="searchBarContainer">
+                {/* <div className="searchBarContainer">
                     <div className="searchBar" onClick={userFocus}>
                         <input type="text" value={globalFilter} ref={inputRef} onChange={(e) => { setGlobalFilter(e.target.value) }}
                             placeholder={"請輸入要搜尋的學生資料"} />
                         <div className="mag-icon"><FontAwesomeIcon icon={faMagnifyingGlass} /></div>
                     </div>
-                </div>
+                </div> */}
                 <div className="previewDatas" ref={viewHeightRef} ><CodeTableSearchContainer handleResult={handleResult} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} /></div>
             </div>
             <div className="rightsideContainer">

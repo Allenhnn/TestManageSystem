@@ -14,12 +14,13 @@ type stateType = {
     viewData: _EditType,
     // EditViewData: _EditType,
     viewFrameState: number,
-    setViewFrameState: React.Dispatch<React.SetStateAction<number>>
+    setViewFrameState: React.Dispatch<React.SetStateAction<number>>,
+    imageURL : string
 }
 
 
 
-const ViewStudentContainer = ({  viewData, viewFrameState, setViewFrameState }: stateType) => {
+const ViewStudentContainer = ({  imageURL,viewData, viewFrameState, setViewFrameState }: stateType) => {
     return (
         <div className={`viewStudentDetailContainer greyBG ${viewFrameState == 0 ? "op0" : ""}`}>
             <div className="viewStudentDetail">
@@ -34,7 +35,7 @@ const ViewStudentContainer = ({  viewData, viewFrameState, setViewFrameState }: 
                     {viewFrameState == 1 ?
                         <>
                             <div className="allCenter">
-                                <div className="studentImageContainer"><img src="../../public/photo.JPEG" alt="" /></div>
+                                <div className="studentImageContainer"><img src={imageURL} alt="" /></div>
                                 <div className="topside" >
                                     <div className="viewStudentColumn deco">
                                         <div className="viewStudentItem">
@@ -113,14 +114,14 @@ const ViewStudentContainer = ({  viewData, viewFrameState, setViewFrameState }: 
                                 <div className="fillInData">
                                     <div className="fillInTestData">
                                         {TestFile.map((element, index) => (
-                                            <div className="viewStudentColumn">
+                                            <div className="viewStudentColumn" key={`viewStudentColumn-${index}`}>
                                                 {element.registerName.map((label, index) => {
                                                     const key = label as keyof _CommonType;
                                                     return (
-                                                        <div className={`viewStudentItem ${element.registerCount == 2 ? "split" : element.registerCount == 3 ? "triple" : ""} `}>
+                                                        <div key={`element-${index}-label`} className={`viewStudentItem ${element.registerCount == 2 ? "split" : element.registerCount == 3 ? "triple" : ""} `}>
                                                             <div className="viewStudentName">
                                                                 <h4>*{element.registerName[0]}</h4>
-                                                                <input type="text" disabled value={viewData["insertFile"][0][key]} />
+                                                                <input type="text"  disabled value={viewData["insertFile"][0][key]} />
                                                             </div>
                                                         </div>
                                                     )

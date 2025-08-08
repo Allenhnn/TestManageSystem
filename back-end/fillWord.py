@@ -23,6 +23,7 @@ def fillin(userName , chooseFile , inputJsons , fileType):
     wordFilePaths = []
     for inputJson in inputJsons:
         inputJson = inputJson[0]
+        # print(inputJson,end="\n------")
         wordPath = f'./user_data/{userName}/{chooseFile}/5.報名表正面.docx'
         wordDoc = Document(wordPath)
         table = wordDoc.tables[0]

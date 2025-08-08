@@ -59,7 +59,7 @@ type allProps = {
 }
 
 // higher order function only receive two arguments , props needs to become a set.
-const DataTable = forwardRef<ExportDataType, allProps>(({ datas,swiperRef, enterDetailData, globalFilter, setGlobalFilter, setCalRows }, ref) => {
+const DataTable = forwardRef<ExportDataType, allProps>(({ datas , swiperRef, enterDetailData, globalFilter, setGlobalFilter, setCalRows }, ref) => {
     // const { modalOut } = props; 
 
     // const [data, setData] = useState(DATA);
@@ -160,10 +160,6 @@ const DataTable = forwardRef<ExportDataType, allProps>(({ datas,swiperRef, enter
     const totalRows = datas.length; // 全部資料筆數
     const filteredRows = table.getRowModel().rows.length; // 過濾後資料筆數
 
-    useEffect(()=>{
-        console.log("folder",folder);
-        
-    },[folder])
 
     const receiveData = async() => {
         const URL: string = "http://localhost:3000/getfolder";
@@ -180,9 +176,9 @@ const DataTable = forwardRef<ExportDataType, allProps>(({ datas,swiperRef, enter
 
             if (!res.ok) throw new Error("500 server error");
             const res_json = await res.json();
-
+            // res_json.ok?
             setFolder(res_json);
-            console.log("成功", datas)
+            
 
         }
         catch (err) {
@@ -215,11 +211,11 @@ const DataTable = forwardRef<ExportDataType, allProps>(({ datas,swiperRef, enter
             <table border={1} cellPadding={6} >
                 <thead>
                     {table.getHeaderGroups().map((headerGroup) => (
-                        <tr key={headerGroup.id}>
+                        <tr key={"getHeaderGroups"+headerGroup.id}>
                             {exportData ? <th /> : <></>}
 
                             {headerGroup.headers.map((header) => (
-                                <th key={header.id}>
+                                <th key={"headerGroup"+header.id}>
                                     {flexRender(header.column.columnDef.header, header.getContext())}
                                 </th>
                             ))}
@@ -229,7 +225,7 @@ const DataTable = forwardRef<ExportDataType, allProps>(({ datas,swiperRef, enter
                 </thead>
                 <tbody>
                     {table.getRowModel().rows.map((row, index) => (
-                        <tr key={row.id}>
+                        <tr key={`${row.id}-${index}`}>
                             {/* {exportData ?
 
                                 <td>
@@ -239,24 +235,16 @@ const DataTable = forwardRef<ExportDataType, allProps>(({ datas,swiperRef, enter
                                 <></>
                             } */}
 
-                            {row.getVisibleCells().map((cell) => (
-                                <td key={cell.id}>
+                            {row.getVisibleCells().map((cell , cellIndex) => (
+                                <td key={`${row.id}-${cell.column.id}-${cellIndex}`}>
                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                 </td>
                             ))}
                             <td>
-                                {/* <div style={{ display: "flex" }}> */}
                                 <div className="iconEye next" onClick={() => enterDetailData(row.original)}>
                                     <FontAwesomeIcon icon={faRightToBracket} />
                                 </div>
-                                {/* 先view就好
-                                    checkbox -> multiple export 
-                                    view 用成開一個modal popout 再rerender
-                                    */}
-                                {/* <div>
-                                        <FontAwesomeIcon icon={faFileExport} />
-                                    </div> */}
-                                {/* </div> */}
+                               
                             </td>
                         </tr>
 

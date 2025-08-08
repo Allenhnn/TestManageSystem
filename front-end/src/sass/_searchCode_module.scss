@@ -73,7 +73,7 @@
 
         .previewDatas {
             @media (max-width:map-get($breakpoints, "widescreen")) {
-                height: 35rem;
+                height: 40rem;
             }
             
 
@@ -81,7 +81,7 @@
             // max-height: 100%;
             overflow-y: scroll;
             // flex:1;
-            height: 28rem;
+            height: 35rem;
             // height: 100%;
             width: 100%;
 
@@ -144,8 +144,9 @@
         position: relative;
         height: 90%;
         width: 60%;
-        overflow: hidden;
+        overflow: scroll;
         border: 1px solid rgba(0,0,0,0.2);
+        // padding: 2rem;
         
         .header{
             width: 100%;
@@ -160,7 +161,8 @@
             @include all-center();
             flex-direction: column;
             max-height: 32rem;
-            overflow: scroll;
+        overflow: scroll;
+            // padding: 2rem 0 2rem 0;
             
             .resultColumn{
                 font-size: 1.25rem;

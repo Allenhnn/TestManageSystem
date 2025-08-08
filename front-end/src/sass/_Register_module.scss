@@ -37,7 +37,9 @@
             @include all-center();
             flex-direction: column;
             background-color: rgba(255, 255, 255, 0.8);
+                
             // width: 35rem;
+            width: 40%;
             padding: 2rem 3rem;
             border-radius: 12px;
 
@@ -87,11 +89,13 @@
 
                     img {
                         height: 6rem;
+                        min-width: 6rem;
                         object-fit: cover;
                     }
                 }
 
                 .fillInData {
+
                     .viewStudentColumn {
                         margin: 1rem 0;
                     }
@@ -134,9 +138,9 @@
                             }
 
                             input {
-                                padding: 0.25rem 0rem 0.25rem 1rem;
+                                padding: 0.35rem 0rem 0.35rem 1rem;
                                 border-radius: 8px;
-                                width: 90%;
+                                width: 95%;
                                 background-color: white;
                                 color: $black;
                                 border: 1px solid rgba(0, 0, 0, 0.23);
@@ -150,7 +154,7 @@
 
                                 min-height: unset !important;
 
-                                width: 98%;
+                                width: 100%;
                                 font-size: 0.9rem;
                                 border-radius: 8px;
                             }
@@ -185,7 +189,7 @@
 
                 // -- template --
                 .bottomSide {
-                    margin-top: 0.5rem;
+                    // margin-top: 0.5rem;
 
                     .single .viewStudentName input {
                         width: 100% !important;
@@ -202,7 +206,7 @@
                             width: 100%;
 
                             input {
-                                padding: 0.25rem 0rem 0.25rem 1rem;
+                                padding: 0.35rem 0rem 0.35rem 1rem;
                                 border-radius: 8px;
                                 width: 90%;
                                 background-color: white;
@@ -1325,25 +1329,26 @@
                                 font-size: 1.05rem;
                                 letter-spacing: -1px;
 
-                             
-                                .dropdownList{
+
+                                .dropdownList {
                                     position: absolute;
                                     top: 0;
                                     left: 0;
                                     // height: 5rem;
                                     padding: 1rem 0 0.2rem 0;
-                                    
+
                                     width: 100%;
                                     border-radius: 0 0 12px 12px;
-                                    transform: translate(0rem,18%);
-                                    
+                                    transform: translate(0rem, 18%);
+
                                     z-index: 3;
                                     // background-color: $color1;
                                     background-color: rgba(107, 47, 190, 0.8);
                                     backdrop-filter: blur(15px);
 
-                                    box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-                                    .dropdownItem{
+                                    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+
+                                    .dropdownItem {
                                         height: 40%;
                                         width: 100%;
                                         transition: .25s;
@@ -1352,7 +1357,8 @@
                                         color: white;
                                         letter-spacing: 1px;
                                         cursor: pointer;
-                                        &:hover{
+
+                                        &:hover {
                                             background-color: rgba(255, 255, 255, 0.12);
 
                                         }
@@ -1371,7 +1377,7 @@
                                     font-size: 1.05rem;
                                     transition: 0.25s;
                                     cursor: pointer;
-                                    box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+                                    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
                                     z-index: 5;
 
                                     &:hover {
@@ -1395,6 +1401,7 @@
                                 background-color: rgba(255, 255, 255, 0.5);
                                 border-radius: 25px;
                                 width: 100%;
+
                                 // background-color: green;
                                 input {
                                     font-family: Notos;
@@ -1803,7 +1810,8 @@
     }
 
 }
-input[type="radio"]{
+
+input[type="radio"] {
     accent-color: $color1 !important;
     cursor: pointer;
     // box-shadow: 2px 2px 10px rgba(0,0,0,1) !important;

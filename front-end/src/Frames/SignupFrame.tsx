@@ -2,26 +2,26 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import Loading from "../component/Loading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGear, fas, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faGear, fas, faUser, faWarning } from "@fortawesome/free-solid-svg-icons";
 const SignupFrame = () => {
-    
+
     // const verifyCodeArr = [0, 1, 2, 3];
-    
-    
-    
-    
+
+
+
+
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => { 
+    const [repeatAlert, setRepeatAlert] = useState(0);
+    useEffect(() => {
         setLoading(false);
-        setTimeout(()=>{
+        setTimeout(() => {
             setLoading(true);
-        },800)
+        }, 800)
     }, [])
 
     // useRef
     const userInput = useRef<(HTMLInputElement | null)[]>([]);
-    
     const [verifyAlertFrame, setVerifyAlertFrame] = useState(false);
     const [formValue, setFormValue] = useState({ signEmail: "", signAccount: "", signPassword: "" });
     const [verificationCode, setVerificationCode] = useState("");
@@ -82,12 +82,12 @@ const SignupFrame = () => {
         formData.append("signAccount", formValue.signAccount);
         formData.append("signPassword", formValue.signPassword);
         const URL: string = "http://localhost:3000/signup";
-        
+
         try {
             // test code VVVV
             const res = await fetch(URL, {
-                headers:new Headers({"Content-Type":"application/json"}),
-                credentials:"include" , 
+                headers: new Headers({ "Content-Type": "application/json" }),
+                credentials: "include",
                 method: "POST",
                 body: JSON.stringify(formValue)
             })
@@ -101,19 +101,21 @@ const SignupFrame = () => {
         }
         catch (err) {
             console.error("123", err);
+            setRepeatAlert(1);
         }
     }
 
     const handleSubmitVerify = () => {
         const verify_code: string = inputvalue[0] + inputvalue[1] + inputvalue[2] + inputvalue[3];
         if (String(verificationCode) === verify_code) {
-            fetch("http://localhost:3000/createOneAcc",{
-                headers:new Headers({"Content-Type":"application/json"}),
-                credentials:"include" , 
-                method:"POST",
-                body:JSON.stringify(formValue)
+            fetch("http://localhost:3000/createOneAcc", {
+                headers: new Headers({ "Content-Type": "application/json" }),
+                credentials: "include",
+                method: "POST",
+                body: JSON.stringify(formValue)
             })
-            location.href = "http://localhost:5173/register";
+                .then(res => res.status === 200 ? location.href = "http://localhost:5173/register" : null)
+
         }
 
     }
@@ -128,6 +130,8 @@ const SignupFrame = () => {
 
     return (
         <div className="LoginFrameContainer">
+
+
             <div className={`verifyFrameContainer ${verifyAlertFrame ? "" : "op0"}`}>
                 <div className="verifyFrame">
                     <h3>請輸入驗證碼</h3>
@@ -144,7 +148,7 @@ const SignupFrame = () => {
                         <input type="number" min={0} max={10} onChange={} />
                         <input type="number" min={0} max={10} onChange={} /> */}
                     </div>
-                    <h4 className="notifySubmit">沒收到驗證碼嗎？<span>重新驗證？</span></h4>
+                    <h4 className="notifySubmit">沒收到驗證碼嗎？<span onClick={()=>handleFormSubmit}>重新驗證？</span></h4>
                     <div className="clsContainer">
                         <div className="verifycls" onClick={() => { setVerifyAlertFrame(false) }}>取 消</div>
                         <div className="verifycls" onClick={handleSubmitVerify}>送 出</div>
@@ -152,6 +156,22 @@ const SignupFrame = () => {
                 </div>
             </div>
             <Loading arg={loading} />
+            <div className={`alertFrameContainer repeat ${!repeatAlert ? "op0" : ""}`}>
+                <div className="alertFrame">
+                    <div className="alert_icon">
+                        <FontAwesomeIcon icon={faWarning} />
+                    </div>
+                    <div className="alert_text">
+                        {/* <h2>您已經輸入/上傳資料<br/>確定要退出嗎？</h2> */}
+                        {/* <h2>您已經輸入 / 上傳資料，確定要退出嗎？</h2> */}
+                          <h2>登入失敗</h2>
+                        <h4>( 請再次確定帳號密碼 )</h4>
+                    </div>
+                    <div className="alert_option">
+                        <div className="alert_option_button" onClick={() => setRepeatAlert(0)}>取 消</div>
+                    </div>
+                </div>
+            </div>
             {/* 要判斷login/regist */}
             <form className="loginbox" onSubmit={handleFormSubmit} >
                 <div className="boxContainer">
@@ -161,10 +181,6 @@ const SignupFrame = () => {
                     </div>
                     <div className="loginDataContainer">
                         <div className="loginData">
-                            <label>Email</label>
-                            <input type="email" name="signEmail" onChange={handleFormValue} value={formValue.signEmail} required />
-                        </div>
-                        <div className="loginData">
                             <label>帳號</label>
                             <input type="text" name="signAccount" onChange={handleFormValue} value={formValue.signAccount} required />
                         </div>
@@ -172,6 +188,10 @@ const SignupFrame = () => {
 
                             <label>密碼</label>
                             <input type="password" name="signPassword" onChange={handleFormValue} value={formValue.signPassword} required />
+                        </div>
+                        <div className="loginData">
+                            <label>Email</label>
+                            <input type="email" name="signEmail" onChange={handleFormValue} value={formValue.signEmail} required />
                         </div>
                     </div>
                     <div className="otherFunction">

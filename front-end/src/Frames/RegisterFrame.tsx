@@ -171,7 +171,7 @@ const RegisterFrame = () => {
                 body: JSON.stringify({
                     "status": "delete",
                     "pigID": arg,
-                    "fileName": fileName
+                    "filename": fileName
                 })
             })
 
@@ -213,7 +213,9 @@ const RegisterFrame = () => {
                     console.log("123213",insertData);
                     
                     fetch("http://localhost:3000/editFile", {
-
+                        headers:{
+                            "Content-type" : 'application/json'
+                        },
                         method: "POST",
                         credentials: "include",
                         body: JSON.stringify(insertData)
@@ -290,12 +292,14 @@ const RegisterFrame = () => {
 
     const submitConfirmAll = () => {
         const folderName = currentFolderName;
+        const formData  = new FormData()
+        formData.append("fileNae")
         setConfirmAll(0);
 
         fetch("http://localhost:3000/confirmAll", {
             credentials: "include",
             method: "POST",
-            body: JSON.stringify({ "fileName": folderName })
+            body: formData
         })
             .then((res) => setHandleFetch(handleFetch ? false : true))
         // .then((res)=>res.json())

@@ -73,27 +73,22 @@ app.post('/getfolder', multer().none(), (req, res) => {
 })
 
 app.post('/getjsons' , multer().none(),async(req ,res)=>{
-  
-  
   let resultLst =[]
   const userName = req.cookies.userName 
   const fileName  = req.body.fileName
-  
-  
   const fullTest = fs.readFileSync(`./user_data/${userName}/${fileName}/fullTest/fullTest.json`, 'utf-8')
   const studyTest = fs.readFileSync(`./user_data/${userName}/${fileName}/studyTest/studyTest.json`, 'utf-8')
   const technicalTest = fs.readFileSync(`./user_data/${userName}/${fileName}/technicalTest/technicalTest.json`, 'utf-8')
   
-  
   const fullData = JSON.parse(fullTest)
   const studyData = JSON.parse(studyTest)
   const tecData = JSON.parse(technicalTest)
-  
+  let imgList = []
+
   fullData.forEach((data) =>{
     const birthYear = (Number(data[0]['出生日期'].slice(0,3))+1911).toString()
     const birthDay = data[0]['出生日期'].slice(3)
     data[0]['出生日期'] = birthYear + birthDay
-    console.log(data[0]['出生日期'])
     resultLst.push(data)
   })
   studyData.forEach(element => {
@@ -108,7 +103,6 @@ app.post('/getjsons' , multer().none(),async(req ,res)=>{
     element[0]['出生日期'] = birthYear + birthDay
     resultLst.push(element)
   });
-
   
   res.cookie("fileName", fileName, {
     httpOnly: false,
@@ -117,6 +111,10 @@ app.post('/getjsons' , multer().none(),async(req ,res)=>{
   }).status(200).json(resultLst)
 })
 
+app.get('/:userName/:fileName/:imgFile' , (req,res)=>{
+  const imgFile = path.join(__dirname , `./user_data/${req.params.userName}/${req.params.fileName}/image/${req.params.imgFile}.jpg`)
+  res.sendFile(imgFile)
+})
 // app.post('/createFolder', multer().none(), async (req, res) => {
 //   console.log(req.body);
 //   console.log(1231231231231232112321321321323+"piyna")
@@ -194,7 +192,7 @@ app.post('/createFolder', multer().none(), async (req, res) => {
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const extName = path.extname(file.originalname)
+    const extName = path.extname(file.originalname).toLowerCase
     const userName = req.cookies.userName
     const filePath = req.cookies.fileName
     let folderPath = ''
@@ -203,7 +201,9 @@ const storage = multer.diskStorage({
     }else if(extName === ".jpg"){
       folderPath = `./user_data/${userName}/${filePath}/image`
     }else if (extName === ".docx"){
-      folderPath = "./convert_content"
+      folderPath = `./user_data/${userName}/${filePath}`
+    }else{
+      folderPath = `./user_data/${userName}/${filePath}/image`
     }
     cb(null, folderPath)
   },
@@ -215,7 +215,7 @@ const storage = multer.diskStorage({
     }else if(extName === ".jpg"){
       uploadFileName = file.originalname
     }else {
-      uploadFileName = file.originalname
+      uploadFileName = "5.報名表正面.docx"
     }
     cb(null, uploadFileName )
   }
@@ -322,7 +322,7 @@ app.post("/createOneAcc" , multer().none(),async(req, res) => {
     }).then(()=>{
       fs.mkdirSync(newFolderPath, { recursive: true }); 
       console.log("account already ready")
-      res.cookie("userAccount" , userAccount ,{
+      res.cookie("userName" , userAccount ,{
         httpOnly:false,
         sameSite:"None",
         secure :true
@@ -438,7 +438,7 @@ app.get("/verifyData", (req, res) => {
 //   // if (!birthRegex.test(b))
 // }
 // const editUpload = multer()
-app.post("/editFile", (req, res) => {
+app.post("/editFile",multer().none(), (req, res) => {
   console.log(req.body);
   // console.log(req.body["status"])
   testTypeMap = {
@@ -465,6 +465,15 @@ app.post("/editFile", (req, res) => {
     testTypeCode = req.body["insertType"]
     testType = testTypeMap[testTypeCode]
   }
+
+  if (status === "delete"){
+    pigID = req.body["pigID"]
+    testTypeCode  = pigID.slice(0,1)
+    testType = testTypeMap[testTypeCode]
+  }
+
+  console.log(pigID , "=" , testType );
+  
   // const editIDX = Number(pigID.slice(1))-1
   fs.readFile(`./user_data/${userName}/${fileName}/${testType}/${testType}.json`, 'utf8', async (err, jsonList) => {
     if (err) {
@@ -569,6 +578,7 @@ app.post("/editFile", (req, res) => {
 })
 
 app.post('/insertPhoto' , upload.single("insertPhoto") , (req, res)=>{
+  console.log('in inserting')
   res.status(200).send('success')
 })
 

@@ -157,7 +157,7 @@ const DataTableContainer = ({ setImageURL, handleSuccess, handleFetch, setConfir
     // 查看
     const handleViewData = (arg: any) => {
         const cookie = Cookies.get("userName");
-         const url = `http://localhost:3000/${cookie}/${currentText.current}/${arg["身分證號碼"]}`;
+        const url = `http://localhost:3000/${cookie}/${currentText.current}/${arg["身分證號碼"]}`;
         fetch(url, {
             credentials: "include",
             method: "GET"
@@ -240,32 +240,40 @@ const DataTableContainer = ({ setImageURL, handleSuccess, handleFetch, setConfir
                 <div className="navigation">
                     <div className="navigationItem">
                         <div className={`backlast prev ${!currentTable.status ? "divNone" : ""}`} onClick={() => { setChangePage(0); swiperRef.current ? swiperRef.current.slidePrev() : null }}><FontAwesomeIcon icon={faCircleChevronLeft} /> 返回</div>
-                        <div className="icon"><FontAwesomeIcon icon={faFile} />
-                        </div>
+                    <div className="icon"><FontAwesomeIcon icon={faFile} />
+                    </div>
                         <h4>{currentTable.text}</h4>
                     </div>
-                    <div className="searchBarContainer">
-                        <div className="searchBar">
-                            {changePage == 0 ?
+
+                    {changePage == 0 ?
+                        <div className="searchBarContainer">
+                            <div className="searchBar">
                                 <input type="text" className="searchInput" value={globalFilter} onChange={(e) => { setGlobalFilter(e.target.value) }} placeholder="請輸入要搜尋的資料夾" />
-                                :
-                                <input type="text" className="searchInput" value={studentFilter} onChange={(e) => { setStudentFilter(e.target.value) }} placeholder="請輸入要搜尋的資料" />
-                            }
-                            <div className="mag-icon"><FontAwesomeIcon icon={faMagnifyingGlass} /></div>
-
-                        </div>
-                        <div className="totalRows">
-                            <div className={`dropdownList ${moreFn ? "" : "op0"}`} >
-                                <div className="dropdownItem" onClick={() => setFillInFrame(true)} > 新增 <FontAwesomeIcon icon={faCirclePlus} /></div>
-                                <div className="dropdownItem" onClick={() => handleCombine()} > 合併資料 <FontAwesomeIcon icon={faDatabase} /></div>
-                                <div className="dropdownItem" onClick={() => setConfirmAll(1)}> 確認全部 <FontAwesomeIcon icon={faCheckCircle} /></div>
+                                <div className="mag-icon"><FontAwesomeIcon icon={faMagnifyingGlass} /></div>
                             </div>
-                            {/* <Select options={function_type} placeholder="更多" /> */}
-                            <div className={`addNewItem ${!currentTable.status ? "divNone" : ""}`} onClick={() => setMoreFn(moreFn ? false : true)}>更多功能 <FontAwesomeIcon icon={faCircleChevronDown} /> </div>
-                            {/* <div className={`addNewItem ${!currentTable.status ? "divNone" : ""}`} onClick={() => setFillInFrame(true)} ><FontAwesomeIcon icon={faCirclePlus} /> 新增</div> */}
-
                         </div>
-                    </div>
+                        :
+                        <div className="searchBarContainer">
+                            <div className="searchBar">
+                                
+                                <input type="text" className="searchInput" value={studentFilter} onChange={(e) => { setStudentFilter(e.target.value) }} placeholder="請輸入要搜尋的資料" />
+                                <div className="mag-icon"><FontAwesomeIcon icon={faMagnifyingGlass} /></div>
+
+                            </div>
+                            <div className="totalRows">
+                                <div className={`dropdownList ${moreFn ? "" : "op0"}`} >
+                                    <div className="dropdownItem" onClick={() => setFillInFrame(true)} > 新增 <FontAwesomeIcon icon={faCirclePlus} /></div>
+                                    <div className="dropdownItem" onClick={() => handleCombine()} > 合併資料 <FontAwesomeIcon icon={faDatabase} /></div>
+                                    <div className="dropdownItem" onClick={() => setConfirmAll(1)}> 確認全部 <FontAwesomeIcon icon={faCheckCircle} /></div>
+                                </div>
+                                {/* <Select options={function_type} placeholder="更多" /> */}
+                                <div className={`addNewItem morefn ${!currentTable.status ? "divNone" : ""}`} onClick={() => setMoreFn(moreFn ? false : true)}>更多功能 <FontAwesomeIcon icon={faCircleChevronDown} /> </div>
+                                {/* <div className={`addNewItem ${!currentTable.status ? "divNone" : ""}`} onClick={() => setFillInFrame(true)} ><FontAwesomeIcon icon={faCirclePlus} /> 新增</div> */}
+
+                            </div>
+                        </div>
+
+                    }
                 </div>
                 <div className="tableSwiperContainer" ref={tableHeightRef}>
                     <TableSwiper

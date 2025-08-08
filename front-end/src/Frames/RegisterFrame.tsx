@@ -398,7 +398,7 @@ const RegisterFrame = () => {
     const submitEditData = () => {
         const formData = new FormData();
         const insertvalue = editphotoRef?.current?.files?.[0];
-        insertvalue ? formData.append("insertPhoto", insertvalue) : alert();
+        insertvalue ? formData.append("insertPhoto", insertvalue) : null;
         const insertFile = EditViewData?.insertFile;
         // const transferValue = 
         let transferText = "";

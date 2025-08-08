@@ -9,6 +9,8 @@ import TableSwiper from "../component/TableSwiper.tsx";
 import StudentTable from "../component/StudentTable.tsx"
 import DataTable, { type ExportDataType, type rowData } from "../component/DataTable.tsx";
 import { DeclareContextType } from "../types/DeclareContextType.tsx";
+import Cookies from 'js-cookie';
+
 
 import DATA from "../json/testPigID.json";
 import type { _ReloadStudentType } from "../types/_ReloadStudentType.ts";
@@ -51,16 +53,16 @@ type InputProps = {
     setConfirmAll: React.Dispatch<React.SetStateAction<number>>,
     handleFetch: boolean,
     currentFolderName: string,
-    handleSuccess: Function
+    handleSuccess: Function,
+    setImageURL: React.Dispatch<React.SetStateAction<string>>,
 }
 
 
-const DataTableContainer = ({ handleSuccess, handleFetch, setConfirmAll, radioRef, setTempPigID, setRadioChecked, radioChecked, currentFolderName, setCurrentFolderName, deleteEditData, setEditViewData, setDoubleCheck, setEditFrameState, setViewFrameState, setLoadingState, modalShow, setModalShow, setFillInFrame }: InputProps) => {
+const DataTableContainer = ({ setImageURL, handleSuccess, handleFetch, setConfirmAll, radioRef, setTempPigID, setRadioChecked, radioChecked, currentFolderName, setCurrentFolderName, deleteEditData, setEditViewData, setDoubleCheck, setEditFrameState, setViewFrameState, setLoadingState, modalShow, setModalShow, setFillInFrame }: InputProps) => {
 
     const [data, setData] = useState<_ReloadStudentType[]>([]);
     const [userInfo, setUserInfo] = useState<userInfoType>({ "userName": "dexter", "fileName": "test-1" })
     // const [modalShow, setModalShow] = useState(0);
-
     const [currentTable, setCurrentTable] = useState<currentTableType>({ text: "報名資料", status: false });
     const [globalFilter, setGlobalFilter] = useState<string>("");
     const [studentFilter, setStudentFilter] = useState<string>("");
@@ -69,13 +71,21 @@ const DataTableContainer = ({ handleSuccess, handleFetch, setConfirmAll, radioRe
     const [moreFn, setMoreFn] = useState(false);
     // const [pigID, setPigID] = useState("");
 
+    const currentText = useRef<string>("");
     const triggerExportRef = useRef<ExportDataType | null>(null);
     const tableHeightRef = useRef<HTMLDivElement>(null);
     const swiperRef = useRef<SwiperClass>(null);
-
+    
     // const [tempStorage , setTempStorage] = useState()
 
 
+
+    useEffect(() => { 
+        console.log("----");
+        
+        console.log(currentFolderName);
+        
+    }, [currentFolderName])
     useEffect(() => {
 
         fetchFn(currentFolderName);
@@ -88,6 +98,8 @@ const DataTableContainer = ({ handleSuccess, handleFetch, setConfirmAll, radioRe
     const fetchFn = async (arg: string) => {
         console.log(21312312312312123213);
         console.log(arg);
+
+
 
 
         try {
@@ -127,8 +139,8 @@ const DataTableContainer = ({ handleSuccess, handleFetch, setConfirmAll, radioRe
     }
 
     const enterDetailData = (arg: string) => {
-
         setCurrentFolderName(arg)
+        currentText.current = arg;
         setCurrentTable(prev => ({
             ...prev,
             status: false,
@@ -176,18 +188,26 @@ const DataTableContainer = ({ handleSuccess, handleFetch, setConfirmAll, radioRe
 
     }
     // 編輯***********
-    const EditViewData = (arg: any, pigID: string) => {
-        // alert(pigID)
-        // setEditViewData(prev => ({
-        //     ...prev,
-        //     insertFile: [{ ...arg }, { confirmStatus: "false", pigID: pigid }]
-        // }));
+    const EditViewData = (arg: any, arr: any) => {
+        console.log(arr);
         console.log("-------editview=-------");
         console.log(arg);
+        const cookie = Cookies.get("userName")
+        // alert(cookie + currentFolderName)
+        const url = `http://localhost:3000/${cookie}/${currentText.current}/${arr["身分證號碼"]}`;
+        fetch(url, {
+            credentials: "include",
+            method: "GET"
+        })
+            .then(res => res.blob())
+            .then(blob => {
+                const url = URL.createObjectURL(blob);
+                setImageURL(url);
+            })
 
         setEditViewData(prev => ({
             ...prev,
-            "insertFile": [arg, { ...prev.insertFile[1], pigID: pigID }]
+            "insertFile": [arg, { ...prev.insertFile[1], pigID: arr["pigID"] }]
         }));
 
         setEditFrameState(1);

@@ -5,7 +5,8 @@
             "就讀科系"
         ],
         "registerCount": 2,
-        "isCopy": false
+        "isCopy": false,
+        "isSelect": false
     },
     {
         "registerName": [
@@ -13,7 +14,26 @@
             "上課別"
         ],
         "registerCount": 2,
-        "isCopy": false
+        "isCopy": false,
+        "isSelect": true,
+        "selectType": [
+            [
+                "職業學校",
+                "高級中學",
+                "實用技能學程",
+                "建教班",
+                "五專",
+                "軍事院校",
+                "綜合高中",
+                "進修學校(部)",
+                "大專院校"
+            ],
+            [
+                "日間部",
+                "夜間部",
+                "進修部"
+            ]
+        ]
     },
     {
         "registerName": [
@@ -22,7 +42,8 @@
             "座號"
         ],
         "registerCount": 3,
-        "isCopy": false
+        "isCopy": false,
+        "isSelect": false
     },
     {
         "registerName": [
@@ -30,20 +51,47 @@
             "身分別"
         ],
         "registerCount": 2,
-        "isCopy": false
+        "isCopy": false,
+        "isSelect": true,
+        "selectType": [
+            [
+                "全測",
+                "免學",
+                "免術"
+            ]
+            ,
+            [
+                "無",
+                "原住民",
+                "身心障礙",
+                "低收入戶",
+                "大陸學位生",
+                "大陸地區人民",
+                "外籍人士",
+                "探親就學"
+            ]
+        ]
     },
     {
         "registerName": [
             "報簡職類"
         ],
         "registerCount": 1,
-        "isCopy": false
+        "isCopy": false,
+        "isSelect": true,
+        "selectType": [
+            ["視覺",
+            "會計",
+            "會資",
+            "門市"]
+        ]
     },
     {
         "registerName": [
             "准考證號碼"
         ],
         "registerCount": 2,
-        "isCopy": false
+        "isCopy": false,
+        "isSelect": false
     }
 ]

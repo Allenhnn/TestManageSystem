@@ -193,7 +193,7 @@ const StudentTable = forwardRef<ExportDataType, allProps>(({ radioRef, setTempPi
                 return (
                     <div className="functionBtn">
                         <div className="editButton" onClick={() => handleViewData(rowData)}>查看</div>
-                        <div className="editButton" onClick={() => EditViewData(filterData, rowData["pigID"])}>編輯</div>
+                        <div className="editButton" onClick={() => EditViewData(filterData, rowData)}>編輯</div>
                         <div className="editButton" onClick={() => handleContext?.deleteEditData(0, rowData["pigID"])}>刪除</div>
                     </div>
                 )

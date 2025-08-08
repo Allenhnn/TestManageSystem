@@ -103,16 +103,21 @@ app.post('/getjsons', multer().none(), async (req, res) => {
     resultLst.push(element)
   });
 
-
-  
-
   res.cookie("fileName", fileName, {
     httpOnly: false,
     sameSite: "None",
     secure: true
   }).status(200).json(resultLst)
-  
+
 })
+
+app.get('/:userName/:fileName/:imgFile', (req, res) => {
+  console.log("123123123");
+
+  const imgFile = path.join(__dirname, `./user_data/${req.params.userName}/${req.params.fileName}/image/${req.params.imgFile}.jpg`)
+  res.sendFile(imgFile)
+})
+
 
 // app.post('/createFolder', multer().none(), async (req, res) => {
 //   console.log(req.body);
@@ -196,26 +201,26 @@ const storage = multer.diskStorage({
     const userName = req.cookies.userName
     const filePath = req.cookies.fileName
     let folderPath = ''
-    if(extName === ".xlsx"){
+    if (extName === ".xlsx") {
       folderPath = `./user_data/${userName}/${filePath}`
-    }else if(extName === ".jpg"){
+    } else if (extName === ".jpg") {
       folderPath = `./user_data/${userName}/${filePath}/image`
-    }else if (extName === ".docx"){
+    } else if (extName === ".docx") {
       folderPath = `./user_data/${userName}/${filePath}`
     }
     cb(null, folderPath)
   },
   filename: function (req, file, cb) {
-    const extName  = path.extname(file.originalname)
+    const extName = path.extname(file.originalname)
     let uploadFileName = ""
-    if(extName === ".xlsx"){
+    if (extName === ".xlsx") {
       uploadFileName = req.cookies.fileName + ".xlsx"
-    }else if(extName === ".jpg"){
+    } else if (extName === ".jpg") {
       uploadFileName = file.originalname
-    }else {
+    } else {
       uploadFileName = "5.報名表正面.docx"
     }
-    cb(null, uploadFileName )
+    cb(null, uploadFileName)
   }
 })
 
@@ -312,7 +317,7 @@ app.post("/login", async (req, res) => {
 
 app.post("/createOneAcc", multer().none(), async (req, res) => {
   console.log(req.body);
-  
+
   const userAccount = req.body["signAccount"]
   const userPassword = req.body["signPassword"]
   const newFolderPath = path.join(__dirname, "user_data", userAccount)
@@ -467,9 +472,9 @@ app.post("/editFile", (req, res) => {
     testTypeCode = req.body["insertType"]
     testType = testTypeMap[testTypeCode]
   }
-  if (status === "delete"){
+  if (status === "delete") {
     pigID = req.body["pigID"]
-    testTypeCode  = pigID.slice(0,1)
+    testTypeCode = pigID.slice(0, 1)
     testType = testTypeMap[testTypeCode]
   }
   // const editIDX = Number(pigID.slice(1))-1
@@ -622,7 +627,7 @@ app.post('/getPdf', multer().none(), (req, res) => {
   console.log(req.body);
   console.log(req.cookies.userName);
 
-  
+
   const fileName = req.body.fileName
   const userName = req.cookies.userName
   const pdfPath = path.join(__dirname, "user_data", userName, fileName, 'combine.pdf')

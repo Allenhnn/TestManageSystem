@@ -14,12 +14,13 @@ type stateType = {
     viewData: _EditType,
     // EditViewData: _EditType,
     viewFrameState: number,
-    setViewFrameState: React.Dispatch<React.SetStateAction<number>>
+    setViewFrameState: React.Dispatch<React.SetStateAction<number>>,
+    imageURL : string
 }
 
 
 
-const ViewStudentContainer = ({  viewData, viewFrameState, setViewFrameState }: stateType) => {
+const ViewStudentContainer = ({  imageURL,viewData, viewFrameState, setViewFrameState }: stateType) => {
     return (
         <div className={`viewStudentDetailContainer greyBG ${viewFrameState == 0 ? "op0" : ""}`}>
             <div className="viewStudentDetail">
@@ -34,7 +35,7 @@ const ViewStudentContainer = ({  viewData, viewFrameState, setViewFrameState }: 
                     {viewFrameState == 1 ?
                         <>
                             <div className="allCenter">
-                                <div className="studentImageContainer"><img src="../../public/photo.JPEG" alt="" /></div>
+                                <div className="studentImageContainer"><img src={imageURL} alt="" /></div>
                                 <div className="topside" >
                                     <div className="viewStudentColumn deco">
                                         <div className="viewStudentItem">

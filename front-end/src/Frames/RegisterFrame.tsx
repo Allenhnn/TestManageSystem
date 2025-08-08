@@ -35,6 +35,30 @@ type selectType = {
     label: string
 }
 
+
+const test_type: selectType[] = [
+    { value: '視覺', label: '日間部' },
+    { value: '會計', label: '會計' },
+    { value: '會資', label: '會資' },
+    { value: '門市', label: '門市' },
+]
+const study_type: selectType[] = [
+    { value: '日間部', label: '日間部' },
+    { value: '夜間部', label: '夜間部' },
+    { value: '進修部', label: '進修部' },
+]
+const study_rule: selectType[] = [
+    { value: '職業學校', label: '職業學校' },
+    { value: '高級中學', label: '高級中學' },
+    { value: '實用技能學程', label: '實用技能學程' },
+    { value: '建教班', label: '建教班' },
+    { value: '五專', label: '五專' },
+    { value: '軍事院校', label: '軍事院校' },
+    { value: '綜合高中', label: '綜合高中' },
+    { value: '進修學校(部)', label: '進修學校(部)' },
+    { value: '大專院校', label: '大專院校' },
+]
+
 const options_type: selectType[] = [
     { value: '全測', label: '全測' },
     { value: '免學', label: '免學' },
@@ -42,7 +66,6 @@ const options_type: selectType[] = [
 ]
 
 const options_identity: selectType[] = [
-
     { value: "無", label: "無" },
     { value: "原住民", label: "原住民" },
     { value: "身心障礙", label: "身心障礙" },
@@ -51,8 +74,8 @@ const options_identity: selectType[] = [
     { value: "大陸地區人民", label: "大陸地區人民" },
     { value: "外籍人士", label: "外籍人士" },
     { value: "探親就學", label: "探親就學" },
-]
 
+]
 type uploadType = {
     "status": boolean,
     "fileName": string | undefined,
@@ -62,6 +85,8 @@ type uploadType = {
 const RegisterFrame = () => {
     // const formData = new FormData();
 
+
+    const [imageURL, setImageURL] = useState("");
 
     const [insertPhotoName, setInsertPhotoName] = useState({ "name": "", "status": false });
 
@@ -207,6 +232,31 @@ const RegisterFrame = () => {
         // })
         insertPhoto ? formData.append("insertPhoto", insertPhoto) : "";
 
+        let transferText = ""
+        switch (insertData.insertFile["檢定區別"]) {
+            case "全測":
+                transferText = "A"
+                break;
+            case "免學":
+                transferText = "B"
+                break;
+            case "免術":
+                transferText = "C"
+                break;
+            default:
+                console.warn("didnt get value");
+
+                break;
+
+        }
+        const uploadData: any = {
+            ...insertData,
+            filename: currentFolderName,
+            transferType: transferText,
+            insertFile: { ...insertData.insertFile }
+        }
+
+        setInsertData(uploadData)
 
         const isAllFieldsFilled = Object.values(insertData.insertFile).every(value => value.trim() !== "");
         if (insertPhotoRef.current != null) {
@@ -386,7 +436,16 @@ const RegisterFrame = () => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(uploadData)
-            }).then(res => res.status === 200 ? handleSuccess : null);
+            }).then(res => {
+                if (res.status === 200) {
+                    if (res.status === 200) {
+                        handleSuccess("更新成功")
+                        setHandleFetch(handleFetch ? false : true);
+                        setEditFrameState(0);
+                    }
+                }
+            })
+
         }
     };
 
@@ -591,7 +650,8 @@ const RegisterFrame = () => {
                                                             ""}
                                                     </div>
                                                     {
-                                                        ele != "檢定區別" && ele != "身分別" ?
+
+                                                        !element.isSelect ? (
                                                             <input type={`${ele == "出生日期" ? "date" : "text"}`} value={insertData["insertFile"][key]} onChange={(e) => {
                                                                 setInsertData(prev => ({
                                                                     ...prev,
@@ -603,58 +663,38 @@ const RegisterFrame = () => {
 
                                                                 }))
                                                             }} />
-
-                                                            :
-                                                            ele != "身分別" ?
-                                                                <Select
-                                                                    key={`select-different-${index}`}
-                                                                    onChange={(e) => {
-                                                                        setInsertData((prev) => ({
-                                                                            ...prev,
-                                                                            insertFile: {
-                                                                                ...prev.insertFile,
-                                                                                ["檢定區別"]: e?.value ?? "",
-                                                                            }
-                                                                        }))
-                                                                    }}
-                                                                    value={options_type.find(
-
-                                                                        (opt) => {
-                                                                            const match = opt.value === insertData["insertFile"]["檢定區別"];
-
-                                                                            return match;
-
+                                                        ) :
+                                                            (<Select
+                                                                key={`select-different-${index}`}
+                                                                onChange={(e) => {
+                                                                    setInsertData((prev) => ({
+                                                                        ...prev,
+                                                                        insertFile: {
+                                                                            ...prev.insertFile,
+                                                                            [key]: e?.value ?? "",
                                                                         }
-                                                                    ) ?? null}
-                                                                    options={options_type}
-                                                                    placeholder="選擇檢定區別"
-                                                                    className="selectClass"
-                                                                />
-                                                                :
-                                                                <Select
-                                                                    key={`select-verify-${index}`}
-                                                                    onChange={(e) => {
+                                                                    }))
+                                                                }}
+                                                                value={options_type.find(
 
-                                                                        setInsertData((prev) => ({
-                                                                            ...prev,
-                                                                            insertFile: {
-                                                                                ...prev.insertFile,
-                                                                                ["身分別"]: e?.value ?? "",
-                                                                            }
-                                                                        }))
-                                                                    }}
-                                                                    value={options_identity.find(
+                                                                    (opt) => {
+                                                                        const match = opt.value === insertData["insertFile"][key];
 
-                                                                        (opt) => {
-                                                                            const match = opt.value === insertData["insertFile"]["身分別"];
-                                                                            return match;
+                                                                        return match;
 
-                                                                        }
-                                                                    ) ?? null}
-                                                                    options={options_identity}
-                                                                    placeholder="選擇身分別"
-                                                                    className="selectClass"
-                                                                />
+                                                                    }
+                                                                ) ?? null}
+                                                                options= {element.selectType?.[index]?.map(item=>({
+                                                                    label : item,
+                                                                    value : item
+                                                                }))}
+
+                                                                
+                                                                placeholder={`選擇${key}`}
+                                                                className="selectClass"
+                                                            />)
+
+
                                                     }
                                                 </div>
                                             )
@@ -1054,7 +1094,7 @@ const RegisterFrame = () => {
                 break;
             case 1:
                 return (
-                    <DataTableContainer handleSuccess={handleSuccess} handleFetch={handleFetch} setConfirmAll={setConfirmAll} radioRef={radioRef} setTempPigID={setTempPigID} setRadioChecked={setRadioChecked} radioChecked={radioChecked} currentFolderName={currentFolderName} setCurrentFolderName={setCurrentFolderName} deleteEditData={deleteEditData} setEditViewData={setEditViewData} setDoubleCheck={setDoubleCheck} setEditFrameState={setEditFrameState} setViewFrameState={setViewFrameState} setFillInFrame={setFillInFrame} setLoadingState={setLoadingState} modalShow={modalShow} setModalShow={setModalShow} />
+                    <DataTableContainer setImageURL={setImageURL} handleSuccess={handleSuccess} handleFetch={handleFetch} setConfirmAll={setConfirmAll} radioRef={radioRef} setTempPigID={setTempPigID} setRadioChecked={setRadioChecked} radioChecked={radioChecked} currentFolderName={currentFolderName} setCurrentFolderName={setCurrentFolderName} deleteEditData={deleteEditData} setEditViewData={setEditViewData} setDoubleCheck={setDoubleCheck} setEditFrameState={setEditFrameState} setViewFrameState={setViewFrameState} setFillInFrame={setFillInFrame} setLoadingState={setLoadingState} modalShow={modalShow} setModalShow={setModalShow} />
 
                 )
                 break;
@@ -1093,8 +1133,8 @@ const RegisterFrame = () => {
             </div> */}
 
 
-                <ViewStudentContainer viewData={EditViewData} setViewFrameState={setViewFrameState} viewFrameState={viewFrameState} />
-                <EditViewStudentContainer setEditViewData={setEditViewData} submitEditData={submitEditData} EditViewData={EditViewData} editFrameState={editFrameState} setEditFrameState={setEditFrameState} />
+                <ViewStudentContainer imageURL={imageURL} viewData={EditViewData} setViewFrameState={setViewFrameState} viewFrameState={viewFrameState} />
+                <EditViewStudentContainer imageURL={imageURL} setEditViewData={setEditViewData} submitEditData={submitEditData} EditViewData={EditViewData} editFrameState={editFrameState} setEditFrameState={setEditFrameState} />
 
 
 

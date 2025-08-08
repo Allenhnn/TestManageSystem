@@ -50,11 +50,12 @@ type InputProps = {
     setTempPigID: React.Dispatch<React.SetStateAction<tempType>>,
     setConfirmAll: React.Dispatch<React.SetStateAction<number>>,
     handleFetch: boolean,
-    currentFolderName: string
+    currentFolderName: string,
+    handleSuccess: Function
 }
 
 
-const DataTableContainer = ({ handleFetch, setConfirmAll, radioRef, setTempPigID, setRadioChecked, radioChecked, currentFolderName, setCurrentFolderName, deleteEditData, setEditViewData, setDoubleCheck, setEditFrameState, setViewFrameState, setLoadingState, modalShow, setModalShow, setFillInFrame }: InputProps) => {
+const DataTableContainer = ({ handleSuccess, handleFetch, setConfirmAll, radioRef, setTempPigID, setRadioChecked, radioChecked, currentFolderName, setCurrentFolderName, deleteEditData, setEditViewData, setDoubleCheck, setEditFrameState, setViewFrameState, setLoadingState, modalShow, setModalShow, setFillInFrame }: InputProps) => {
 
     const [data, setData] = useState<_ReloadStudentType[]>([]);
     const [userInfo, setUserInfo] = useState<userInfoType>({ "userName": "dexter", "fileName": "test-1" })
@@ -85,17 +86,37 @@ const DataTableContainer = ({ handleFetch, setConfirmAll, radioRef, setTempPigID
 
     // }
     const fetchFn = async (arg: string) => {
+        console.log(21312312312312123213);
+        console.log(arg);
+
+
         try {
+
             setLoadingState(false);
             const URL: string = "http://localhost:3000/getjsons";
             const headers = new Headers({
                 "Content-Type": "application/json",
             })
-            const fetchData = await fetch(URL, { headers: headers, credentials: "include", method: "POST", body: JSON.stringify({ "fileName": arg }) });
-            const getData = await fetchData.json();
-            setData(getData);
-            setLoadingState(true);
+            // const fetchData = await fetch(URL, { headers: headers, credentials: "include", method: "POST", body: JSON.stringify({ "fileName": arg }) });
+            // const getData = await fetchData.json();
+            fetch(URL, {
+                headers: headers,
+                credentials: "include",
+                method: "POST",
+                body: JSON.stringify({ "fileName": arg })
+            })
+                .then(res => res.json())
+                .then(response => {
+                    // alert(0)
+                    setData(response);
+                    setLoadingState(true);
+                })
+            console.log(0);
+            // console.log("fetchData", fetchData);
+            // console.log("getData", getData);
+
             // console.log(data);
+            setLoadingState(true);
 
 
         }
@@ -105,8 +126,8 @@ const DataTableContainer = ({ handleFetch, setConfirmAll, radioRef, setTempPigID
         }
     }
 
-    const enterDetailData = async (arg: string) => {
-        // alert(arg)
+    const enterDetailData = (arg: string) => {
+
         setCurrentFolderName(arg)
         setCurrentTable(prev => ({
             ...prev,
@@ -114,32 +135,11 @@ const DataTableContainer = ({ handleFetch, setConfirmAll, radioRef, setTempPigID
             text: `報名資料 / ${arg}`
         }));
 
-        setChangePage(1);
         if (swiperRef.current) {
             swiperRef.current.slideNext();
         }
-        // alert(currentFolderName)
         fetchFn(arg)
-        // try {
-        //     setLoadingState(false);
-        //     const URL: string = "http://localhost:3000/getjsons";
-        //     const headers = new Headers({
-        //         "Content-Type": "application/json",
-        //     })
-
-        //     const fetchData = await fetch(URL, { headers: headers, credentials: "include", method: "POST", body: JSON.stringify(userInfo) });
-        //     const getData = await fetchData.json();
-        //     setData(getData);
-        //     setLoadingState(true);
-        //     // console.log(data);
-
-
-        // }
-        // catch (err) {
-        //     console.error("enterDetailData", err);
-        //     setLoadingState(true);
-        // }
-
+        setChangePage(1);
 
     }
     // 查看
@@ -158,6 +158,7 @@ const DataTableContainer = ({ handleFetch, setConfirmAll, radioRef, setTempPigID
     }
     const handleCombine = () => {
         try {
+            setLoadingState(false);
             const formData = new FormData();
             const folderName = currentFolderName;
             formData.append("chooseFile", folderName)
@@ -166,9 +167,10 @@ const DataTableContainer = ({ handleFetch, setConfirmAll, radioRef, setTempPigID
                 method: "POST",
                 body: formData
             })
-                .then(res => { if (res.status == 200) { alert("success") } })
+                .then(res => { if (res.status == 200) { handleSuccess(), setLoadingState(false); } })
+
         }
-        catch(err){
+        catch (err) {
             console.error("error")
         }
 

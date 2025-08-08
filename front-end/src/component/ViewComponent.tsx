@@ -44,7 +44,7 @@ type InputProps = {
 const ViewComponent = ({ setEditViewData, setEditFrameState, setViewFrameState, setLoadingState, setModalShow }: InputProps) => {
 
 
-    const [userInfo, setUserInfo] = useState<userInfoType>({ "userName": "dexter", "fileName": "test-1" })
+    const [URLframe, setURLframe] = useState("../../../back-end/user_data/allenhnn/pigFOlder/combine.pdf")
     // const [modalShow, setModalShow] = useState(0);
     const [currentTable, setCurrentTable] = useState<currentTableType>({ text: "報名資料", status: false });
     const [studentViewFilter, setStudentViewFilter] = useState<string>("");
@@ -74,22 +74,37 @@ const ViewComponent = ({ setEditViewData, setEditFrameState, setViewFrameState, 
         setUserInputValue(inputValue);
     }
     const enterDetailData = async (arg: string) => {
-       console.log("piyna",arg);
-       
+        console.log("piyna", arg);
+
         try {
 
             setLoadingState(false);
-            const URL: string = "http://localhost:3000/getPDF";
+            const link: string = "http://localhost:3000/getPdf";
             const headers = new Headers({
                 "Content-Type": "application/json",
             })
 
-            const fetchData = await fetch(URL, { headers: headers, method: "POST", body: JSON.stringify({"fileName":arg}) });
-            const getData = await fetchData.json();
-            setData(getData);
-            setLoadingState(true);
-            console.log("slkjf");
-            console.log(getData);
+            // const fetchData = await fetch(URL, { headers: headers, credentials:"include" ,method: "POST", body: JSON.stringify({"fileName":arg}) });
+            // const getData = await fetchData;
+
+            fetch(link, {
+                headers: headers,
+                credentials: "include",
+                method: "POST",
+                body: JSON.stringify({ "fileName": arg })
+            })
+                .then(res => {
+                    return res.blob();
+                })
+                .then(blob => {
+                    // const url = URL.createOb
+                    const url = URL.createObjectURL(blob);
+                    const iframe = document.getElementById("pdfViewer") as HTMLIFrameElement;
+                    iframe.src = url;
+                    setLoadingState(true);
+                })
+
+            // setData(getData);
 
             // console.log(data);
 
@@ -124,8 +139,8 @@ const ViewComponent = ({ setEditViewData, setEditFrameState, setViewFrameState, 
     // 編輯
     const EditViewData = (arg: number) => {
         // console.log(data[arg][0]);
-        
-        
+
+
         const sendData = data[arg][0];
         setEditViewData(prev => ({
             ...prev,
@@ -133,7 +148,7 @@ const ViewComponent = ({ setEditViewData, setEditFrameState, setViewFrameState, 
         }));
         setEditFrameState(1);
     }
-    const handlePDF = () =>{
+    const handlePDF = () => {
 
     }
     // ------------------------------------------------------------
@@ -141,14 +156,14 @@ const ViewComponent = ({ setEditViewData, setEditFrameState, setViewFrameState, 
     return (
         <div className="viewContainer">
             <div className="leftsideContainer">
-                    <div className="searchBarContainer">
-                        <div className="searchBar" onClick={userFocus}>
-                            <input type="text" value={globalFilter} ref={inputRef} onChange={(e) => { setGlobalFilter(e.target.value) }}
-                                placeholder={"請輸入要搜尋的資料夾"} />
-                            <div className="mag-icon"><FontAwesomeIcon icon={faMagnifyingGlass} /></div>
-                        </div>
+                <div className="searchBarContainer">
+                    <div className="searchBar" onClick={userFocus}>
+                        <input type="text" value={globalFilter} ref={inputRef} onChange={(e) => { setGlobalFilter(e.target.value) }}
+                            placeholder={"請輸入要搜尋的資料夾"} />
+                        <div className="mag-icon"><FontAwesomeIcon icon={faMagnifyingGlass} /></div>
                     </div>
-                   
+                </div>
+
 
 
                 <div className="tableSwiperContainer">
@@ -159,7 +174,8 @@ const ViewComponent = ({ setEditViewData, setEditFrameState, setViewFrameState, 
                 </div>
             </div>
             <div className="rightsideContainer">
-                {/* <iframe src={URL} /> */}
+                <iframe id="pdfViewer" src={URLframe} />
+                {/* <iframe src="../../../back-end/user_data/allenhnn/pigFOlder/combine.pdf" /> */}
             </div>
         </div >
     )

@@ -113,14 +113,14 @@ const ViewStudentContainer = ({  viewData, viewFrameState, setViewFrameState }: 
                                 <div className="fillInData">
                                     <div className="fillInTestData">
                                         {TestFile.map((element, index) => (
-                                            <div className="viewStudentColumn">
+                                            <div className="viewStudentColumn" key={`viewStudentColumn-${index}`}>
                                                 {element.registerName.map((label, index) => {
                                                     const key = label as keyof _CommonType;
                                                     return (
-                                                        <div className={`viewStudentItem ${element.registerCount == 2 ? "split" : element.registerCount == 3 ? "triple" : ""} `}>
+                                                        <div key={`element-${index}-label`} className={`viewStudentItem ${element.registerCount == 2 ? "split" : element.registerCount == 3 ? "triple" : ""} `}>
                                                             <div className="viewStudentName">
                                                                 <h4>*{element.registerName[0]}</h4>
-                                                                <input type="text" disabled value={viewData["insertFile"][0][key]} />
+                                                                <input type="text"  disabled value={viewData["insertFile"][0][key]} />
                                                             </div>
                                                         </div>
                                                     )

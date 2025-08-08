@@ -27,6 +27,7 @@ import type { _CommonType } from "../types/_CommonType.ts";
 import testPigId from "../json/testPigID.json"
 import userUploadFile from "../json/userUploadFile.json";
 import userUploadTestFile from "../json/userUploadTestFile.json"
+import { Headers } from "@tanstack/react-table";
 
 
 type selectType = {
@@ -35,12 +36,14 @@ type selectType = {
 }
 
 const options_type: selectType[] = [
-    { value: 'A', label: '全冊' },
-    { value: 'B', label: '免學' },
-    { value: 'C', label: '免術' },
+    { value: '全測', label: '全測' },
+    { value: '免學', label: '免學' },
+    { value: '免術', label: '免術' },
 ]
 
 const options_identity: selectType[] = [
+
+    { value: "無", label: "無" },
     { value: "原住民", label: "原住民" },
     { value: "身心障礙", label: "身心障礙" },
     { value: "低收入戶", label: "低收入戶" },
@@ -91,6 +94,8 @@ const RegisterFrame = () => {
     const [doubleCheck, setDoubleCheck] = useState(0);
     const [editAlertFrame, setEditAlertFrame] = useState(0);
     const [sucessFrame, setSucessFrame] = useState(0);
+    const [sucessText, setSucessText] = useState("上傳成功");
+
     const [alertFrameShow0, setAlertFrameShow0] = useState(0);
     const [alertFrameShow1, setAlertFrameShow1] = useState(0);
     const [radioChecked, setRadioChecked] = useState(0);
@@ -120,7 +125,7 @@ const RegisterFrame = () => {
     const insertPhotoRef = useRef<HTMLInputElement>(null); // insert的input 
     const wordFileRef = useRef<HTMLInputElement>(null);
     const radioRef = useRef<HTMLInputElement[]>([]);
-
+    const insertInputRef = useRef<HTMLInputElement[]>([]);
 
     useEffect(() => {
 
@@ -137,12 +142,16 @@ const RegisterFrame = () => {
         // handleRows()
 
     }, [])
+    const handleSuccess = (arg: string) => {
+        setSucessFrame(1);
+        setSucessText(arg);
+    }
     const handleContext = useContext(DeclareContextType);
 
     const [tempPigID, setTempPigID] = useState<{ pigID: string, index: number }>({ "pigID": "", "index": 0 });
     const [pigID, setPigID] = useState("");
     const deleteEditData = (index: number, arg: string) => {
-        console.log(arg);
+        setLoadingState(false);
 
         if (index == 0) {
             // 1 save & asking
@@ -151,10 +160,10 @@ const RegisterFrame = () => {
         }
         else {
             // 2 submit
-            console.log(10000000);
             setDoubleCheck(0);
             submitDeleteEditData(pigID, currentFolderName);
-
+            setHandleFetch(handleFetch ? false : true);
+            setLoadingState(true);
         }
     }
     const submitDeleteEditData = async (arg: string, fileName: string) => {
@@ -171,7 +180,7 @@ const RegisterFrame = () => {
                 body: JSON.stringify({
                     "status": "delete",
                     "pigID": arg,
-                    "fileName": fileName
+                    "filename": fileName
                 })
             })
 
@@ -198,6 +207,7 @@ const RegisterFrame = () => {
         // })
         insertPhoto ? formData.append("insertPhoto", insertPhoto) : "";
 
+
         const isAllFieldsFilled = Object.values(insertData.insertFile).every(value => value.trim() !== "");
         if (insertPhotoRef.current != null) {
 
@@ -210,16 +220,30 @@ const RegisterFrame = () => {
             }
             else {
                 try {
-                    console.log("123213",insertData);
-                    
+
+                    console.log("123213", insertData);
                     fetch("http://localhost:3000/editFile", {
 
                         method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
                         credentials: "include",
                         body: JSON.stringify(insertData)
                     })
-                        .then(res => setHandleFetch(handleFetch ? false : true))
-                        .then()
+                        // .then(res => setHandleFetch(handleFetch ? false : true))
+                        .then(res => {
+                            if (res.ok) {
+                                handleSuccess("上傳成功")
+                                setFillInFrame(false);
+                                insertInputRef.current.forEach(element => {
+                                    if (element) {
+                                        element.value = "";
+                                    }
+                                });
+                            }
+                        })
+
                     // console.log(3)
 
                 }
@@ -231,14 +255,15 @@ const RegisterFrame = () => {
                 // -------------------------------------
                 try {
                     fetch("http://localhost:3000/insertPhoto", {
-                        headers: new Headers({
-                            "Content-Type": "application/json"
-                        }),
+                        // headers: {
+                        //     "Content-Type": "application/json"
+                        // },
                         method: "POST",
                         credentials: "include",
-                        body: JSON.stringify(insertData)
+                        body: formData
                     })
-                        .then(res => setHandleFetch(handleFetch ? false : true))
+                        .then(res => res.status === 200 ? setHandleFetch(handleFetch ? false : true) : null)
+
                     console.log(3);
 
                 }
@@ -283,21 +308,23 @@ const RegisterFrame = () => {
         //         credentials: "include",
         //         body: JSON.stringify(EditViewData)
         //     })
-        //         .then(res => setSucessFrame(1))
+        //         .then(res => handleSuccessres.status===200? :null(1
         // });
 
     }
 
     const submitConfirmAll = () => {
+        const formData = new FormData();
         const folderName = currentFolderName;
+        formData.append("fileName", folderName);
         setConfirmAll(0);
 
         fetch("http://localhost:3000/confirmAll", {
             credentials: "include",
             method: "POST",
-            body: JSON.stringify({ "fileName": folderName })
+            body: formData
         })
-            .then((res) => setHandleFetch(handleFetch ? false : true))
+            .then((res) => res.status == 200 ? setHandleFetch(handleFetch ? false : true) : null)
         // .then((res)=>res.json())
         // .then(req => setTempData(req))
 
@@ -306,7 +333,7 @@ const RegisterFrame = () => {
 
 
     }
-    
+
     const submitEditData = () => {
         // const formData = new FormData();
         const insertFile = EditViewData?.insertFile;
@@ -359,7 +386,7 @@ const RegisterFrame = () => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(uploadData)
-            }).then(res => setSucessFrame(1));
+            }).then(res => res.status === 200 ? handleSuccess : null);
         }
     };
 
@@ -376,7 +403,7 @@ const RegisterFrame = () => {
             method: "POST",
             body: formData
         })
-            .then((res) => setHandleFetch(handleFetch ? false : true))
+            .then((res) => res.status === 200 ? setHandleFetch(handleFetch ? false : true) : null)
         // .then((res)=>res.json())
         // .then(req => setTempData(req))
 
@@ -479,7 +506,13 @@ const RegisterFrame = () => {
                         </div>
                         <div className="functionBtnContainer">
                             <div className="functionBtn" onClick={() => { checkFillinStatus() }}>取 消</div>
-                            <div className="functionBtn" onClick={() => setFillInIndex(fillInIndex + 1)}>下一步</div>
+                            <div className="functionBtn" onClick={() => {
+                                setFillInIndex(fillInIndex + 1)
+                                setInsertData((prev) => ({
+                                    ...prev,
+                                    filename: currentFolderName
+                                }))
+                            }}>下一步</div>
                         </div>
                     </>
                 )
@@ -508,7 +541,7 @@ const RegisterFrame = () => {
                                                             ""}
                                                     </div>
 
-                                                    <input type={`${ele == "出生日期" ? "date" : "text"}`} value={insertData["insertFile"][key]} onChange={(e) => {
+                                                    <input ref={(el) => { if (el) insertInputRef.current[index] = el }} type={`${ele == "出生日期" ? "date" : "text"}`} value={insertData["insertFile"][key]} onChange={(e) => {
                                                         setInsertData(prev => ({
                                                             ...prev,
                                                             insertFile:
@@ -574,6 +607,7 @@ const RegisterFrame = () => {
                                                             :
                                                             ele != "身分別" ?
                                                                 <Select
+                                                                    key={`select-different-${index}`}
                                                                     onChange={(e) => {
                                                                         setInsertData((prev) => ({
                                                                             ...prev,
@@ -598,6 +632,7 @@ const RegisterFrame = () => {
                                                                 />
                                                                 :
                                                                 <Select
+                                                                    key={`select-verify-${index}`}
                                                                     onChange={(e) => {
 
                                                                         setInsertData((prev) => ({
@@ -674,15 +709,27 @@ const RegisterFrame = () => {
         }
         setInsertPhotoName(prev => ({ ...prev, "status": true, "name": photoName }));
     }
-    const handleInsertWord = (): void => {
-        // let photoName = "";
-        // if (insertPhotoRef.current) {
-        //     photoName = insertPhotoRef.current.value;
-        // }
-        // setInsertPhotoName(prev => ({ ...prev, "status": true, "name": photoName }));
-        handleCarouselItemSep(2);
+    const handleInsertWord = (e: any): void => {
+        const formData = new FormData();
+        const inputFile = e.target.files[0];
+        if (inputFile) {
+            formData.append("uploadWordTem", inputFile);
+        }
+        fetch("http://localhost:3000/uploadWordTem", {
+            method: "POST",
+            credentials: "include",
+            body: formData
+        })
+            .then(res => {
+                if (res.status === 200) {
+                    // submitConfirmAll();
+                    handleCarouselItemSep(2);
+                }
+                else {
+                    alert("none");
+                }
+            })
     }
-
     const stringSplit = (arg: string | undefined) => {
         // let resultString = "";
         // if (uploadStatus.fileName && uploadStatus.fileName.length > 6) {
@@ -703,40 +750,38 @@ const RegisterFrame = () => {
     const submitForm = () => {
 
         const finalData = new FormData();
-        const data_photo = uploadPhotoRef.current?.files?.[0];
-        const data_file = uploadFileRef.current?.files;
-        const data_name = uploadFileNameRef.current?.value;
-        console.log("1232131232132logogoogogogog", data_photo, data_file, data_name);
+        const photoFile = uploadPhotoRef.current?.files;
+        // const data_word = uploadPhotoRef.current?.files?.[0];
+        const excelFile = uploadFileRef.current?.files?.[0];
+        const originalName = uploadFileNameRef.current?.value;
+        setLoadingState(false);
 
-        if (data_photo && data_file && data_name && template) {
-            finalData.append("user_photo", data_photo);
-            Array.from(data_file).forEach((ele, index) => {
-                finalData.append("user_file", ele);
+        if (photoFile && excelFile && originalName && template) {
+            finalData.append("excelFile", excelFile);
+            Array.from(photoFile).forEach((ele, index) => {
+                finalData.append("photoFile", ele);
             })
-            finalData.append("data_name", data_name);
-            console.log("logoogogogoogogogog", finalData);
+            finalData.append("originalName", originalName);
+            // console.log("logoogogogoogogogog", finalData);
 
             const URL = "http://localhost:3000/upload";
             fetch(URL, {
                 method: "POST",
                 credentials: "include",
-                // headers:{
-                //     "Content-Type" : ""
-                // },
-                // body: JSON.stringify({ "excelFile": data_file, "fileName": data_name, "photoFile": data_photo })
                 body: finalData
             })
                 .then(res => {
-                    console.log("ress---------", res);
+                    if (res.status === 200) {
+                        handleSuccess("上傳成功");
+                        handleCarouselItemSep(6);
+                        setLoadingState(true);
+                    };
                 })
                 .catch(err => console.warn(err))
         }
         else {
-            // alert(2);
-            console.log(data_photo);
-            console.log(data_file);
-            console.log(data_name);
-
+            setNonFillout(1);
+            setAlertText("您尚有欄未填寫完畢");
         }
     }
 
@@ -927,7 +972,7 @@ const RegisterFrame = () => {
                     setProgressionValue(100);
                 }
                 else {
-                    setProgressionValue(progressionValue + 14);
+                    setProgressionValue(progressionValue + 14.5);
                 }
 
                 return newArr;
@@ -1009,7 +1054,7 @@ const RegisterFrame = () => {
                 break;
             case 1:
                 return (
-                    <DataTableContainer handleFetch={handleFetch} setConfirmAll={setConfirmAll} radioRef={radioRef} setTempPigID={setTempPigID} setRadioChecked={setRadioChecked} radioChecked={radioChecked} currentFolderName={currentFolderName} setCurrentFolderName={setCurrentFolderName} deleteEditData={deleteEditData} setEditViewData={setEditViewData} setDoubleCheck={setDoubleCheck} setEditFrameState={setEditFrameState} setViewFrameState={setViewFrameState} setFillInFrame={setFillInFrame} setLoadingState={setLoadingState} modalShow={modalShow} setModalShow={setModalShow} />
+                    <DataTableContainer handleSuccess={handleSuccess} handleFetch={handleFetch} setConfirmAll={setConfirmAll} radioRef={radioRef} setTempPigID={setTempPigID} setRadioChecked={setRadioChecked} radioChecked={radioChecked} currentFolderName={currentFolderName} setCurrentFolderName={setCurrentFolderName} deleteEditData={deleteEditData} setEditViewData={setEditViewData} setDoubleCheck={setDoubleCheck} setEditFrameState={setEditFrameState} setViewFrameState={setViewFrameState} setFillInFrame={setFillInFrame} setLoadingState={setLoadingState} modalShow={modalShow} setModalShow={setModalShow} />
 
                 )
                 break;
@@ -1038,7 +1083,7 @@ const RegisterFrame = () => {
             <div className="registerFrameContainer">
                 <input type="file" id="hiddenInput" style={{ display: "none" }} ref={uploadFileRef} onChange={fileChange} />
                 <input type="file" id="uploadPhotoRef" style={{ display: "none" }} ref={uploadPhotoRef} onChange={photoUpload} accept="image/*," webkitdirectory="true"  {...({ webkitdirectory: "" } as any)} />
-                <input type="file" id="wordFileRef" style={{ display: "none" }} ref={wordFileRef} onChange={handleInsertWord} accept="image/*," webkitdirectory="true"  {...({ webkitdirectory: "" } as any)} />
+                <input type="file" id="wordFileRef" style={{ display: "none" }} ref={wordFileRef} onChange={e => handleInsertWord(e)} accept="docx/*," />
 
 
                 <input type="file" id="insertPhotoRef" style={{ display: "none" }} ref={insertPhotoRef} onChange={handleinsertPhotoName} accept="image/*," />

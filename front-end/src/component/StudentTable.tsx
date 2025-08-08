@@ -82,20 +82,25 @@ const StudentTable = forwardRef<ExportDataType, allProps>(({ radioRef, setTempPi
     // const { modalOut } = props; 
     // const [data, setData] = useState<rowData[]>(inputData);
     // 解構版本
-    console.log("data", datas);
 
     const [ViewData, setViewData] = useState<_CommonType[]>([]); // initial 要給空陣列
-
+    
     useEffect(() => {
         const merge = datas.map(([std, nested]) => ({
             ...std,
             ...nested
         }))
-        console.log(merge, "m");
+        datas.forEach((element,index) => {
+            const radio = radioRef.current[index];
+            if(radio){
+                radio.checked = element[1].confirmStatus;
+            }     
+        });
 
         setViewData(merge)
 
     }, [datas])
+   
 
     const [exportData, setExportData] = useState(false);
     const [columnFilter, setColumnFilter] = useState<ColumnFiltersState>([]);
@@ -195,7 +200,7 @@ const StudentTable = forwardRef<ExportDataType, allProps>(({ radioRef, setTempPi
             }
         },
         {
-            accessorKey: "身分別",
+            accessorKey: "",
             header: "確認狀態",
             cell: (props: any) => {
                 const index = props.row.index;
@@ -256,10 +261,10 @@ const StudentTable = forwardRef<ExportDataType, allProps>(({ radioRef, setTempPi
             <table border={1} cellPadding={6} >
                 <thead>
                     {table.getHeaderGroups().map((headerGroup) => (
-                        <tr key={headerGroup.id} >
-                            {headerGroup.headers.map(header => (
+                        <tr key={"studentTable" + headerGroup.id} >
+                            {headerGroup.headers.map((header, idx) => (
                                 <th
-                                    key={header.id}
+                                    key={`studentTableTH_${header.id}_${idx}`}
                                     onClick={header.column.getToggleSortingHandler()}
                                     style={{ cursor: 'pointer', userSelect: 'none' }}
                                 >
@@ -286,27 +291,21 @@ const StudentTable = forwardRef<ExportDataType, allProps>(({ radioRef, setTempPi
                 </thead>
                 <tbody>
                     {table.getRowModel().rows.map((row, index) => (
-                        <tr key={row.id}>
-                            {exportData ?
+                        <tr key={"studentTable-tbody-tr-" + row.id}>
 
-                                <td>
-                                    <input type="checkbox" name={`checkbox-${index + 1}`} />
-                                </td>
-                                :
-                                <></>
+                            {
+                                row.getVisibleCells().map((cell) => {
+
+                                    
+                                    return (
+                                        <td key={`studentTable-td-${row.id}-${cell.column.id}-${index}`}>
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+
+                                        </td>
+                                    )
+                                })
                             }
 
-                            {row.getVisibleCells().map((cell) => (
-                                <td key={cell.id}>
-                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                </td>
-                            ))}
-                            {/* <td>
-                                <div style={{ display: "flex" }}>
-                                <div className="iconEye next" onClick={enterDetailData}>
-                                    <FontAwesomeIcon icon={faRightToBracket} />
-                                </div>
-                            </td> */}
 
                         </tr>
 

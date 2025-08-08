@@ -1,11 +1,12 @@
 import { json, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGear } from '@fortawesome/free-solid-svg-icons'
+import { faGear, faWarning } from '@fortawesome/free-solid-svg-icons'
 import Loading from "../component/Loading";
 import { useEffect, useState, useRef } from "react";
 const LoginFrame = () => {
     // const [loginAccount , setLoginAccount] = useState("");
     // const [LoginPassword , setLoginPassword] = useState("");
+    const [repeatAlert , setRepeatAlert] = useState(0);
     const [loading, setLoading] = useState(true);
     const [formValue, setFormValue] = useState({ loginAccount: "", loginPassword: "" });
 
@@ -56,6 +57,8 @@ const LoginFrame = () => {
         catch (err) {
             setLoading(true);
             console.error("123", err);
+            setRepeatAlert(1);
+
         }
     }
     // useEffect(()=>{console.log(loginAccount)},[loginAccount])
@@ -70,6 +73,23 @@ const LoginFrame = () => {
     // }
     return (
         <div className="LoginFrameContainer">
+            <div className={`alertFrameContainer repeat ${!repeatAlert ? "op0" : ""}`}>
+                <div className="alertFrame">
+                    <div className="alert_icon">
+                        <FontAwesomeIcon icon={faWarning} />
+                    </div>
+                    <div className="alert_text">
+                        {/* <h2>您已經輸入/上傳資料<br/>確定要退出嗎？</h2> */}
+                        {/* <h2>您已經輸入 / 上傳資料，確定要退出嗎？</h2> */}
+                        <h2>登入失敗</h2>
+                        <h4>( 請再次確定帳號密碼 )</h4>
+                    </div>
+                    <div className="alert_option">
+                        <div className="alert_option_button" onClick={() => setRepeatAlert(0)}>取 消</div>
+                        {/* <div className="alert_option_button" onClick={() => clearUploadRef(1)}>確 定</div> */}
+                    </div>
+                </div>
+            </div>
             <Loading arg={loading} />
             {/* 要判斷login/regist */}
             <form className="loginbox" onSubmit={(handleFormSubmit)}>

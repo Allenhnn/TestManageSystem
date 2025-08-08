@@ -37,7 +37,7 @@
             @include all-center();
             flex-direction: column;
             background-color: rgba(255, 255, 255, 0.8);
-                
+
             // width: 35rem;
             width: 40%;
             padding: 2rem 3rem;
@@ -82,15 +82,45 @@
 
                 .studentImageContainer {
                     @include all-center();
-                    background-color: white;
-                    padding: 0.5rem;
-                    border-radius: 12px;
+                    flex-direction: column;
                     margin-right: 2rem;
+                    h5{
+                        color: #252525
+                    }
+                    .imageContainer {
+                        @include all-center();
+                        background-color: white;
+                        position: relative;
+                        padding: 0.5rem;
+                        border-radius: 12px;
+                        transition: .25s;
+                        overflow: hidden;
 
-                    img {
-                        height: 6rem;
-                        min-width: 6rem;
-                        object-fit: cover;
+                        &::after {
+                            content: '更改照片';
+                            @include all-center();
+                            position: absolute;
+                            bottom: 0;
+                            left: 0;
+                            height: 0%;
+                            width: 100%;
+                            background-color: #7c46c7d2;
+                            color: white;
+                            transition: .25s;
+                            opacity: 0;
+                            cursor: pointer;
+                        }
+
+                        &:hover::after {
+                            height: 100%;
+                            opacity: 1;
+                        }
+
+                        img {
+                            height: 6rem;
+                            min-width: 6rem;
+                            object-fit: cover;
+                        }
                     }
                 }
 
@@ -169,21 +199,21 @@
                     width: 95%;
 
                     & .viewStudentItem:nth-child(1) {
-                        width: 70%;
+                        width: 60%;
                     }
 
                     & .viewStudentItem:nth-child(2) {
-                        width: 30%;
+                        width: 40%;
                     }
                 }
 
                 .deco {
                     & .viewStudentItem:nth-child(1) {
-                        width: 30%;
+                        width: 40%;
                     }
 
                     & .viewStudentItem:nth-child(2) {
-                        width: 70%;
+                        width: 60%;
                     }
                 }
 

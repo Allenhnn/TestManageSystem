@@ -86,22 +86,24 @@ app.post('/getjsons', multer().none(), async (req, res) => {
 
   fullData.forEach((data) => {
     const birthYear = (Number(data[0]['出生日期'].slice(0, 3)) + 1911).toString()
-    const birthMonth= data[0]['出生日期'].slice(3,2)
+    const birthMonth = data[0]['出生日期'].slice(3, 5)
+    // console.log("birthMonth:");
+    // console.log(birthMonth);
     const birthDay = data[0]['出生日期'].slice(5)
     data[0]['出生日期'] = birthYear + "-" + birthMonth + "-" + birthDay
     resultLst.push(data)
   })
   studyData.forEach(element => {
     const birthYear = (Number(element[0]['出生日期'].slice(0, 3)) + 1911).toString()
-    const birthMonth= data[0]['出生日期'].slice(3,2)
-    const birthDay = data[0]['出生日期'].slice(5)
+    const birthMonth = element[0]['出生日期'].slice(3, 2)
+    const birthDay = element[0]['出生日期'].slice(5)
     element[0]['出生日期'] = birthYear + "-" + birthMonth + "-" + birthDay
     resultLst.push(element)
   });
   tecData.forEach(element => {
     const birthYear = (Number(element[0]['出生日期'].slice(0, 3)) + 1911).toString()
-    const birthMonth= data[0]['出生日期'].slice(3,2)
-    const birthDay = data[0]['出生日期'].slice(5)
+    const birthMonth = element[0]['出生日期'].slice(3, 2)
+    const birthDay = element[0]['出生日期'].slice(5)
     element[0]['出生日期'] = birthYear + "-" + birthMonth + "-" + birthDay
     resultLst.push(element)
   });
@@ -411,7 +413,7 @@ app.post("/fillWd", multer().none(), async (req, res) => {
 
   py.on('close', () => {
     console.log(outputData)
-    res.send('success').status(200)
+    res.status(200).send('success')
   })
 });
 

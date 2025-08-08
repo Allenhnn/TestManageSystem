@@ -1,6 +1,6 @@
 import { useReactTable, getCoreRowModel, getFilteredRowModel, flexRender } from "@tanstack/react-table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faFileExport, faPrint, faRightToBracket } from '@fortawesome/free-solid-svg-icons'
+import { faDownload, faEye, faFileExport, faPrint, faRightToBracket } from '@fortawesome/free-solid-svg-icons'
 import type { ColumnDef, ColumnFiltersState } from "@tanstack/react-table";
 import DATA from "../json/testPigID.json";
 import { forwardRef, useState, useImperativeHandle, useEffect } from "react";
@@ -56,11 +56,11 @@ type allProps = {
     setCalRows: React.Dispatch<React.SetStateAction<rowType>>;
     datas: _ReloadStudentType[],
     setData: React.Dispatch<React.SetStateAction<_ReloadStudentType[]>>,
-    handlePDF : Function
+    handledownload : Function
 }
 
 // higher order function only receive two arguments , props needs to become a set.
-const ShowTable = forwardRef<ExportDataType, allProps>(({handlePDF, datas, setData, swiperRef, enterDetailData, globalFilter, setGlobalFilter, setCalRows }, ref) => {
+const ShowTable = forwardRef<ExportDataType, allProps>(({handledownload, datas, setData, swiperRef, enterDetailData, globalFilter, setGlobalFilter, setCalRows }, ref) => {
     // const { modalOut } = props; 
 
     // const [data, setData] = useState(DATA);
@@ -101,53 +101,7 @@ const ShowTable = forwardRef<ExportDataType, allProps>(({handlePDF, datas, setDa
             // cell: (props: any) => <p>{props.getValue()}</p>
             accessorFn: row => row
         }
-        // ,
-        // {
-        //     accessorKey: "中文姓名",
-        //     header: "中文姓名",
-        //     cell: (props: any) => <p>{props.getValue()}</p>
-        // }
-        // ,
-        // {
-        //     accessorKey: "報簡職類",
-        //     header: "報簡職類",
-        //     cell: (props: any) => <p>{props.getValue()}</p>
-        // }
-        // ,
-        // {
-        //     accessorKey: "檢定區別",
-        //     header: "檢定區別",
-        //     cell: (props: any) => <p>{props.getValue()}</p>
-        // }
-        // ,
-        // {
-        //     accessorKey: "身分別",
-        //     header: "身分別",
-        //     cell: (props: any) => <p>{props.getValue()}</p>
-        // }
 
-
-        // ,
-        // {
-        //     accessorKey: "confirmStatus",
-        //     header: "報名狀態",
-        //     cell: (props: any) => {
-        //         if (props.getValue()) {
-
-        //             return (
-        //                 <div className="viewFolder">
-        //                     <div className="checkStatus done">完成</div>
-        //                 </div>)
-        //         }
-        //         else {
-        //             return (
-        //                 <div className="viewFolder">
-        //                     <div className="checkStatus">未完成</div>
-        //                 </div>
-        //             )
-        //         }
-        //     }
-        // }
     ]
 
     const table = useReactTable({
@@ -252,8 +206,8 @@ const ShowTable = forwardRef<ExportDataType, allProps>(({handlePDF, datas, setDa
                                     <div className="iconEye next" onClick={() => enterDetailData(row.original)}>
                                         <FontAwesomeIcon icon={faEye} />
                                     </div>
-                                    <div className="iconEye next" onClick={() => enterDetailData(row.original)}>
-                                        <FontAwesomeIcon icon={faPrint} /> 
+                                    <div className="iconEye next" onClick={() => handledownload(row.original)}>
+                                        <FontAwesomeIcon icon={faDownload} /> 
                                     </div>
                                 </div>
                                 {/* 先view就好

@@ -75,16 +75,16 @@ const DataTableContainer = ({ setImageURL, handleSuccess, handleFetch, setConfir
     const triggerExportRef = useRef<ExportDataType | null>(null);
     const tableHeightRef = useRef<HTMLDivElement>(null);
     const swiperRef = useRef<SwiperClass>(null);
-    
+
     // const [tempStorage , setTempStorage] = useState()
 
 
 
-    useEffect(() => { 
+    useEffect(() => {
         console.log("----");
-        
+
         console.log(currentFolderName);
-        
+
     }, [currentFolderName])
     useEffect(() => {
 
@@ -156,7 +156,18 @@ const DataTableContainer = ({ setImageURL, handleSuccess, handleFetch, setConfir
     }
     // 查看
     const handleViewData = (arg: any) => {
-        console.log("haaaaaaa", arg);
+        const cookie = Cookies.get("userName");
+         const url = `http://localhost:3000/${cookie}/${currentText.current}/${arg["身分證號碼"]}`;
+        fetch(url, {
+            credentials: "include",
+            method: "GET"
+        })
+            .then(res => res.blob())
+            .then(blob => {
+                const url = URL.createObjectURL(blob);
+                setImageURL(url);
+            })
+
 
         setEditViewData(prev => ({
             ...prev,
@@ -174,12 +185,21 @@ const DataTableContainer = ({ setImageURL, handleSuccess, handleFetch, setConfir
             const formData = new FormData();
             const folderName = currentFolderName;
             formData.append("chooseFile", folderName)
+
+
+
             fetch("http://localhost:3000/fillWd", {
                 credentials: "include",
                 method: "POST",
                 body: formData
             })
-                .then(res => { if (res.status == 200) { handleSuccess(), setLoadingState(false); } })
+                .then(res => {
+                    if (res.status === 200) {
+                        setLoadingState(true);
+                        handleSuccess("完成")
+
+                    }
+                })
 
         }
         catch (err) {
@@ -204,6 +224,7 @@ const DataTableContainer = ({ setImageURL, handleSuccess, handleFetch, setConfir
                 const url = URL.createObjectURL(blob);
                 setImageURL(url);
             })
+
 
         setEditViewData(prev => ({
             ...prev,

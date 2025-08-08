@@ -312,4 +312,3 @@ if __name__ == "__main__":
         # docxConvert()
     combineWord(combineWordPath , "")
     docxConvert()
-    

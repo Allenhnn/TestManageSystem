@@ -84,9 +84,6 @@ const ViewComponent = ({ setEditViewData, setEditFrameState, setViewFrameState, 
                 "Content-Type": "application/json",
             })
 
-            // const fetchData = await fetch(URL, { headers: headers, credentials:"include" ,method: "POST", body: JSON.stringify({"fileName":arg}) });
-            // const getData = await fetchData;
-
             fetch(link, {
                 headers: headers,
                 credentials: "include",
@@ -127,29 +124,35 @@ const ViewComponent = ({ setEditViewData, setEditFrameState, setViewFrameState, 
     }, [])
 
     // 查看
-    const handleViewData = () => {
-        // fetch -> setState
-        // setEditViewData(prev=>({
-        //     ...prev,
+    
+    const handledownload = (arg :any) => {
+           setLoadingState(false);
+            const link: string = "http://localhost:3000/getPdf";
+            const headers = new Headers({
+                "Content-Type": "application/json",
+            })
 
-        // }))
-        // 豬解：反正這邊就是明天要跟豬串起來的fetch 明天再用 更新資料而已
-        setViewFrameState(1);
-    }
-    // 編輯
-    const EditViewData = (arg: number) => {
-        // console.log(data[arg][0]);
-
-
-        const sendData = data[arg][0];
-        setEditViewData(prev => ({
-            ...prev,
-            insertFile: [sendData, prev.insertFile[1]]
-        }));
-        setEditFrameState(1);
-    }
-    const handlePDF = () => {
-
+            fetch(link, {
+                headers: headers,
+                credentials: "include",
+                method: "POST",
+                body: JSON.stringify({ "fileName": arg })
+            })
+                .then(res => {
+                    return res.blob();
+                })
+                .then(blob => {
+                    // const url = URL.createOb
+                    const url = URL.createObjectURL(blob);
+                    const href = document.createElement("a");
+                    // const iframe = document.getElementById("pdfViewer") as HTMLIFrameElement;
+                    href.href = url;
+                    href.download = url;
+                    href.target = "_blank";
+                    href.click();
+                    // href.download = blob;
+                    setLoadingState(true);
+                })
     }
     // ------------------------------------------------------------
 
@@ -167,13 +170,14 @@ const ViewComponent = ({ setEditViewData, setEditFrameState, setViewFrameState, 
 
 
                 <div className="tableSwiperContainer">
-                    <ShowTable handlePDF={handlePDF} datas={data} setData={setData} swiperRef={swiperRef.current} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} setCalRows={setCalRows} ref={triggerExportRef}
+                    <ShowTable handledownload={handledownload} datas={data} setData={setData} swiperRef={swiperRef.current} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} setCalRows={setCalRows} ref={triggerExportRef}
                         enterDetailData={enterDetailData} />
 
 
                 </div>
             </div>
             <div className="rightsideContainer">
+                
                 <iframe id="pdfViewer" src={URLframe} />
                 {/* <iframe src="../../../back-end/user_data/allenhnn/pigFOlder/combine.pdf" /> */}
             </div>

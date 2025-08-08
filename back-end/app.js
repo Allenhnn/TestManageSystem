@@ -86,20 +86,25 @@ app.post('/getjsons', multer().none(), async (req, res) => {
 
   fullData.forEach((data) => {
     const birthYear = (Number(data[0]['出生日期'].slice(0, 3)) + 1911).toString()
-    const birthDay = data[0]['出生日期'].slice(3)
-    data[0]['出生日期'] = birthYear + birthDay
+    const birthMonth = data[0]['出生日期'].slice(3, 5)
+    // console.log("birthMonth:");
+    // console.log(birthMonth);
+    const birthDay = data[0]['出生日期'].slice(5)
+    data[0]['出生日期'] = birthYear + "-" + birthMonth + "-" + birthDay
     resultLst.push(data)
   })
   studyData.forEach(element => {
     const birthYear = (Number(element[0]['出生日期'].slice(0, 3)) + 1911).toString()
-    const birthDay = element[0]['出生日期'].slice(3)
-    element[0]['出生日期'] = birthYear + birthDay
+    const birthMonth = element[0]['出生日期'].slice(3, 2)
+    const birthDay = element[0]['出生日期'].slice(5)
+    element[0]['出生日期'] = birthYear + "-" + birthMonth + "-" + birthDay
     resultLst.push(element)
   });
   tecData.forEach(element => {
     const birthYear = (Number(element[0]['出生日期'].slice(0, 3)) + 1911).toString()
-    const birthDay = element[0]['出生日期'].slice(3, 0)
-    element[0]['出生日期'] = birthYear + birthDay
+    const birthMonth = element[0]['出生日期'].slice(3, 2)
+    const birthDay = element[0]['出生日期'].slice(5)
+    element[0]['出生日期'] = birthYear + "-" + birthMonth + "-" + birthDay
     resultLst.push(element)
   });
 
@@ -392,7 +397,7 @@ app.get("/seeAllJson", async (req, res) => {
 app.post("/fillWd", multer().none(), async (req, res) => {
   // const userName = "dexter" ;//req.body['username']
   const userName = req.cookies.userName
-  const chooseFile = req.body.fileName
+  const chooseFile = req.body.chooseFile
   // const chooseFile = "test-1" ;//req.body['test-1.json]
   // const filePath = path.join(__dirname  , "user_data" , userName , )
   const py = spawn('python3', ['fillWord.py', userName, chooseFile]);
@@ -407,7 +412,7 @@ app.post("/fillWd", multer().none(), async (req, res) => {
 
   py.on('close', () => {
     console.log(outputData)
-    res.send('success').status(200)
+    res.status(200).send('success')
   })
 });
 

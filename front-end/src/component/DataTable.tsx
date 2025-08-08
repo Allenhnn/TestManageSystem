@@ -124,27 +124,27 @@ const DataTable = forwardRef<ExportDataType, allProps>(({ datas , swiperRef, ent
         //     header: "身分別",
         //     cell: (props: any) => <p>{props.getValue()}</p>
         // }
-        ,
-        {
-            accessorKey: "confirmStatus",
-            header: "報名狀態",
-            cell: (props: any) => {
-                if (props.getValue()) {
+        // ,
+        // {
+        //     accessorKey: "confirmStatus",
+        //     header: "報名狀態",
+        //     cell: (props: any) => {
+        //         if (props.getValue()) {
 
-                    return (
-                        <div className="viewFolder">
-                            <div className="checkStatus done">完成</div>
-                        </div>)
-                }
-                else {
-                    return (
-                        <div className="viewFolder">
-                            <div className="checkStatus">未完成</div>
-                        </div>
-                    )
-                }
-            }
-        }
+        //             return (
+        //                 <div className="viewFolder">
+        //                     <div className="checkStatus done">完成</div>
+        //                 </div>)
+        //         }
+        //         else {
+        //             return (
+        //                 <div className="viewFolder">
+        //                     <div className="checkStatus">未完成</div>
+        //                 </div>
+        //             )
+        //         }
+        //     }
+        // }
     ]
 
     const table = useReactTable({

@@ -151,6 +151,7 @@ const RegisterFrame = () => {
     const wordFileRef = useRef<HTMLInputElement>(null);
     const radioRef = useRef<HTMLInputElement[]>([]);
     const insertInputRef = useRef<HTMLInputElement[]>([]);
+    const editphotoRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
 
@@ -176,7 +177,7 @@ const RegisterFrame = () => {
     const [tempPigID, setTempPigID] = useState<{ pigID: string, index: number }>({ "pigID": "", "index": 0 });
     const [pigID, setPigID] = useState("");
     const deleteEditData = (index: number, arg: string) => {
-        setLoadingState(false);
+        // setLoadingState(false);
 
         if (index == 0) {
             // 1 save & asking
@@ -188,12 +189,12 @@ const RegisterFrame = () => {
             setDoubleCheck(0);
             submitDeleteEditData(pigID, currentFolderName);
             setHandleFetch(handleFetch ? false : true);
-            setLoadingState(true);
+            // setLoadingState(true);
         }
     }
     const submitDeleteEditData = async (arg: string, fileName: string) => {
 
-        setLoadingState(false);
+        // setLoadingState(false);
         const URL: string = "http://localhost:3000/editFile";
         try {
             const res = await fetch(URL, {
@@ -212,7 +213,8 @@ const RegisterFrame = () => {
             if (!res.ok) throw new Error("500 server error");
 
             // console.log("成功", data)
-            setLoadingState(true);
+            // setLoadingState(true);
+            handleSuccess("刪除成功");
 
         }
         catch (err) {
@@ -223,13 +225,8 @@ const RegisterFrame = () => {
         }
     }
     const submitInsertData = () => {
-        // formData.append()
-        // const insertFile = insertData?.insertFile;
         const formData = new FormData();
         const insertPhoto = insertPhotoRef.current?.files?.[0];
-        // Array.from(insertPhoto).forEach((ele, index) => {
-        //     formData.append("user_file", ele);
-        // })
         insertPhoto ? formData.append("insertPhoto", insertPhoto) : "";
 
         let transferText = ""
@@ -252,7 +249,7 @@ const RegisterFrame = () => {
         const uploadData: any = {
             ...insertData,
             filename: currentFolderName,
-            transferType: transferText,
+            insertType: transferText,
             insertFile: { ...insertData.insertFile }
         }
 
@@ -279,18 +276,50 @@ const RegisterFrame = () => {
                             "Content-Type": "application/json"
                         },
                         credentials: "include",
-                        body: JSON.stringify(insertData)
+                        body: JSON.stringify(uploadData)
                     })
                         // .then(res => setHandleFetch(handleFetch ? false : true))
                         .then(res => {
                             if (res.ok) {
                                 handleSuccess("上傳成功")
                                 setFillInFrame(false);
-                                insertInputRef.current.forEach(element => {
-                                    if (element) {
-                                        element.value = "";
+                                if (insertPhotoRef.current) {
+                                    insertPhotoRef.current.value = "";
+                                }
+                                setInsertData(prev => ({
+                                    ...prev,
+                                    userName: "",
+                                    filename: "",
+                                    insertType: "",
+                                    insertFile: {
+                                        "准考證號碼": "",
+                                        "身分證號碼": "",
+                                        "中文姓名": "",
+                                        "出生日期": "",
+                                        "報簡職類": "",
+                                        "英文姓名": "",
+                                        "檢定區別": "",
+                                        "通訊地址": "",
+                                        "戶籍地址": "",
+                                        "聯絡電話(住宅)": "",
+                                        "聯絡電話(手機)": "",
+                                        "就讀學校": "",
+                                        "就讀科系": "",
+                                        "上課別": "",
+                                        "年級": "",
+                                        "班級": "",
+                                        "座號": "",
+                                        "身分別": "",
+                                        "學制": ""
                                     }
-                                });
+                                }));
+                                setInsertPhotoName(prev => ({
+                                    name: "",
+                                    status: false
+                                }))
+                                setFillInIndex(0);
+                                setHandleFetch(handleFetch ? false : true);
+
                             }
                         })
 
@@ -326,40 +355,6 @@ const RegisterFrame = () => {
 
 
         }
-        // ----------------------
-        // if
-
-        // insertFile.forEach((item, index) => {
-        //     console.log(`第 ${index + 1} 筆 insertFile:`);
-        //     console.log(item);
-        //     if (!Array.isArray(insertFile)) {
-        //         console.log("insertFile 不存在或不是陣列");
-        //         return;
-        //     }
-
-        //     const hasEmptyField = insertFile.some((item) => {
-        //         return Object.entries(item).some(([key, value]) => {
-        //             return key !== "pigID" && key !== "confirmStatus" && value === "";
-        //         });
-        //     });
-
-        //     if (hasEmptyField) {
-        //         setNonFillout(1);
-        //         setAlertText("您尚有欄位未填寫完畢");
-        //         return;
-        //     }
-        //     console.log("12312312312312312321321312");
-
-        //     fetch("http://localhost:3000/upload", {
-        //         // headers: new Headers({
-
-        //         // })
-        //         method: "POST",
-        //         credentials: "include",
-        //         body: JSON.stringify(EditViewData)
-        //     })
-        //         .then(res => handleSuccessres.status===200? :null(1
-        // });
 
     }
 
@@ -385,10 +380,12 @@ const RegisterFrame = () => {
     }
 
     const submitEditData = () => {
-        // const formData = new FormData();
+        const formData = new FormData();
+        const insertvalue = editphotoRef?.current?.files?.[0];
+        insertvalue ? formData.append("insertPhoto", insertvalue) : alert();
         const insertFile = EditViewData?.insertFile;
         // const transferValue = 
-        let transferText = ""
+        let transferText = "";
         switch (EditViewData.insertFile[0]["檢定區別"]) {
             case "全測":
                 transferText = "A"
@@ -428,23 +425,49 @@ const RegisterFrame = () => {
                 return;
             }
 
+            try {
+                fetch("http://localhost:3000/insertPhoto", {
+                    // headers: {
+                    //     "Content-Type": "application/json"
+                    // },
+                    method: "POST",
+                    credentials: "include",
+                    body: formData
+                })
+                    .then(res => res.status === 200 ? setHandleFetch(handleFetch ? false : true) : null)
 
-            fetch("http://localhost:3000/editFile", {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(uploadData)
-            }).then(res => {
-                if (res.status === 200) {
+                console.log(3);
+
+            }
+            catch (err) {
+                console.warn("errorrrr");
+
+            }
+
+            // ----
+
+            try {
+                fetch("http://localhost:3000/editFile", {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(uploadData)
+                }).then(res => {
                     if (res.status === 200) {
-                        handleSuccess("更新成功")
-                        setHandleFetch(handleFetch ? false : true);
-                        setEditFrameState(0);
+                        if (res.status === 200) {
+                            handleSuccess("更新成功")
+                            setHandleFetch(handleFetch ? false : true);
+                            setEditFrameState(0);
+                        }
                     }
-                }
-            })
+                })
+            }
+            catch(err){
+                console.error(err);
+                
+            }
 
         }
     };
@@ -481,7 +504,7 @@ const RegisterFrame = () => {
         "status": "insert",
         "userName": "",
         "filename": "",
-        "insertType": "A",
+        "insertType": "",
         "insertFile": {
             "准考證號碼": "",
             "身分證號碼": "",
@@ -675,21 +698,22 @@ const RegisterFrame = () => {
                                                                         }
                                                                     }))
                                                                 }}
-                                                                value={options_type.find(
-
-                                                                    (opt) => {
+                                                                value={
+                                                                    element.selectType?.[index]?.map(item => ({
+                                                                        label: item,
+                                                                        value: item
+                                                                    })).find((opt) => {
                                                                         const match = opt.value === insertData["insertFile"][key];
-
                                                                         return match;
-
                                                                     }
-                                                                ) ?? null}
-                                                                options= {element.selectType?.[index]?.map(item=>({
-                                                                    label : item,
-                                                                    value : item
+                                                                    ) ?? null
+                                                                }
+                                                                options={element.selectType?.[index]?.map(item => ({
+                                                                    label: item,
+                                                                    value: item
                                                                 }))}
 
-                                                                
+
                                                                 placeholder={`選擇${key}`}
                                                                 className="selectClass"
                                                             />)
@@ -714,6 +738,17 @@ const RegisterFrame = () => {
 
         }
 
+    }
+
+    const previewPDF = () => {
+        if (editphotoRef.current) {
+            const blob = editphotoRef.current.files?.[0];
+            if (blob) {
+                const url = URL.createObjectURL(blob);
+                
+                setImageURL(url);
+            }
+        }
     }
 
     const handleLoading = () => {
@@ -1127,6 +1162,7 @@ const RegisterFrame = () => {
 
 
                 <input type="file" id="insertPhotoRef" style={{ display: "none" }} ref={insertPhotoRef} onChange={handleinsertPhotoName} accept="image/*," />
+                <input type="file" id="editphotoRef" style={{ display: "none" }} ref={editphotoRef} onChange={() => previewPDF()} accept="image/*," />
 
                 {/* <div className="notify">
 
@@ -1134,7 +1170,7 @@ const RegisterFrame = () => {
 
 
                 <ViewStudentContainer imageURL={imageURL} viewData={EditViewData} setViewFrameState={setViewFrameState} viewFrameState={viewFrameState} />
-                <EditViewStudentContainer imageURL={imageURL} setEditViewData={setEditViewData} submitEditData={submitEditData} EditViewData={EditViewData} editFrameState={editFrameState} setEditFrameState={setEditFrameState} />
+                <EditViewStudentContainer editphotoRef={editphotoRef} setImageURL={setImageURL} imageURL={imageURL} setEditViewData={setEditViewData} submitEditData={submitEditData} EditViewData={EditViewData} editFrameState={editFrameState} setEditFrameState={setEditFrameState} />
 
 
 

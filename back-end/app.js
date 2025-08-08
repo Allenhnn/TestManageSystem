@@ -95,14 +95,14 @@ app.post('/getjsons', multer().none(), async (req, res) => {
   })
   studyData.forEach(element => {
     const birthYear = (Number(element[0]['出生日期'].slice(0, 3)) + 1911).toString()
-    const birthMonth = element[0]['出生日期'].slice(3, 2)
+    const birthMonth = element[0]['出生日期'].slice(3, 5)
     const birthDay = element[0]['出生日期'].slice(5)
     element[0]['出生日期'] = birthYear + "-" + birthMonth + "-" + birthDay
     resultLst.push(element)
   });
   tecData.forEach(element => {
     const birthYear = (Number(element[0]['出生日期'].slice(0, 3)) + 1911).toString()
-    const birthMonth = element[0]['出生日期'].slice(3, 2)
+    const birthMonth = element[0]['出生日期'].slice(3, 5)
     const birthDay = element[0]['出生日期'].slice(5)
     element[0]['出生日期'] = birthYear + "-" + birthMonth + "-" + birthDay
     resultLst.push(element)
@@ -450,7 +450,7 @@ app.get("/verifyData", (req, res) => {
 //   // if (!birthRegex.test(b))
 // }
 // const editUpload = multer()
-app.post("/editFile",multer().none(), (req, res) => {
+app.post("/editFile", (req, res) => {
   console.log(req.body);
 
   // console.log(req.body["status"])
@@ -629,10 +629,6 @@ app.post('/confirm', multer().none(), (req, res) => {
 
 app.post('/getPdf', multer().none(), (req, res) => {
   console.log("我已經好多天沒有正常睡覺了 希望老闆可以給我好一點的待遇 我從小時後就過得沒有很好 到了國小 也被同學們排擠 老師也都對我不好 上了國中成績又不好 上了不好了高中 也避不了業 大學也考了一個私立的科大 去711上班 跳樓");
-  console.log(req.body);
-  console.log(req.cookies.userName);
-
-
   const fileName = req.body.fileName
   const userName = req.cookies.userName
   const pdfPath = path.join(__dirname, "user_data", userName, fileName, 'combine.pdf')

@@ -81,6 +81,7 @@ type uploadType = {
     "fileName": string | undefined,
     "userInputName": string,
     "uploadPhotoName": string
+    "wordName": string
 }
 const RegisterFrame = () => {
     // const formData = new FormData();
@@ -131,7 +132,7 @@ const RegisterFrame = () => {
     const [notifyFrame, setNotifyFrame] = useState(0);
 
     // info
-    const [uploadStatus, setUploadStatus] = useState<uploadType>({ "status": false, "fileName": "", "userInputName": "", "uploadPhotoName": "" });
+    const [uploadStatus, setUploadStatus] = useState<uploadType>({ "status": false, "fileName": "", "userInputName": "", "uploadPhotoName": "", "wordName": "" });
 
     const [alertText, setAlertText] = useState("您有欄位尚未填寫完畢");
     const [handleFetch, setHandleFetch] = useState(false);
@@ -197,7 +198,22 @@ const RegisterFrame = () => {
         // setLoadingState(false);
         const URL: string = "http://localhost:3000/editFile";
         try {
-            const res = await fetch(URL, {
+            // const res = await fetch(URL, {
+            //     method: "POST",
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     credentials: "include",
+            //     body: JSON.stringify({
+            //         "status": "delete",
+            //         "pigID": arg,
+            //         "filename": fileName
+            //     })
+            // })
+
+            // if (!res.ok) throw new Error("500 server error");
+
+            fetch(URL, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -209,12 +225,13 @@ const RegisterFrame = () => {
                     "filename": fileName
                 })
             })
+                .then(res => {
+                    handleSuccess("刪除成功");
+                })
 
-            if (!res.ok) throw new Error("500 server error");
 
             // console.log("成功", data)
             // setLoadingState(true);
-            handleSuccess("刪除成功");
 
         }
         catch (err) {
@@ -463,9 +480,9 @@ const RegisterFrame = () => {
                     }
                 })
             }
-            catch(err){
+            catch (err) {
                 console.error(err);
-                
+
             }
 
         }
@@ -744,7 +761,7 @@ const RegisterFrame = () => {
             const blob = editphotoRef.current.files?.[0];
             if (blob) {
                 const url = URL.createObjectURL(blob);
-                
+
                 setImageURL(url);
             }
         }
@@ -784,6 +801,7 @@ const RegisterFrame = () => {
         setInsertPhotoName(prev => ({ ...prev, "status": true, "name": photoName }));
     }
     const handleInsertWord = (e: any): void => {
+
         const formData = new FormData();
         const inputFile = e.target.files[0];
         if (inputFile) {
@@ -800,9 +818,17 @@ const RegisterFrame = () => {
                     handleCarouselItemSep(2);
                 }
                 else {
-                    alert("none");
+                    setFillInFrame(true);
+                    setAlertText("上傳失敗")
                 }
             })
+        const file: string | undefined = wordFileRef.current?.files?.[0]?.name;
+        setUploadStatus((prev) => ({
+            ...prev,
+            status: true,
+            wordName: file || ""
+        }))
+
     }
     const stringSplit = (arg: string | undefined) => {
         // let resultString = "";
@@ -1235,15 +1261,15 @@ const RegisterFrame = () => {
                                 <div className="editFile">
                                     <div className="editIcon"><FontAwesomeIcon icon={faDatabase} /></div>
                                     <div className="editFileTexts">
-                                        <h3 className={`${uploadStatus.fileName == "" ? "redT" : ""}`}>Word檔案</h3>
-                                        <h4>{stringSplit(uploadStatus.fileName)}</h4>
+                                        <h3 className={`${uploadStatus.wordName == "" ? "redT" : ""}`}>Word檔案</h3>
+                                        <h4>{stringSplit(uploadStatus.wordName)}</h4>
                                     </div>
                                     <div className="editControlContainer">
                                         <div className="editControl">
-                                            <div className="icon" onClick={() => { uploadFileRef.current?.click() }}>
+                                            <div className="icon" onClick={() => { wordFileRef.current?.click() }}>
                                                 <FontAwesomeIcon icon={faUpload} />
                                             </div>
-                                            <div className="icon" onClick={() => { setUploadStatus(prev => ({ ...prev, fileName: "" })) }}>
+                                            <div className="icon" onClick={() => { setUploadStatus(prev => ({ ...prev, wordName: "" })) }}>
                                                 <FontAwesomeIcon icon={faTrash} />
                                             </div>
                                         </div>
@@ -1362,7 +1388,7 @@ const RegisterFrame = () => {
                         <div className="alert_text">
                             {/* <h2>您已經輸入/上傳資料<br/>確定要退出嗎？</h2> */}
                             {/* <h2>您已經輸入 / 上傳資料，確定要退出嗎？</h2> */}
-                            <h2>上傳完成</h2>
+                            <h2>{sucessText}</h2>
                             {/* <h4>( 未儲存的資料可能會遺失 )</h4> */}
                         </div>
                         <div className="alert_option">

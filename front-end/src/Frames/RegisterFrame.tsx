@@ -270,7 +270,9 @@ const RegisterFrame = () => {
 
                     console.log("123213", insertData);
                     fetch("http://localhost:3000/editFile", {
-
+                        headers:{
+                            "Content-type" : 'application/json'
+                        },
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
@@ -361,7 +363,12 @@ const RegisterFrame = () => {
     const submitConfirmAll = () => {
         const formData = new FormData();
         const folderName = currentFolderName;
+<<<<<<< HEAD
+        const formData  = new FormData()
+        formData.append("fileNae")
+=======
         formData.append("fileName", folderName);
+>>>>>>> refs/remotes/origin/main
         setConfirmAll(0);
 
         fetch("http://localhost:3000/confirmAll", {

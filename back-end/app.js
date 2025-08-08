@@ -450,7 +450,7 @@ app.get("/verifyData", (req, res) => {
 //   // if (!birthRegex.test(b))
 // }
 // const editUpload = multer()
-app.post("/editFile", (req, res) => {
+app.post("/editFile",multer().none(), (req, res) => {
   console.log(req.body);
 
   // console.log(req.body["status"])

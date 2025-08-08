@@ -77,7 +77,11 @@
     },
     {
       "pigID": "C00003",
+<<<<<<< HEAD:back-end/user_data/dexter/test-1/technicalTest/technicalTest.json
+      "confirmStatus": false
+=======
       "confirmStatus": true
+>>>>>>> refs/remotes/origin/main:back-end/user_data/allenhnn/allen's folder/technicalTest/technicalTest.json
     }
   ]
 ]

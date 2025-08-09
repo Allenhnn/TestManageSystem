@@ -1,6 +1,9 @@
 node_modules/
 .venv/
 convert_content/
+user_data/
+data_json/
+sqlite.db
 # Logs
 logs
 *.log

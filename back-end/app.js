@@ -669,6 +669,15 @@ app.post('/uploadWordTem', upload.single("uploadWordTem"), (req, res) => {
   res.status(200).send('success')
 })
 
+app.post('/logout' , (req,res) =>{
+  const getcoo = req.cookies;
+  console.log(req.cookie)
+  for (let cookieName in getcoo) {
+    res.clearCookie(cookieName); // 預設 path="/"
+  }
+  res.status(200).send('success')
+})
+
 app.listen(3000, () => {
   console.log("server is running");
 })

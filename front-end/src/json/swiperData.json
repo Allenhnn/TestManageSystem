@@ -11,7 +11,7 @@
     },
     {
         "swiper_icon":"file",
-        "swiper_title":"上傳Word副本",
+        "swiper_title":"上傳Word範本",
         "swiper_inner":"請上傳依範本填寫完成的 Word 檔案，格式需正確且內容完整。"
     },
     {
@@ -22,12 +22,12 @@
     {
         "swiper_icon":"image",
         "swiper_title":"上傳學生照片",
-        "swiper_inner":"請上傳學生證件用照片，格式為 JPG 或 PNG，請確保影像清晰、符合規範。"
+        "swiper_inner":"請上傳學生用照片資料夾，內包含學生照片，格式為 *.jpg，檔名設定為學生身分證字號。"
     },
     {
         "swiper_icon":"edit",
         "swiper_title":"檔案確認",
-        "swiper_inner":"上傳照片後即可編輯照片尺寸與位置，符合證件格式需求。"
+        "swiper_inner":"請確認上傳檔案是否正確，若不正確即可變更檔案，並請確保符合規範。"
     },
     
     {

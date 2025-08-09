@@ -15,12 +15,12 @@ type stateType = {
     // EditViewData: _EditType,
     viewFrameState: number,
     setViewFrameState: React.Dispatch<React.SetStateAction<number>>,
-    imageURL : string
+    imageURL: string
 }
 
 
 
-const ViewStudentContainer = ({  imageURL,viewData, viewFrameState, setViewFrameState }: stateType) => {
+const ViewStudentContainer = ({ imageURL, viewData, viewFrameState, setViewFrameState }: stateType) => {
     return (
         <div className={`viewStudentDetailContainer greyBG ${viewFrameState == 0 ? "op0" : ""}`}>
             <div className="viewStudentDetail">
@@ -35,7 +35,11 @@ const ViewStudentContainer = ({  imageURL,viewData, viewFrameState, setViewFrame
                     {viewFrameState == 1 ?
                         <>
                             <div className="allCenter">
-                                <div className="studentImageContainer"><img src={imageURL} alt="" /></div>
+                                <div className="studentImageContainer">
+                                    <div className="imageContainer">
+                                        <img className="" src={imageURL} alt="" />
+                                    </div>
+                                </div>
                                 <div className="topside" >
                                     <div className="viewStudentColumn deco">
                                         <div className="viewStudentItem">
@@ -121,7 +125,7 @@ const ViewStudentContainer = ({  imageURL,viewData, viewFrameState, setViewFrame
                                                         <div key={`element-${index}-label`} className={`viewStudentItem ${element.registerCount == 2 ? "split" : element.registerCount == 3 ? "triple" : ""} `}>
                                                             <div className="viewStudentName">
                                                                 <h4>*{element.registerName[0]}</h4>
-                                                                <input type="text"  disabled value={viewData["insertFile"][0][key]} />
+                                                                <input type="text" disabled value={viewData["insertFile"][0][key]} />
                                                             </div>
                                                         </div>
                                                     )

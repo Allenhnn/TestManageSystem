@@ -280,7 +280,10 @@ def combineWord(wordFilePaths , fileType):
     return f'./user_data/{userName}/{chooseFile}/{fileType}/combine.docx'
 
 def docxConvert():
-    convert(f'./user_data/{userName}/{chooseFile}/combine.docx',f'./user_data/{userName}/{chooseFile}/combine.pdf')
+    input_path = f'./user_data/{userName}/{chooseFile}/combine.docx'
+    output_path = f'./user_data/{userName}/{chooseFile}/combine.pdf'
+    convert(input_path, output_path)
+    
 
 if __name__ == "__main__":
     userName = sys.argv[1]

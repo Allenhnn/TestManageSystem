@@ -233,9 +233,10 @@ const storage = multer.diskStorage({
 
 
 const upload = multer({ storage: storage })
-  app.post('/uploadWord' , upload.single('wordFile') , async(req, res) =>{
+app.post('/uploadWord' , upload.single('wordFile') , async(req, res) =>{
   
 })
+
 app.post('/upload', upload.fields([{ name: 'excelFile' }, { name: 'photoFile' }]), async (req, res) => {
   console.log("reqBOdy:", req.body)
   const userName = req.cookies.userName

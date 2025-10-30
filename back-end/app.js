@@ -9,7 +9,7 @@ const cors = require('cors');
 const fs = require('fs');
 const cookieParser = require("cookie-parser")
 const multer = require('multer');
-const { log } = require('console');
+
 
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())

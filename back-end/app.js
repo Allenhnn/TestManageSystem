@@ -211,7 +211,9 @@ const storage = multer.diskStorage({
     } else if (extName === ".jpg") {
       folderPath = `./user_data/${userName}/${filePath}/image`
     } else if (extName === ".docx") {
-      folderPath = `./user_data/${userName}/${filePath}`
+      folderPath = `./docxTemplate`
+      // const delPath  = path.join(__dirname , "docxTemplate"  , "wordTemplate1(new).docx")      
+      // fs.rmSync(delPath )
     }
     cb(null, folderPath)
   },
@@ -223,13 +225,17 @@ const storage = multer.diskStorage({
     } else if (extName === ".jpg") {
       uploadFileName = file.originalname
     } else {
-      uploadFileName = "5.報名表正面.docx"
+      uploadFileName = "wordTemplate.docx"
     }
     cb(null, uploadFileName)
   }
 })
 
+
 const upload = multer({ storage: storage })
+  app.post('/uploadWord' , upload.single('wordFile') , async(req, res) =>{
+  
+})
 app.post('/upload', upload.fields([{ name: 'excelFile' }, { name: 'photoFile' }]), async (req, res) => {
   console.log("reqBOdy:", req.body)
   const userName = req.cookies.userName

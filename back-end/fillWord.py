@@ -17,14 +17,12 @@ from docx2pdf import convert
 
 sys.stdout.reconfigure(encoding='utf-8')  # ✅ 保證輸出為 UTF-8（避免 Windows 預設 gbk/cp950）
 
-
-
 def fillin(userName , chooseFile , inputJsons , fileType):
     wordFilePaths = []
     for inputJson in inputJsons:
         inputJson = inputJson[0]
         # print(inputJson,end="\n------")
-        wordPath = f'./user_data/{userName}/{chooseFile}/5.報名表正面.docx'
+        wordPath = f'./docxTemplate/wordTemplate.docx'
         wordDoc = Document(wordPath)
         table = wordDoc.tables[0]
         filledInfo = set()
@@ -91,7 +89,6 @@ def fillin(userName , chooseFile , inputJsons , fileType):
                         if idx ==0:
                             finalText = "□" + paragraph.text[1:]
                             paragraph.clear()
-                            run = paragraph.add_run(finalText)
                             run.font.size = Pt(11.2)
                             run.font.name = 'Times New Roman' 
                             run._element.rPr.rFonts.set(qn('w:eastAsia'), '標楷體')

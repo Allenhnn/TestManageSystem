@@ -1,6 +1,7 @@
 @import "_configs.scss";
 
 .registerFrameContainer.dark {
+    
     .settingFrame {
         background-color: rgba(255, 255, 255, 0.35) !important;
 
@@ -108,7 +109,7 @@
             width: 28rem;
             padding: 2rem;
             border-radius: 10px;
-            background-color: white;
+            background-color: #f2f2f2;
             color: #0f0f0f;
 
             .settingTitle {
@@ -149,6 +150,11 @@
                     color: #252525;
 
                     .icon {
+                        @include all-center();
+                        height: 2.5rem;
+                        aspect-ratio: 1/1;
+                        border-radius: 50%;
+                        background-color: #f2f2f2;
                         font-size: 1.25rem;
                         color: #7B46C7;
                     }
@@ -172,7 +178,9 @@
                         box-shadow: rgba(100, 100, 111, 0.5) 0px 7px 29px 0px;
                         transition: 0.25s;
                         cursor: pointer;
-
+                        &.success{
+                            background-color: #16A549;
+                        }
                         &:hover {
                             opacity: 0.75;
                         }
@@ -894,7 +902,7 @@
 
             .editContent {
                 @include all-center();
-                margin: 1rem 0 2rem 0;
+                margin: 1rem 0 1.5rem 0;
                 gap: 3rem;
 
                 .editPhotoContainer {
@@ -954,21 +962,23 @@
                 }
 
                 .editFilesContainer {
-
                     // margin: 1rem 2rem;
                     .editFile {
                         display: flex;
-                        justify-content: start;
+                        justify-content: space-between;
                         align-items: center;
                         background-color: rgba(255, 255, 255, 0.65);
                         padding: 0.5rem 1rem;
-
                         border-radius: 12px;
                         margin: 1rem 0;
                         box-shadow: $bxShadow;
 
                         min-height: 3rem;
 
+                        .editfileContainer{
+                            @include all-center()
+
+                        }
                         .editIcon {
                             @include all-center();
                             height: 2rem;

@@ -88,8 +88,8 @@ type uploadType = {
 const RegisterFrame = () => {
     // const formData = new FormData();
 
-    const [darkMode , setDarkMode ] = useState<boolean>(false);
-    const [settingFrame , setSettingFrame ] = useState<boolean>(false);
+    const [darkMode, setDarkMode] = useState<boolean>(false);
+    const [settingFrame, setSettingFrame] = useState<boolean>(false);
 
     const [imageURL, setImageURL] = useState("");
 
@@ -101,6 +101,7 @@ const RegisterFrame = () => {
 
 
     // const swiper = useSwiper();
+    const [wordFileStatus , setWordFileStatus] = useState(false);
     const [currentFolderName, setCurrentFolderName] = useState("");
     const [editFrameState, setEditFrameState] = useState(0);
     const [viewFrameState, setViewFrameState] = useState(0);
@@ -278,18 +279,14 @@ const RegisterFrame = () => {
 
         const isAllFieldsFilled = Object.values(insertData.insertFile).every(value => value.trim() !== "");
         if (insertPhotoRef.current != null) {
-
             if (!isAllFieldsFilled) {
                 // alert("請確保所有欄位都已填寫！");
-
-                setNonFillout(1);
                 setAlertText("請確保所有欄位都已填寫！");
+                setNonFillout(1);
                 return;
             }
             else {
                 try {
-
-                    console.log("123213", insertData);
                     fetch("http://localhost:3000/editFile", {
                         method: "POST",
                         headers: {
@@ -342,8 +339,6 @@ const RegisterFrame = () => {
 
                             }
                         })
-
-
                 }
                 catch (err) {
                     console.warn("errorrrr");
@@ -816,7 +811,10 @@ const RegisterFrame = () => {
             .then(res => {
                 if (res.status === 200) {
                     // submitConfirmAll();
-                    handleCarouselItemSep(2);
+                    // handleCarouselItemSep(2);
+                    setWordFileStatus(true);
+                    console.log("uploaded success");
+                    
                 }
                 else {
                     setFillInFrame(true);
@@ -840,8 +838,8 @@ const RegisterFrame = () => {
 
         // }
         // return (uploadStatus.fileName)
-        if (arg && arg.length > 6) {
-            return (arg.slice(0, 5) + "..");
+        if (arg && arg.length > 20) {
+            return (arg.slice(0, 19) + "..");
         }
         return (arg);
     }
@@ -1180,11 +1178,10 @@ const RegisterFrame = () => {
     return (
         cookie ? (
 
-            <div className={`registerFrameContainer ${darkMode? "dark" : ""}`}>
+            <div className={`registerFrameContainer ${darkMode ? "dark" : ""}`}>
                 <input type="file" id="hiddenInput" style={{ display: "none" }} ref={uploadFileRef} onChange={fileChange} />
                 <input type="file" id="uploadPhotoRef" style={{ display: "none" }} ref={uploadPhotoRef} onChange={photoUpload} accept="image/*," webkitdirectory="true"  {...({ webkitdirectory: "" } as any)} />
                 <input type="file" id="wordFileRef" style={{ display: "none" }} ref={wordFileRef} onChange={e => handleInsertWord(e)} accept="docx/*," />
-
 
                 <input type="file" id="insertPhotoRef" style={{ display: "none" }} ref={insertPhotoRef} onChange={handleinsertPhotoName} accept="image/*," />
                 <input type="file" id="editphotoRef" style={{ display: "none" }} ref={editphotoRef} onChange={() => previewPDF()} accept="image/*," />
@@ -1192,7 +1189,7 @@ const RegisterFrame = () => {
 
                 <ViewStudentContainer imageURL={imageURL} viewData={EditViewData} setViewFrameState={setViewFrameState} viewFrameState={viewFrameState} />
                 <EditViewStudentContainer editphotoRef={editphotoRef} setImageURL={setImageURL} imageURL={imageURL} setEditViewData={setEditViewData} submitEditData={submitEditData} EditViewData={EditViewData} editFrameState={editFrameState} setEditFrameState={setEditFrameState} />
-                <SettingComponent setDarkMode={setDarkMode} settingFrame={settingFrame} setSettingFrame={setSettingFrame} />
+                <SettingComponent setDarkMode={setDarkMode} settingFrame={settingFrame} setSettingFrame={setSettingFrame} wordFileRef={wordFileRef} setAlertText={setAlertText} setNonFillout={setNonFillout} wordFileStatus={wordFileStatus}  />
                 {/* 身分證號碼
                     中文姓名
                     出生日期
@@ -1252,17 +1249,19 @@ const RegisterFrame = () => {
                             </div> */}
                             <div className="editFilesContainer">
                                 <div className="editFile">
-                                    <div className="editIcon"><FontAwesomeIcon icon={faDatabase} /></div>
-                                    <div className="editFileTexts">
-                                        <h3 className={`${uploadStatus.wordName == "" ? "redT" : ""}`}>Word檔案</h3>
-                                        <h4>{stringSplit(uploadStatus.wordName)}</h4>
+                                    <div className="allCenter">
+                                        <div className="editIcon"><FontAwesomeIcon icon={faImage} /></div>
+                                        <div className="editFileTexts">
+                                            <h3 className={`${uploadStatus.uploadPhotoName == "" ? "redT" : ""}`}>上傳照片</h3>
+                                            <h4 title={uploadStatus.uploadPhotoName}>{stringSplit(uploadStatus.uploadPhotoName)}</h4>
+                                        </div>
                                     </div>
                                     <div className="editControlContainer">
                                         <div className="editControl">
-                                            <div className="icon" onClick={() => { wordFileRef.current?.click() }}>
+                                            <div className="icon" onClick={() => { uploadPhotoRef.current?.click() }}>
                                                 <FontAwesomeIcon icon={faUpload} />
                                             </div>
-                                            <div className="icon" onClick={() => { setUploadStatus(prev => ({ ...prev, wordName: "" })) }}>
+                                            <div className="icon" onClick={() => { setUploadStatus(prev => ({ ...prev, uploadPhotoName: "" })) }}>
                                                 <FontAwesomeIcon icon={faTrash} />
                                             </div>
                                         </div>

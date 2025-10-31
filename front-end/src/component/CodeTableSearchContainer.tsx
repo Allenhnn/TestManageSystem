@@ -14,11 +14,6 @@ type rowData = {
     "type-code": string
 }
 
-// type json_type = {
-//     [key : string]
-// }
-// higher order function only receive two arguments , props needs to become a set.
-// const ViewTable :React.FC<json_type> = (init_data) => {
 const CodeTableSearchContainer = ({ handleResult, globalFilter, setGlobalFilter }: globalType) => {
     // const { modalOut } = props; 
     const [data, setData] = useState<rowData[]>(DATA);
@@ -37,18 +32,6 @@ const CodeTableSearchContainer = ({ handleResult, globalFilter, setGlobalFilter 
             header: "類別",
             cell: (props: any) => <p>{props.getValue()}</p>
         }
-        // ,
-        // {
-        //     accessorKey: "報簡職類",
-        //     header: "報簡職類",
-        //     cell: (props: any) => <p>{props.getValue()}</p>
-        // }
-        // ,
-        // {
-        //     accessorKey: "檢定區別",
-        //     header: "檢定區別",
-        //     cell: (props: any) => <p>{props.getValue()}</p>
-        // }
     ]
 
     const table = useReactTable({

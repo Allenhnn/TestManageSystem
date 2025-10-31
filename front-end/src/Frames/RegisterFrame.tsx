@@ -3,9 +3,12 @@ import NavbarComponent from "../component/NavbarComponent";
 import Select from "react-select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd, faAngleLeft, faAngleRight, faBackward, faCheck, faCheckCircle, faCircleChevronLeft, faCirclePlus, faCircleQuestion, faDatabase, faEye, faFile, faFolder, faGear, faImage, faMagnifyingGlass, faPaperPlane, faPen, faPhotoFilm, faPhotoVideo, faPrint, faRecycle, faRepeat, faTableList, faTrash, faUpload, faUser, faUserCircle, faWarning, faX } from '@fortawesome/free-solid-svg-icons'
+
+// components
 import SwiperCarousel from '../component/SwiperCarousel.tsx';
 import ViewComponent from "../component/ViewComponent.tsx";
 import TableSwiper from "../component/TableSwiper.tsx";
+import SettingComponent from "../component/SettingComponent.tsx";
 
 import DataTable, { type ExportDataType } from "../component/DataTable.tsx";
 import Loading from "../component/Loading.tsx";
@@ -27,7 +30,6 @@ import type { _CommonType } from "../types/_CommonType.ts";
 import testPigId from "../json/testPigID.json"
 import userUploadFile from "../json/userUploadFile.json";
 import userUploadTestFile from "../json/userUploadTestFile.json"
-import { Headers } from "@tanstack/react-table";
 
 
 type selectType = {
@@ -86,6 +88,8 @@ type uploadType = {
 const RegisterFrame = () => {
     // const formData = new FormData();
 
+    const [darkMode , setDarkMode ] = useState<boolean>(false);
+    const [settingFrame , setSettingFrame ] = useState<boolean>(false);
 
     const [imageURL, setImageURL] = useState("");
 
@@ -339,7 +343,6 @@ const RegisterFrame = () => {
                             }
                         })
 
-                    // console.log(3)
 
                 }
                 catch (err) {
@@ -359,7 +362,6 @@ const RegisterFrame = () => {
                     })
                         .then(res => res.status === 200 ? setHandleFetch(handleFetch ? false : true) : null)
 
-                    console.log(3);
 
                 }
                 catch (err) {
@@ -452,7 +454,6 @@ const RegisterFrame = () => {
                 })
                     .then(res => res.status === 200 ? setHandleFetch(handleFetch ? false : true) : null)
 
-                console.log(3);
 
             }
             catch (err) {
@@ -789,7 +790,7 @@ const RegisterFrame = () => {
         if (uploadPhotoRef.current) {
             photoName = uploadPhotoRef.current.value;
         }
-        handleCarouselItemSep(4);
+        handleCarouselItemSep(3);
         setUploadStatus(prev => ({ ...prev, uploadPhotoName: photoName }))
         // files deliver
     }
@@ -873,7 +874,7 @@ const RegisterFrame = () => {
                 .then(res => {
                     if (res.status === 200) {
                         handleSuccess("上傳成功");
-                        handleCarouselItemSep(6);
+                        handleCarouselItemSep(5);
                         setLoadingState(true);
                     };
                 })
@@ -978,7 +979,7 @@ const RegisterFrame = () => {
             status: true,
             fileName: file
         }))
-        handleCarouselItemSep(3);
+        handleCarouselItemSep(2);
     }
 
 
@@ -1034,27 +1035,26 @@ const RegisterFrame = () => {
                         setAlertFrameShow1(1);
                     }
                     break;
+                // case 2:
+                //     clickWordRef()
+                //     break;
                 case 2:
-                    clickWordRef()
-                    // handleCarouselItemSep(2);
-                    break;
-                case 3:
                     clickAlertRef();
                     break;
-                case 4:
+                case 3:
                     clickPhotoRef();
                     break;
-                case 5:
+                case 4:
                     setEditAlertFrame(1);
                     break;
-                case 6:
+                case 5:
                     submitForm();
                     break;
                 default:
                     console.error("there's an error of argument deliever");
             }
         }
-        else if (arg == 5) {
+        else if (arg == 4) {
             setEditAlertFrame(1);
         }
         else {
@@ -1068,11 +1068,11 @@ const RegisterFrame = () => {
             if (!prev[index]) {
                 const newArr = [...prev];
                 newArr[index] += 1;
-                if (progressionValue + 14 > 100) {
+                if (progressionValue + 16.5 > 100) {
                     setProgressionValue(100);
                 }
                 else {
-                    setProgressionValue(progressionValue + 14.5);
+                    setProgressionValue(progressionValue + 16.5);
                 }
 
                 return newArr;
@@ -1116,7 +1116,7 @@ const RegisterFrame = () => {
 
     const saveFile = () => {
         setEditAlertFrame(0);
-        handleCarouselItemSep(5);
+        handleCarouselItemSep(4);
 
     }
 
@@ -1180,7 +1180,7 @@ const RegisterFrame = () => {
     return (
         cookie ? (
 
-            <div className="registerFrameContainer">
+            <div className={`registerFrameContainer ${darkMode? "dark" : ""}`}>
                 <input type="file" id="hiddenInput" style={{ display: "none" }} ref={uploadFileRef} onChange={fileChange} />
                 <input type="file" id="uploadPhotoRef" style={{ display: "none" }} ref={uploadPhotoRef} onChange={photoUpload} accept="image/*," webkitdirectory="true"  {...({ webkitdirectory: "" } as any)} />
                 <input type="file" id="wordFileRef" style={{ display: "none" }} ref={wordFileRef} onChange={e => handleInsertWord(e)} accept="docx/*," />
@@ -1189,16 +1189,10 @@ const RegisterFrame = () => {
                 <input type="file" id="insertPhotoRef" style={{ display: "none" }} ref={insertPhotoRef} onChange={handleinsertPhotoName} accept="image/*," />
                 <input type="file" id="editphotoRef" style={{ display: "none" }} ref={editphotoRef} onChange={() => previewPDF()} accept="image/*," />
 
-                {/* <div className="notify">
-
-            </div> */}
-
 
                 <ViewStudentContainer imageURL={imageURL} viewData={EditViewData} setViewFrameState={setViewFrameState} viewFrameState={viewFrameState} />
                 <EditViewStudentContainer editphotoRef={editphotoRef} setImageURL={setImageURL} imageURL={imageURL} setEditViewData={setEditViewData} submitEditData={submitEditData} EditViewData={EditViewData} editFrameState={editFrameState} setEditFrameState={setEditFrameState} />
-
-
-
+                <SettingComponent setDarkMode={setDarkMode} settingFrame={settingFrame} setSettingFrame={setSettingFrame} />
                 {/* 身分證號碼
                     中文姓名
                     出生日期
@@ -1215,7 +1209,6 @@ const RegisterFrame = () => {
                     年級
                     身分別
                     學制 */}
-
 
                 <div className={`viewDataContainer ${!fillInFrame ? "op0" : ""}`}>
                     <div className="viewData">
@@ -1250,13 +1243,13 @@ const RegisterFrame = () => {
 
                         <div className="line" />
                         <div className="editContent">
-                            <div className="editPhotoContainer">
+                            {/* <div className="editPhotoContainer">
                                 <div className="editPhoto"><FontAwesomeIcon icon={faImage} /></div>
                                 <div className="editPhotoName">
                                     <h4>{stringSplit(uploadStatus.uploadPhotoName)}</h4>
                                     <div className="editIcon" onClick={clickPhotoRef}><FontAwesomeIcon icon={faRepeat} /></div>
                                 </div>
-                            </div>
+                            </div> */}
                             <div className="editFilesContainer">
                                 <div className="editFile">
                                     <div className="editIcon"><FontAwesomeIcon icon={faDatabase} /></div>
@@ -1309,24 +1302,12 @@ const RegisterFrame = () => {
                     <div className="uploadFrame">
                         <div className="uploadFrameText">
                             <h2>上傳新檔案名稱</h2>
-                            {/* <h5>請上傳範本編輯後的學生資料，支援 Excel 格式，請確保符合規範</h5> */}
                         </div>
                         <div className="line" />
                         <div className="uploadColumn">
                             <h3><span style={{ color: "red" }}>*</span>檔案名稱</h3>
                             <input type="text" ref={uploadFileNameRef} onChange={uploadTextChange} />
                         </div>
-                        {/* <div className="uploadColumn">
-                            <h3><span style={{ color: "red" }}>*</span>上傳檔案</h3>
-                            
-                            <div className="uploadInput" onClick={clickAlertRef}>
-                                <div className={`uploadbg ${!uploadStatus["status"] ? "hide" : ""}`}><h4>{uploadStatus["fileName"]}</h4></div>
-                                <div className="uploadIcon" ><FontAwesomeIcon icon={faUpload} /></div>
-                                <h4><span>點擊</span> 上傳檔案</h4>
-                                <h5>( 檔案限定 *.xlsx )</h5>
-                            </div>
-
-                        </div> */}
                         <div className="uploadButtonContainer">
                             <div className="uploadButton" onClick={verifyUpload}>取 消</div>
                             <div className="uploadButton" onClick={preSubmitUpload}>上 傳</div>
@@ -1467,13 +1448,14 @@ const RegisterFrame = () => {
                                 </div>
                                 <div className="line" />
                                 <div className="settingContainer" onClick={() => {
-                                    if (insertData["insertFile"]["中文姓名"] != "admin") {
-                                        setNonFillout(1);
-                                        setAlertText("非管理員請勿開啟！");
-                                    }
-                                    else {
+                                    // if (insertData["insertFile"]["中文姓名"] != "admin") {
+                                    //     setNonFillout(1);
+                                    //     setAlertText("非管理員請勿開啟！");
+                                    // }
+                                    // else {
 
-                                    }
+                                    // }
+                                    setSettingFrame(true);
                                 }}>
                                     <div className="item"><div className="decoration"><FontAwesomeIcon icon={faGear} /></div><h4>設 定</h4></div>
                                 </div>

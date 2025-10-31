@@ -10,11 +10,6 @@
         "swiper_inner":"請建立新檔案，並以專案名稱命名，方便日後管理與查找。"
     },
     {
-        "swiper_icon":"file",
-        "swiper_title":"上傳Word範本",
-        "swiper_inner":"請上傳依範本填寫完成的 Word 檔案，格式需正確且內容完整。"
-    },
-    {
         "swiper_icon":"database",
         "swiper_title":"上傳Excel檔案",
         "swiper_inner":"請上傳包含學生資訊的檔案，支援 *.xlsx 格式，請確保符合規範。"

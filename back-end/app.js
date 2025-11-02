@@ -10,6 +10,8 @@ const fs = require('fs');
 const cookieParser = require("cookie-parser")
 const multer = require('multer');
 
+// route import
+const uploadRounter = require('./routes/upload_file')
 
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
@@ -19,11 +21,46 @@ app.use(cors({
 }));
 app.use(express.json())
 
+//route use
+app.use('/' , uploadRounter)
 
-app.get("/test", (req, res) => {
-  console.log("test success")
-  res.send('success')
+// app.get("/test", (req, res) => {
+// console.log("test success")
+  // res.send('success')
+// })
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    // console.log(fill.originalName);
+    const extName = path.extname(file.originalname)
+    const userName = req.cookies.userName
+    const filePath = req.cookies.fileName
+    let folderPath = ''
+    if (extName === ".xlsx") {
+      folderPath = `./user_data/${userName}/${filePath}`
+    } else if (extName === ".jpg") {
+      folderPath = `./user_data/${userName}/${filePath}/image`
+    } else if (extName === ".docx") {
+      folderPath = `./docxTemplate`
+      // const delPath  = path.join(__dirname , "docxTemplate"  , "wordTemplate1(new).docx")      
+      // fs.rmSync(delPath )
+    }
+    cb(null, folderPath)
+  },
+  filename: function (req, file, cb) {
+    const extName = path.extname(file.originalname)
+    let uploadFileName = ""
+    if (extName === ".xlsx") {
+      uploadFileName = req.cookies.fileName + ".xlsx"
+    } else if (extName === ".jpg") {
+      uploadFileName = file.originalname
+    } else {
+      uploadFileName = "wordTemplate.docx"
+    }
+    cb(null, uploadFileName)
+  }
 })
+const upload = multer({ storage: storage })
 
 app.get('/', async (req, res) => {
   res.sendFile(path.join(__dirname, 'test.html'));
@@ -199,108 +236,7 @@ app.post('/createFolder', multer().none(), async (req, res) => {
   })
 })
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    // console.log(fill.originalName);
-    const extName = path.extname(file.originalname)
-    const userName = req.cookies.userName
-    const filePath = req.cookies.fileName
-    let folderPath = ''
-    if (extName === ".xlsx") {
-      folderPath = `./user_data/${userName}/${filePath}`
-    } else if (extName === ".jpg") {
-      folderPath = `./user_data/${userName}/${filePath}/image`
-    } else if (extName === ".docx") {
-      folderPath = `./docxTemplate`
-      // const delPath  = path.join(__dirname , "docxTemplate"  , "wordTemplate1(new).docx")      
-      // fs.rmSync(delPath )
-    }
-    cb(null, folderPath)
-  },
-  filename: function (req, file, cb) {
-    const extName = path.extname(file.originalname)
-    let uploadFileName = ""
-    if (extName === ".xlsx") {
-      uploadFileName = req.cookies.fileName + ".xlsx"
-    } else if (extName === ".jpg") {
-      uploadFileName = file.originalname
-    } else {
-      uploadFileName = "wordTemplate.docx"
-    }
-    cb(null, uploadFileName)
-  }
-})
 
-
-const upload = multer({ storage: storage })
-app.post('/uploadWord' , upload.single('wordFile') , async(req, res) =>{
-  
-})
-
-app.post('/upload', upload.fields([{ name: 'excelFile' }, { name: 'photoFile' }]), async (req, res) => {
-  console.log("reqBOdy:", req.body)
-  const userName = req.cookies.userName
-  const fileName = req.cookies.fileName
-  const excelFile = req.body.originalName
-  const filePath = `./user_data/${userName}/${fileName}/${excelFile}.xlsx`
-
-  const py = await spawn('python3', ['process.py', filePath, userName, fileName])
-  let outputData = ''
-  py.stdout.on('data', (data) => {
-    outputData += data.toString('utf-8')
-  })
-
-  py.stderr.on('data', (data) => {
-    console.log(data.toString('utf-8'));
-  })
-
-  py.on('close', () => {
-    console.log(outputData)
-    sequelize.sync().then(() => {
-      jsonFile.create({
-        jsonName: fileName,
-        userAcc: userName
-      }).then(() => {
-        console.log("Json File has already prepared")
-        res.send('success').status(200)
-      }).catch(err => {
-        console.log(err.name)
-        res.send('failure').status(400)
-      })
-    })
-  })
-})
-
-app.post('/signup', (req, res) => {
-  const applier = req.body["signEmail"];
-  // console.log(req.body.signEmail);
-
-  console.log(applier);
-  const transporter = nodemailer.createTransport({
-    service: 'Gmail',
-    auth: {
-      user: "systemyuntech@gmail.com",
-      pass: "mgve yqhw btkx jycf"
-    }
-  })
-
-  const randomCode = Math.floor(Math.random() * 9000) + 1000;
-  console.log(randomCode)
-  const mailOptions = {
-    from: "TestSystem",
-    to: applier,
-    subject: "TestSystem驗證碼",
-    text: `驗證碼為"${randomCode}`
-  }
-
-  transporter.sendMail(mailOptions, (err, info) => {
-    if (err) {
-      res.json(false)
-    } else {
-      res.json(randomCode);
-    }
-  })
-})
 
 app.post("/login", async (req, res) => {
   console.log(req.body)

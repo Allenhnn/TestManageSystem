@@ -233,9 +233,6 @@ const storage = multer.diskStorage({
 
 
 const upload = multer({ storage: storage })
-app.post('/uploadWord' , upload.single('wordFile') , async(req, res) =>{
-  
-})
 
 app.post('/upload', upload.fields([{ name: 'excelFile' }, { name: 'photoFile' }]), async (req, res) => {
   console.log("reqBOdy:", req.body)
@@ -672,7 +669,6 @@ app.post('/confirmAll', multer().none(), (req, res) => {
 })
 
 app.post('/uploadWordTem', upload.single("uploadWordTem"), (req, res) => {
-  console.log("server is bombing");
   res.status(200).send('success')
 })
 

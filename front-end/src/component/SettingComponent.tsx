@@ -23,7 +23,7 @@ const SettingComponent = ({ setDarkMode, settingFrame, setSettingFrame, wordFile
         const userName = Cookies.get('userName');
         console.log(userName);
 
-        if (userName == "allenhnn") {
+        if (userName == "admin") {
             wordFileRef?.current.click();
         }
         else {

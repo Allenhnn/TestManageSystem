@@ -1,5 +1,81 @@
 @import "_configs.scss";
 
+.registerFrameContainer.dark {
+    
+    .settingFrame {
+        background-color: rgba(255, 255, 255, 0.35) !important;
+
+        h3 {
+            color: #f2f2f2 !important;
+        }
+    }
+
+    .viewTable p,
+    .resultColumn div {
+        color: #f2f2f2 !important;
+    }
+
+    & .searchBarContainer {
+        background: rgba(255, 255, 255, 0.9) !important;
+    }
+
+    & .uploadFrame {
+        background-color: rgba(255, 255, 255, 0.15) !important;
+    }
+
+    & .selectionComponent .line {
+        background-color: #f2f2f2 !important;
+    }
+
+    .navigationItem h4 {
+        color: #f2f2f2 !important;
+    }
+
+    & .card_container {
+        background-color: rgba(25, 25, 25, 0.35) !important;
+        backdrop-filter: blur(20px);
+
+        h3,
+        p {
+            color: #f2f2f2 !important;
+        }
+    }
+
+    & .progressionContainer {
+        .progression {
+            background-color: rgba(255, 255, 255, 0.65) !important;
+        }
+
+        h5 {
+            color: #f2f2f2 !important;
+        }
+    }
+
+    & .selectionComponent {
+        background-color: rgba(25, 25, 25, 0.65) !important;
+
+        .item h4 {
+            color: #f2f2f2 !important;
+        }
+    }
+
+    & .rightSideContainer {
+        background-color: rgba(25, 25, 25, 0.65) !important;
+
+        h2 {
+            color: #f2f2f2 !important;
+        }
+    }
+
+    & .navbarContainer {
+        background-color: rgba(25, 25, 25, 0.6) !important;
+
+        .text {
+            color: #f2f2f2 !important;
+        }
+    }
+}
+
 .registerFrameContainer {
     position: relative;
     height: 100vh;
@@ -15,6 +91,177 @@
 
     padding: 2rem 2.5rem 1.5rem 2.5rem;
     box-sizing: border-box;
+
+    .settingFrameContainer {
+        @include vicelayerDeco();
+        @include all-center();
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 0;
+        z-index: 99;
+        transition: 0.25s;
+
+        .settingFrame {
+            width: 28rem;
+            padding: 2rem;
+            border-radius: 10px;
+            background-color: #f2f2f2;
+            color: #0f0f0f;
+
+            .settingTitle {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+
+                .settingIcon {
+                    @include all-center();
+                    height: 2.25rem;
+                    aspect-ratio: 1/1;
+                    background-color: #7B46C7;
+                    color: white;
+                    border-radius: 10px;
+                    font-size: 1.15rem;
+                }
+
+                h3 {
+                    color: #252525;
+                    font-size: 1.55rem;
+                    // letter-spacing: 1px;
+                }
+            }
+
+            .settingBody {
+                display: flex;
+                align-items: start;
+                justify-content: start;
+                flex-direction: column;
+                padding: 2rem 1rem;
+                gap: 2rem;
+
+                .settingItem {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    color: #252525;
+
+                    .icon {
+                        @include all-center();
+                        height: 2.5rem;
+                        aspect-ratio: 1/1;
+                        border-radius: 50%;
+                        background-color: #f2f2f2;
+                        font-size: 1.25rem;
+                        color: #7B46C7;
+                    }
+
+                    h3 {
+                        font-size: 1.25rem;
+                    }
+
+                    .settingTitle {
+                        display: flex;
+                        align-items: center;
+                        gap: 1rem;
+                    }
+
+                    .uploadBtn {
+
+                        padding: 0.45rem 1.5rem;
+                        background-color: #7B46C7;
+                        color: #fff;
+                        border-radius: 12px;
+                        box-shadow: rgba(100, 100, 111, 0.5) 0px 7px 29px 0px;
+                        transition: 0.25s;
+                        cursor: pointer;
+                        &.success{
+                            background-color: #16A549;
+                        }
+                        &:hover {
+                            opacity: 0.75;
+                        }
+                    }
+
+                    .toggle-container {
+                        width: 3.75rem;
+                        /* 原 60px → 3.75rem */
+                        height: 1.875rem;
+                        /* 原 30px → 1.875rem */
+                        background-color: #ccc;
+                        border-radius: 1.875rem;
+                        /* 高度一樣，保持圓角 */
+                        cursor: pointer;
+                        position: relative;
+                        transition: background-color 0.3s;
+                    }
+
+                    .toggle-container .toggle-circle {
+                        width: 1.625rem;
+                        /* 原 26px → 1.625rem */
+                        height: 1.625rem;
+                        /* 同上 */
+                        background-color: white;
+                        border-radius: 50%;
+                        position: absolute;
+                        top: 0.125rem;
+                        /* 原 2px → 0.125rem */
+                        left: 0.125rem;
+                        /* 原 2px → 0.125rem */
+                        transition: left 0.3s;
+                    }
+
+                    /* 開啟狀態 */
+                    .toggle-container .toggle-circle.on {
+                        left: 2rem;
+                        /* 原 32px → 2rem */
+                    }
+
+                    .toggle-container.on {
+                        background-color: #4ade80;
+                    }
+
+                }
+
+            }
+
+
+            .functionBtns {
+                @include all-center();
+                gap: 2rem;
+
+                .btn {
+                    &.bRed {
+                        background-color: rgb(221, 49, 49);
+                        color: white;
+                    }
+
+                    padding: 0.45rem 2rem;
+                    background-color: white;
+                    color: #090909;
+                    border-radius: 12px;
+                    box-shadow: rgba(100, 100, 111, 0.5) 0px 7px 29px 0px;
+                    transition: 0.25s;
+                    cursor: pointer;
+
+                    &:hover {
+                        opacity: 0.75;
+                    }
+                }
+            }
+        }
+
+        .line {
+            height: 1px;
+            width: 100%;
+            margin: 1rem 0;
+            background-color: #0f0f0f28
+        }
+
+    }
 
     .viewStudentDetailContainer {
         @include all-center();
@@ -84,9 +331,11 @@
                     @include all-center();
                     flex-direction: column;
                     margin-right: 2rem;
-                    h5{
+
+                    h5 {
                         color: #252525
                     }
+
                     .imageContainer {
                         @include all-center();
                         background-color: white;
@@ -653,7 +902,7 @@
 
             .editContent {
                 @include all-center();
-                margin: 1rem 0 2rem 0;
+                margin: 1rem 0 1.5rem 0;
                 gap: 3rem;
 
                 .editPhotoContainer {
@@ -713,21 +962,23 @@
                 }
 
                 .editFilesContainer {
-
                     // margin: 1rem 2rem;
                     .editFile {
                         display: flex;
-                        justify-content: start;
+                        justify-content: space-between;
                         align-items: center;
                         background-color: rgba(255, 255, 255, 0.65);
                         padding: 0.5rem 1rem;
-
                         border-radius: 12px;
                         margin: 1rem 0;
                         box-shadow: $bxShadow;
 
                         min-height: 3rem;
 
+                        .editfileContainer{
+                            @include all-center()
+
+                        }
                         .editIcon {
                             @include all-center();
                             height: 2rem;
@@ -1394,7 +1645,7 @@
                                         }
                                     }
                                 }
-                                
+
                                 .addNewItem {
                                     position: relative;
                                     padding: 0.5rem 1.25rem;

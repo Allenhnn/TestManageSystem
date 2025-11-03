@@ -608,7 +608,6 @@ app.post('/confirmAll', multer().none(), (req, res) => {
 })
 
 app.post('/uploadWordTem', upload.single("uploadWordTem"), (req, res) => {
-  console.log("server is bombing");
   res.status(200).send('success')
 })
 

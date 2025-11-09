@@ -286,6 +286,7 @@ if __name__ == "__main__":
     userName = sys.argv[1]
     chooseFile = sys.argv[2]
     combineWordPath = []
+    print(os.path.dirname(os.path.abspath(__file__)))
     if os.path.exists(f'./user_data/{userName}/{chooseFile}/fullTest/fullTest.json'):
         print("imin")
         with open(f'./user_data/{userName}/{chooseFile}/fullTest/fullTest.json' , encoding="utf-8") as f:      

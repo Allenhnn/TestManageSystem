@@ -3,25 +3,47 @@ const router = express.Router()
 const multer = require('multer');
 const path = require("path")
 const fs = require('fs');
+const { spawn } = require('child_process');
+const { sequelize, userAccounts, fileInfo, jsonFile } = require('../sqlSetting');
+const { where, json, AsyncQueueError } = require('sequelize');
 
 const storage = multer.diskStorage({
+
   destination: function (req, file, cb) {
-    // console.log(fill.originalName);
     const extName = path.extname(file.originalname)
     const userName = req.cookies.userName
     const filePath = req.cookies.fileName
+    const baseUserDir = path.join(__dirname, '..', 'user_data') // 絕對基底指向 back-end/user_data
     let folderPath = ''
     if (extName === ".xlsx") {
-      folderPath = `../user_data/${userName}/${filePath}`
+      folderPath = path.join(baseUserDir, userName, filePath)
     } else if (extName === ".jpg") {
-      folderPath = `../user_data/${userName}/${filePath}/image`
+      folderPath = path.join(baseUserDir, userName, filePath, 'image')
     } else if (extName === ".docx") {
-      folderPath = `../docxTemplate`
-      // const delPath  = path.join(__dirname , "docxTemplate"  , "wordTemplate1(new).docx")      
-      // fs.rmSync(delPath )
+      folderPath = path.join(__dirname, '..', 'docxTemplate')
     }
+    // 確保目錄存在
+    fs.mkdirSync(folderPath, { recursive: true })
     cb(null, folderPath)
   },
+  // destination: function (req, file, cb) {
+    
+  //   // console.log(fill.originalName);
+  //   const extName = path.extname(file.originalname)
+  //   const userName = req.cookies.userName
+  //   const filePath = req.cookies.fileName
+  //   let folderPath = ''
+  //   if (extName === ".xlsx") {
+  //     folderPath = `../user_data/${userName}/${filePath}`
+  //   } else if (extName === ".jpg") {
+  //     folderPath = `../user_data/${userName}/${filePath}/image`
+  //   } else if (extName === ".docx") {
+  //     folderPath = `../docxTemplate`
+  //     // const delPath  = path.join(__dirname , "docxTemplate"  , "wordTemplate1(new).docx")      
+  //     // fs.rmSync(delPath )
+  //   }
+  //   cb(null, folderPath)
+  // },
   filename: function (req, file, cb) {
     const extName = path.extname(file.originalname)
     let uploadFileName = ""
@@ -38,8 +60,9 @@ const storage = multer.diskStorage({
 
 
 const upload = multer({ storage: storage })
-router.post('/uploadWord' , upload.single('wordFile') , async(req, res) =>{
-  
+
+router.post('/uploadWordTem', upload.single("uploadWordTem"), (req, res) => {
+  res.status(200).send('success')
 })
 
 router.post('/upload', upload.fields([{ name: 'excelFile' }, { name: 'photoFile' }]), async (req, res) => {
@@ -47,7 +70,7 @@ router.post('/upload', upload.fields([{ name: 'excelFile' }, { name: 'photoFile'
   const userName = req.cookies.userName
   const fileName = req.cookies.fileName
   const excelFile = req.body.originalName
-  const filePath = `../user_data/${userName}/${fileName}/${excelFile}.xlsx`
+  const filePath = `./user_data/${userName}/${fileName}/${excelFile}.xlsx`
 
   const py = await spawn('python3', ['process.py', filePath, userName, fileName])
   let outputData = ''
@@ -107,6 +130,8 @@ router.post('/signup', (req, res) => {
   })
 })
 
-
+router.post('/insertPhoto', upload.single("insertPhoto"), (req, res) => {
+  res.status(200).send('success')
+})
 
 module.exports = router;

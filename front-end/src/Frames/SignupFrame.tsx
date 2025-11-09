@@ -164,8 +164,8 @@ const SignupFrame = () => {
                     <div className="alert_text">
                         {/* <h2>您已經輸入/上傳資料<br/>確定要退出嗎？</h2> */}
                         {/* <h2>您已經輸入 / 上傳資料，確定要退出嗎？</h2> */}
-                          <h2>登入失敗</h2>
-                        <h4>( 請再次確定帳號密碼 )</h4>
+                          <h2>註冊失敗</h2>
+                        <h4>( 請再次確定輸入資料 )</h4>
                     </div>
                     <div className="alert_option">
                         <div className="alert_option_button" onClick={() => setRepeatAlert(0)}>取 消</div>

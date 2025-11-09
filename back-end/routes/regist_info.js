@@ -3,6 +3,7 @@ const router = express.Router()
 const cookieParser = require("cookie-parser")
 const multer = require('multer');
 const fs = require('fs');
+const nodemailer = require("nodemailer")
 
 router.use(cookieParser())
 

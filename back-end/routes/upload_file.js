@@ -6,6 +6,7 @@ const fs = require('fs');
 const { spawn } = require('child_process');
 const { sequelize, userAccounts, fileInfo, jsonFile } = require('../sqlSetting');
 const { where, json, AsyncQueueError } = require('sequelize');
+const nodemailer = require("nodemailer")
 
 const storage = multer.diskStorage({
 

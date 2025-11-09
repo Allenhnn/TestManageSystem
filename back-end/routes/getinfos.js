@@ -82,7 +82,7 @@ router.post('/getjsons', multer().none(), async (req, res) => {
 router.get('/:userName/:fileName/:imgFile', (req, res) => {
   console.log("123123123");
 
-  const imgFile = path.join(__dirname, `./user_data/${req.params.userName}/${req.params.fileName}/image/${req.params.imgFile}.jpg`)
+  const imgFile = path.join(__dirname, `../user_data/${req.params.userName}/${req.params.fileName}/image/${req.params.imgFile}.jpg`)
   res.sendFile(imgFile)
 })
 
